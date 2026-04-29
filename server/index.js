@@ -631,6 +631,25 @@ function getShift(data, shiftId) {
   return data.shifts.find((shift) => shift.id === shiftId);
 }
 
+function timeToMinutes(value) {
+  const [hours, minutes] = String(value || '00:00').split(':').map(Number);
+  if (!Number.isFinite(hours) || !Number.isFinite(minutes)) return 0;
+  return hours * 60 + minutes;
+}
+
+function shiftsOverlap(firstShift, secondShift) {
+  if (!firstShift || !secondShift) return false;
+  const firstStart = timeToMinutes(firstShift.startsAt);
+  const firstEnd = timeToMinutes(firstShift.endsAt);
+  const secondStart = timeToMinutes(secondShift.startsAt);
+  const secondEnd = timeToMinutes(secondShift.endsAt);
+  return firstStart < secondEnd && secondStart < firstEnd;
+}
+
+function studentShiftOverlaps(data, student, shiftId) {
+  return shiftsOverlap(getShift(data, student.selectedShift), getShift(data, shiftId));
+}
+
 function isActiveStudent(student) {
   return student.membershipStatus === 'active' && student.expiryDate >= isoDate();
 }
@@ -659,7 +678,7 @@ function hasSeatConflict(data, seatNumber, shiftId, excludeStudentId) {
       student.id !== excludeStudentId &&
       isActiveStudent(student) &&
       student.seatNumber === seatNumber &&
-      student.selectedShift === shiftId
+      studentShiftOverlaps(data, student, shiftId)
     );
   });
 }
@@ -838,7 +857,7 @@ function seatLayout(data, shiftId = 'shift-1') {
   return data.seats.map((seat) => {
     const assigned = data.students
       .filter((student) => isActiveStudent(student))
-      .find((student) => student.seatNumber === seat.number && student.selectedShift === shiftId);
+      .find((student) => student.seatNumber === seat.number && studentShiftOverlaps(data, student, shiftId));
     const status = assigned ? 'occupied' : seat.baseStatus === 'reserved' ? 'reserved' : 'available';
     return {
       ...seat,
