@@ -1,0 +1,25 @@
+{
+  "name": "competitive-exam-library-management",
+  "version": "1.0.0",
+  "description": "Secure full-stack admin dashboard for competitive exam library and reading room management.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node server/index.js",
+    "start": "NODE_ENV=production node server/index.js",
+    "check": "node --check server/index.js && node --check public/app.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "keywords": [
+    "library-management",
+    "reading-room",
+    "admin-dashboard",
+    "attendance",
+    "fees",
+    "seats"
+  ],
+  "author": "",
+  "license": "UNLICENSED"
+}

@@ -1,0 +1,1929 @@
+{
+  "meta": {
+    "name": "ExamDesk Library",
+    "city": "New Delhi",
+    "createdAt": "2026-04-29T20:04:31.384Z",
+    "updatedAt": "2026-04-29T20:05:24.517Z",
+    "nextStudentNumber": 11,
+    "tokenTtlMinutes": 480,
+    "inactivityLogoutMinutes": 20
+  },
+  "users": [
+    {
+      "id": "usr-admin",
+      "name": "Library Owner",
+      "email": "owner@examdesk.local",
+      "mobile": "9999990001",
+      "role": "super_admin",
+      "status": "active",
+      "createdAt": "2026-04-29T20:04:31.384Z",
+      "salt": "d5f010d68312a9bd8f37cd30cf007df6",
+      "passwordHash": "a63686d067dad341710b28c6cedd1c1126bb19c2084eebe123a1af34ec78a4da140e5fb4ddc5203dae9049ff3e3203649077f538acf59bf84f0ed1da839126b4",
+      "lastLoginAt": "2026-04-29T20:05:24.425Z"
+    },
+    {
+      "id": "usr-staff",
+      "name": "Front Desk Staff",
+      "email": "staff@examdesk.local",
+      "mobile": "9999990002",
+      "role": "staff",
+      "status": "active",
+      "createdAt": "2026-04-29T20:04:31.384Z",
+      "salt": "bdebdb925597b4b35f4e1814de8c1a6b",
+      "passwordHash": "b7c4dfd8ea6a84d4aa3e61f1431fd35cc514ebd0aa57ae9bb7393a10d13dd0294bc394095564745a47fbac01135fe974023eb8b0f6167bf9e6af413e5fe6a18a"
+    },
+    {
+      "id": "usr-student-aarav",
+      "name": "Aarav Sharma",
+      "email": "aarav@examdesk.local",
+      "mobile": "9876501001",
+      "role": "student",
+      "studentId": "STU-2026-0001",
+      "status": "active",
+      "createdAt": "2026-04-29T20:04:31.384Z",
+      "salt": "f81477bc0517e36f525d182636d46a74",
+      "passwordHash": "d6de1cda87e25196b199915c2ff0ddca229df46893e8b9d8fb78182cd6206b0e0cb6061249d3ba8d8c7eadeca2ae013c67109e7a41dce7a11e0d9c4fc201291c",
+      "lastLoginAt": "2026-04-29T20:05:24.517Z"
+    }
+  ],
+  "students": [
+    {
+      "id": "STU-2026-0001",
+      "photo": "data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22160%22%20height%3D%22160%22%20viewBox%3D%220%200%20160%20160%22%3E%3Crect%20width%3D%22160%22%20height%3D%22160%22%20rx%3D%2232%22%20fill%3D%22%23f8fafc%22%2F%3E%3Crect%20x%3D%2214%22%20y%3D%2214%22%20width%3D%22132%22%20height%3D%22132%22%20rx%3D%2226%22%20fill%3D%22%230f766e%22%2F%3E%3Ccircle%20cx%3D%2280%22%20cy%3D%2258%22%20r%3D%2225%22%20fill%3D%22%23fff%22%20opacity%3D%22.9%22%2F%3E%3Cpath%20d%3D%22M38%20133c7-25%2023-39%2042-39s35%2014%2042%2039%22%20fill%3D%22%23fff%22%20opacity%3D%22.88%22%2F%3E%3Ctext%20x%3D%2280%22%20y%3D%2288%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-size%3D%2232%22%20font-weight%3D%22700%22%20fill%3D%22%230f766e%22%3EAS%3C%2Ftext%3E%3C%2Fsvg%3E",
+      "fullName": "Aarav Sharma",
+      "fatherName": "Mahesh Sharma",
+      "gender": "Male",
+      "dob": "2002-08-14",
+      "mobile": "9876501001",
+      "email": "aarav@examdesk.local",
+      "address": "Rajendra Nagar, New Delhi",
+      "examTrack": "UPSC CSE",
+      "dateJoined": "2026-01-29",
+      "expiryDate": "2026-05-15",
+      "membershipStatus": "active",
+      "selectedShift": "shift-6",
+      "seatNumber": "A01",
+      "studyHours": 16,
+      "monthlyFees": 5200,
+      "paidAmount": 5200,
+      "pendingAmount": 0,
+      "paymentMethod": "UPI",
+      "dueDate": "2026-05-15",
+      "feeStatus": "paid",
+      "qrToken": "LIB-QR-STU-2026-0001-4cf2ac79",
+      "notes": "UPSC CSE preparation",
+      "createdAt": "2026-04-29T20:04:31.384Z",
+      "updatedAt": "2026-04-29T20:04:31.384Z"
+    },
+    {
+      "id": "STU-2026-0002",
+      "photo": "data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22160%22%20height%3D%22160%22%20viewBox%3D%220%200%20160%20160%22%3E%3Crect%20width%3D%22160%22%20height%3D%22160%22%20rx%3D%2232%22%20fill%3D%22%23f8fafc%22%2F%3E%3Crect%20x%3D%2214%22%20y%3D%2214%22%20width%3D%22132%22%20height%3D%22132%22%20rx%3D%2226%22%20fill%3D%22%232563eb%22%2F%3E%3Ccircle%20cx%3D%2280%22%20cy%3D%2258%22%20r%3D%2225%22%20fill%3D%22%23fff%22%20opacity%3D%22.9%22%2F%3E%3Cpath%20d%3D%22M38%20133c7-25%2023-39%2042-39s35%2014%2042%2039%22%20fill%3D%22%23fff%22%20opacity%3D%22.88%22%2F%3E%3Ctext%20x%3D%2280%22%20y%3D%2288%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-size%3D%2232%22%20font-weight%3D%22700%22%20fill%3D%22%232563eb%22%3EPV%3C%2Ftext%3E%3C%2Fsvg%3E",
+      "fullName": "Priya Verma",
+      "fatherName": "Suresh Verma",
+      "gender": "Female",
+      "dob": "2003-02-20",
+      "mobile": "9876501002",
+      "email": "priya@examdesk.local",
+      "address": "Mukherjee Nagar, New Delhi",
+      "examTrack": "SSC CGL",
+      "dateJoined": "2026-03-16",
+      "expiryDate": "2026-05-02",
+      "membershipStatus": "active",
+      "selectedShift": "shift-1",
+      "seatNumber": "A02",
+      "studyHours": 4,
+      "monthlyFees": 2200,
+      "paidAmount": 1600,
+      "pendingAmount": 600,
+      "paymentMethod": "UPI",
+      "dueDate": "2026-05-02",
+      "feeStatus": "pending",
+      "qrToken": "LIB-QR-STU-2026-0002-91b643e3",
+      "notes": "SSC CGL preparation",
+      "createdAt": "2026-04-29T20:04:31.384Z",
+      "updatedAt": "2026-04-29T20:04:31.384Z"
+    },
+    {
+      "id": "STU-2026-0003",
+      "photo": "data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22160%22%20height%3D%22160%22%20viewBox%3D%220%200%20160%20160%22%3E%3Crect%20width%3D%22160%22%20height%3D%22160%22%20rx%3D%2232%22%20fill%3D%22%23f8fafc%22%2F%3E%3Crect%20x%3D%2214%22%20y%3D%2214%22%20width%3D%22132%22%20height%3D%22132%22%20rx%3D%2226%22%20fill%3D%22%23dc2626%22%2F%3E%3Ccircle%20cx%3D%2280%22%20cy%3D%2258%22%20r%3D%2225%22%20fill%3D%22%23fff%22%20opacity%3D%22.9%22%2F%3E%3Cpath%20d%3D%22M38%20133c7-25%2023-39%2042-39s35%2014%2042%2039%22%20fill%3D%22%23fff%22%20opacity%3D%22.88%22%2F%3E%3Ctext%20x%3D%2280%22%20y%3D%2288%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-size%3D%2232%22%20font-weight%3D%22700%22%20fill%3D%22%23dc2626%22%3EKK%3C%2Ftext%3E%3C%2Fsvg%3E",
+      "fullName": "Kabir Khan",
+      "fatherName": "Rizwan Khan",
+      "gender": "Male",
+      "dob": "2001-11-03",
+      "mobile": "9876501003",
+      "email": "kabir@examdesk.local",
+      "address": "Kankarbagh, Patna",
+      "examTrack": "Banking",
+      "dateJoined": "2025-12-20",
+      "expiryDate": "2026-04-23",
+      "membershipStatus": "expired",
+      "selectedShift": "shift-2",
+      "seatNumber": "B04",
+      "studyHours": 4,
+      "monthlyFees": 2400,
+      "paidAmount": 0,
+      "pendingAmount": 2400,
+      "paymentMethod": "Cash",
+      "dueDate": "2026-04-23",
+      "feeStatus": "overdue",
+      "qrToken": "LIB-QR-STU-2026-0003-b9fd73af",
+      "notes": "Banking preparation",
+      "createdAt": "2026-04-29T20:04:31.384Z",
+      "updatedAt": "2026-04-29T20:04:31.384Z"
+    },
+    {
+      "id": "STU-2026-0004",
+      "photo": "data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22160%22%20height%3D%22160%22%20viewBox%3D%220%200%20160%20160%22%3E%3Crect%20width%3D%22160%22%20height%3D%22160%22%20rx%3D%2232%22%20fill%3D%22%23f8fafc%22%2F%3E%3Crect%20x%3D%2214%22%20y%3D%2214%22%20width%3D%22132%22%20height%3D%22132%22%20rx%3D%2226%22%20fill%3D%22%237c3aed%22%2F%3E%3Ccircle%20cx%3D%2280%22%20cy%3D%2258%22%20r%3D%2225%22%20fill%3D%22%23fff%22%20opacity%3D%22.9%22%2F%3E%3Cpath%20d%3D%22M38%20133c7-25%2023-39%2042-39s35%2014%2042%2039%22%20fill%3D%22%23fff%22%20opacity%3D%22.88%22%2F%3E%3Ctext%20x%3D%2280%22%20y%3D%2288%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-size%3D%2232%22%20font-weight%3D%22700%22%20fill%3D%22%237c3aed%22%3ESI%3C%2Ftext%3E%3C%2Fsvg%3E",
+      "fullName": "Sneha Iyer",
+      "fatherName": "Raman Iyer",
+      "gender": "Female",
+      "dob": "2004-04-11",
+      "mobile": "9876501004",
+      "email": "sneha@examdesk.local",
+      "address": "Anna Nagar, Chennai",
+      "examTrack": "NEET",
+      "dateJoined": "2026-02-16",
+      "expiryDate": "2026-05-23",
+      "membershipStatus": "active",
+      "selectedShift": "shift-5",
+      "seatNumber": "C02",
+      "studyHours": 8,
+      "monthlyFees": 4200,
+      "paidAmount": 4200,
+      "pendingAmount": 0,
+      "paymentMethod": "UPI",
+      "dueDate": "2026-05-23",
+      "feeStatus": "paid",
+      "qrToken": "LIB-QR-STU-2026-0004-028db256",
+      "notes": "NEET preparation",
+      "createdAt": "2026-04-29T20:04:31.384Z",
+      "updatedAt": "2026-04-29T20:04:31.384Z"
+    },
+    {
+      "id": "STU-2026-0005",
+      "photo": "data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22160%22%20height%3D%22160%22%20viewBox%3D%220%200%20160%20160%22%3E%3Crect%20width%3D%22160%22%20height%3D%22160%22%20rx%3D%2232%22%20fill%3D%22%23f8fafc%22%2F%3E%3Crect%20x%3D%2214%22%20y%3D%2214%22%20width%3D%22132%22%20height%3D%22132%22%20rx%3D%2226%22%20fill%3D%22%23f97316%22%2F%3E%3Ccircle%20cx%3D%2280%22%20cy%3D%2258%22%20r%3D%2225%22%20fill%3D%22%23fff%22%20opacity%3D%22.9%22%2F%3E%3Cpath%20d%3D%22M38%20133c7-25%2023-39%2042-39s35%2014%2042%2039%22%20fill%3D%22%23fff%22%20opacity%3D%22.88%22%2F%3E%3Ctext%20x%3D%2280%22%20y%3D%2288%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-size%3D%2232%22%20font-weight%3D%22700%22%20fill%3D%22%23f97316%22%3ERM%3C%2Ftext%3E%3C%2Fsvg%3E",
+      "fullName": "Rohan Mehta",
+      "fatherName": "Dinesh Mehta",
+      "gender": "Male",
+      "dob": "2002-05-09",
+      "mobile": "9876501005",
+      "email": "rohan@examdesk.local",
+      "address": "Vastrapur, Ahmedabad",
+      "examTrack": "CAT",
+      "dateJoined": "2026-03-29",
+      "expiryDate": "2026-05-06",
+      "membershipStatus": "active",
+      "selectedShift": "shift-4",
+      "seatNumber": "D06",
+      "studyHours": 4,
+      "monthlyFees": 2600,
+      "paidAmount": 1800,
+      "pendingAmount": 800,
+      "paymentMethod": "UPI",
+      "dueDate": "2026-05-06",
+      "feeStatus": "pending",
+      "qrToken": "LIB-QR-STU-2026-0005-7ef1c5b5",
+      "notes": "CAT preparation",
+      "createdAt": "2026-04-29T20:04:31.384Z",
+      "updatedAt": "2026-04-29T20:04:31.384Z"
+    },
+    {
+      "id": "STU-2026-0006",
+      "photo": "data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22160%22%20height%3D%22160%22%20viewBox%3D%220%200%20160%20160%22%3E%3Crect%20width%3D%22160%22%20height%3D%22160%22%20rx%3D%2232%22%20fill%3D%22%23f8fafc%22%2F%3E%3Crect%20x%3D%2214%22%20y%3D%2214%22%20width%3D%22132%22%20height%3D%22132%22%20rx%3D%2226%22%20fill%3D%22%230891b2%22%2F%3E%3Ccircle%20cx%3D%2280%22%20cy%3D%2258%22%20r%3D%2225%22%20fill%3D%22%23fff%22%20opacity%3D%22.9%22%2F%3E%3Cpath%20d%3D%22M38%20133c7-25%2023-39%2042-39s35%2014%2042%2039%22%20fill%3D%22%23fff%22%20opacity%3D%22.88%22%2F%3E%3Ctext%20x%3D%2280%22%20y%3D%2288%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-size%3D%2232%22%20font-weight%3D%22700%22%20fill%3D%22%230891b2%22%3ENP%3C%2Ftext%3E%3C%2Fsvg%3E",
+      "fullName": "Nisha Patel",
+      "fatherName": "Paresh Patel",
+      "gender": "Female",
+      "dob": "2003-09-26",
+      "mobile": "9876501006",
+      "email": "nisha@examdesk.local",
+      "address": "Civil Lines, Jaipur",
+      "examTrack": "JEE",
+      "dateJoined": "2026-03-05",
+      "expiryDate": "2026-05-18",
+      "membershipStatus": "active",
+      "selectedShift": "shift-3",
+      "seatNumber": "E04",
+      "studyHours": 4,
+      "monthlyFees": 2800,
+      "paidAmount": 2800,
+      "pendingAmount": 0,
+      "paymentMethod": "UPI",
+      "dueDate": "2026-05-18",
+      "feeStatus": "paid",
+      "qrToken": "LIB-QR-STU-2026-0006-483cc655",
+      "notes": "JEE preparation",
+      "createdAt": "2026-04-29T20:04:31.384Z",
+      "updatedAt": "2026-04-29T20:04:31.384Z"
+    },
+    {
+      "id": "STU-2026-0007",
+      "photo": "data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22160%22%20height%3D%22160%22%20viewBox%3D%220%200%20160%20160%22%3E%3Crect%20width%3D%22160%22%20height%3D%22160%22%20rx%3D%2232%22%20fill%3D%22%23f8fafc%22%2F%3E%3Crect%20x%3D%2214%22%20y%3D%2214%22%20width%3D%22132%22%20height%3D%22132%22%20rx%3D%2226%22%20fill%3D%22%23334155%22%2F%3E%3Ccircle%20cx%3D%2280%22%20cy%3D%2258%22%20r%3D%2225%22%20fill%3D%22%23fff%22%20opacity%3D%22.9%22%2F%3E%3Cpath%20d%3D%22M38%20133c7-25%2023-39%2042-39s35%2014%2042%2039%22%20fill%3D%22%23fff%22%20opacity%3D%22.88%22%2F%3E%3Ctext%20x%3D%2280%22%20y%3D%2288%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-size%3D%2232%22%20font-weight%3D%22700%22%20fill%3D%22%23334155%22%3EVS%3C%2Ftext%3E%3C%2Fsvg%3E",
+      "fullName": "Vikram Singh",
+      "fatherName": "Ajeet Singh",
+      "gender": "Male",
+      "dob": "2000-12-18",
+      "mobile": "9876501007",
+      "email": "vikram@examdesk.local",
+      "address": "Hazratganj, Lucknow",
+      "examTrack": "UPSC CSE",
+      "dateJoined": "2025-11-20",
+      "expiryDate": "2026-04-30",
+      "membershipStatus": "active",
+      "selectedShift": "shift-6",
+      "seatNumber": "F04",
+      "studyHours": 16,
+      "monthlyFees": 5200,
+      "paidAmount": 3000,
+      "pendingAmount": 2200,
+      "paymentMethod": "UPI",
+      "dueDate": "2026-04-30",
+      "feeStatus": "pending",
+      "qrToken": "LIB-QR-STU-2026-0007-60a63033",
+      "notes": "UPSC CSE preparation",
+      "createdAt": "2026-04-29T20:04:31.384Z",
+      "updatedAt": "2026-04-29T20:04:31.384Z"
+    },
+    {
+      "id": "STU-2026-0008",
+      "photo": "data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22160%22%20height%3D%22160%22%20viewBox%3D%220%200%20160%20160%22%3E%3Crect%20width%3D%22160%22%20height%3D%22160%22%20rx%3D%2232%22%20fill%3D%22%23f8fafc%22%2F%3E%3Crect%20x%3D%2214%22%20y%3D%2214%22%20width%3D%22132%22%20height%3D%22132%22%20rx%3D%2226%22%20fill%3D%22%2316a34a%22%2F%3E%3Ccircle%20cx%3D%2280%22%20cy%3D%2258%22%20r%3D%2225%22%20fill%3D%22%23fff%22%20opacity%3D%22.9%22%2F%3E%3Cpath%20d%3D%22M38%20133c7-25%2023-39%2042-39s35%2014%2042%2039%22%20fill%3D%22%23fff%22%20opacity%3D%22.88%22%2F%3E%3Ctext%20x%3D%2280%22%20y%3D%2288%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-size%3D%2232%22%20font-weight%3D%22700%22%20fill%3D%22%2316a34a%22%3EMJ%3C%2Ftext%3E%3C%2Fsvg%3E",
+      "fullName": "Meera Joshi",
+      "fatherName": "Harish Joshi",
+      "gender": "Female",
+      "dob": "2004-01-06",
+      "mobile": "9876501008",
+      "email": "meera@examdesk.local",
+      "address": "Indiranagar, Bengaluru",
+      "examTrack": "Banking",
+      "dateJoined": "2026-04-07",
+      "expiryDate": "2026-05-27",
+      "membershipStatus": "active",
+      "selectedShift": "shift-1",
+      "seatNumber": "B01",
+      "studyHours": 4,
+      "monthlyFees": 2200,
+      "paidAmount": 2200,
+      "pendingAmount": 0,
+      "paymentMethod": "UPI",
+      "dueDate": "2026-05-27",
+      "feeStatus": "paid",
+      "qrToken": "LIB-QR-STU-2026-0008-68bfc675",
+      "notes": "Banking preparation",
+      "createdAt": "2026-04-29T20:04:31.384Z",
+      "updatedAt": "2026-04-29T20:04:31.384Z"
+    },
+    {
+      "id": "STU-2026-0009",
+      "photo": "data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22160%22%20height%3D%22160%22%20viewBox%3D%220%200%20160%20160%22%3E%3Crect%20width%3D%22160%22%20height%3D%22160%22%20rx%3D%2232%22%20fill%3D%22%23f8fafc%22%2F%3E%3Crect%20x%3D%2214%22%20y%3D%2214%22%20width%3D%22132%22%20height%3D%22132%22%20rx%3D%2226%22%20fill%3D%22%230d9488%22%2F%3E%3Ccircle%20cx%3D%2280%22%20cy%3D%2258%22%20r%3D%2225%22%20fill%3D%22%23fff%22%20opacity%3D%22.9%22%2F%3E%3Cpath%20d%3D%22M38%20133c7-25%2023-39%2042-39s35%2014%2042%2039%22%20fill%3D%22%23fff%22%20opacity%3D%22.88%22%2F%3E%3Ctext%20x%3D%2280%22%20y%3D%2288%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-size%3D%2232%22%20font-weight%3D%22700%22%20fill%3D%22%230d9488%22%3EAR%3C%2Ftext%3E%3C%2Fsvg%3E",
+      "fullName": "Arjun Rao",
+      "fatherName": "Keshav Rao",
+      "gender": "Male",
+      "dob": "2002-06-30",
+      "mobile": "9876501009",
+      "email": "arjun@examdesk.local",
+      "address": "Banjara Hills, Hyderabad",
+      "examTrack": "SSC CHSL",
+      "dateJoined": "2026-04-11",
+      "expiryDate": "2026-05-11",
+      "membershipStatus": "active",
+      "selectedShift": "shift-2",
+      "seatNumber": "C08",
+      "studyHours": 4,
+      "monthlyFees": 2400,
+      "paidAmount": 2400,
+      "pendingAmount": 0,
+      "paymentMethod": "UPI",
+      "dueDate": "2026-05-11",
+      "feeStatus": "paid",
+      "qrToken": "LIB-QR-STU-2026-0009-b833d97f",
+      "notes": "SSC CHSL preparation",
+      "createdAt": "2026-04-29T20:04:31.384Z",
+      "updatedAt": "2026-04-29T20:04:31.384Z"
+    },
+    {
+      "id": "STU-2026-0010",
+      "photo": "data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22160%22%20height%3D%22160%22%20viewBox%3D%220%200%20160%20160%22%3E%3Crect%20width%3D%22160%22%20height%3D%22160%22%20rx%3D%2232%22%20fill%3D%22%23f8fafc%22%2F%3E%3Crect%20x%3D%2214%22%20y%3D%2214%22%20width%3D%22132%22%20height%3D%22132%22%20rx%3D%2226%22%20fill%3D%22%23be123c%22%2F%3E%3Ccircle%20cx%3D%2280%22%20cy%3D%2258%22%20r%3D%2225%22%20fill%3D%22%23fff%22%20opacity%3D%22.9%22%2F%3E%3Cpath%20d%3D%22M38%20133c7-25%2023-39%2042-39s35%2014%2042%2039%22%20fill%3D%22%23fff%22%20opacity%3D%22.88%22%2F%3E%3Ctext%20x%3D%2280%22%20y%3D%2288%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-size%3D%2232%22%20font-weight%3D%22700%22%20fill%3D%22%23be123c%22%3ETK%3C%2Ftext%3E%3C%2Fsvg%3E",
+      "fullName": "Tara Kapoor",
+      "fatherName": "Vijay Kapoor",
+      "gender": "Female",
+      "dob": "2001-07-21",
+      "mobile": "9876501010",
+      "email": "tara@examdesk.local",
+      "address": "Salt Lake, Kolkata",
+      "examTrack": "UPSC CSE",
+      "dateJoined": "2026-02-26",
+      "expiryDate": "2026-04-27",
+      "membershipStatus": "expired",
+      "selectedShift": "shift-5",
+      "seatNumber": "E08",
+      "studyHours": 8,
+      "monthlyFees": 4200,
+      "paidAmount": 0,
+      "pendingAmount": 4200,
+      "paymentMethod": "Cash",
+      "dueDate": "2026-04-27",
+      "feeStatus": "overdue",
+      "qrToken": "LIB-QR-STU-2026-0010-e6aced90",
+      "notes": "UPSC CSE preparation",
+      "createdAt": "2026-04-29T20:04:31.384Z",
+      "updatedAt": "2026-04-29T20:04:31.384Z"
+    }
+  ],
+  "shifts": [
+    {
+      "id": "shift-1",
+      "name": "Morning Focus",
+      "startsAt": "06:00",
+      "endsAt": "10:00",
+      "studyHours": 4,
+      "capacity": 48,
+      "color": "#14b8a6"
+    },
+    {
+      "id": "shift-2",
+      "name": "Late Morning",
+      "startsAt": "10:00",
+      "endsAt": "14:00",
+      "studyHours": 4,
+      "capacity": 48,
+      "color": "#2563eb"
+    },
+    {
+      "id": "shift-3",
+      "name": "Afternoon Deep Work",
+      "startsAt": "14:00",
+      "endsAt": "18:00",
+      "studyHours": 4,
+      "capacity": 48,
+      "color": "#7c3aed"
+    },
+    {
+      "id": "shift-4",
+      "name": "Evening Revision",
+      "startsAt": "18:00",
+      "endsAt": "22:00",
+      "studyHours": 4,
+      "capacity": 48,
+      "color": "#f97316"
+    },
+    {
+      "id": "shift-5",
+      "name": "Combined 10 AM - 6 PM",
+      "startsAt": "10:00",
+      "endsAt": "18:00",
+      "studyHours": 8,
+      "capacity": 32,
+      "color": "#0f766e"
+    },
+    {
+      "id": "shift-6",
+      "name": "Full Day",
+      "startsAt": "06:00",
+      "endsAt": "22:00",
+      "studyHours": 16,
+      "capacity": 24,
+      "color": "#111827"
+    }
+  ],
+  "seats": [
+    {
+      "number": "A01",
+      "zone": "Quiet Hall",
+      "baseStatus": "available",
+      "notes": "",
+      "history": []
+    },
+    {
+      "number": "A02",
+      "zone": "Quiet Hall",
+      "baseStatus": "available",
+      "notes": "",
+      "history": []
+    },
+    {
+      "number": "A03",
+      "zone": "Quiet Hall",
+      "baseStatus": "available",
+      "notes": "",
+      "history": []
+    },
+    {
+      "number": "A04",
+      "zone": "Quiet Hall",
+      "baseStatus": "available",
+      "notes": "",
+      "history": []
+    },
+    {
+      "number": "A05",
+      "zone": "Quiet Hall",
+      "baseStatus": "available",
+      "notes": "",
+      "history": []
+    },
+    {
+      "number": "A06",
+      "zone": "Quiet Hall",
+      "baseStatus": "available",
+      "notes": "",
+      "history": []
+    },
+    {
+      "number": "A07",
+      "zone": "Quiet Hall",
+      "baseStatus": "available",
+      "notes": "",
+      "history": []
+    },
+    {
+      "number": "A08",
+      "zone": "Quiet Hall",
+      "baseStatus": "available",
+      "notes": "",
+      "history": []
+    },
+    {
+      "number": "A09",
+      "zone": "Quiet Hall",
+      "baseStatus": "available",
+      "notes": "",
+      "history": []
+    },
+    {
+      "number": "A10",
+      "zone": "Quiet Hall",
+      "baseStatus": "reserved",
+      "notes": "Owner reserved",
+      "history": []
+    },
+    {
+      "number": "B01",
+      "zone": "Quiet Hall",
+      "baseStatus": "available",
+      "notes": "",
+      "history": []
+    },
+    {
+      "number": "B02",
+      "zone": "Quiet Hall",
+      "baseStatus": "available",
+      "notes": "",
+      "history": []
+    },
+    {
+      "number": "B03",
+      "zone": "Quiet Hall",
+      "baseStatus": "available",
+      "notes": "",
+      "history": []
+    },
+    {
+      "number": "B04",
+      "zone": "Quiet Hall",
+      "baseStatus": "available",
+      "notes": "",
+      "history": []
+    },
+    {
+      "number": "B05",
+      "zone": "Quiet Hall",
+      "baseStatus": "available",
+      "notes": "",
+      "history": []
+    },
+    {
+      "number": "B06",
+      "zone": "Quiet Hall",
+      "baseStatus": "available",
+      "notes": "",
+      "history": []
+    },
+    {
+      "number": "B07",
+      "zone": "Quiet Hall",
+      "baseStatus": "available",
+      "notes": "",
+      "history": []
+    },
+    {
+      "number": "B08",
+      "zone": "Quiet Hall",
+      "baseStatus": "available",
+      "notes": "",
+      "history": []
+    },
+    {
+      "number": "B09",
+      "zone": "Quiet Hall",
+      "baseStatus": "available",
+      "notes": "",
+      "history": []
+    },
+    {
+      "number": "B10",
+      "zone": "Quiet Hall",
+      "baseStatus": "available",
+      "notes": "",
+      "history": []
+    },
+    {
+      "number": "C01",
+      "zone": "Window Wing",
+      "baseStatus": "available",
+      "notes": "",
+      "history": []
+    },
+    {
+      "number": "C02",
+      "zone": "Window Wing",
+      "baseStatus": "available",
+      "notes": "",
+      "history": []
+    },
+    {
+      "number": "C03",
+      "zone": "Window Wing",
+      "baseStatus": "available",
+      "notes": "",
+      "history": []
+    },
+    {
+      "number": "C04",
+      "zone": "Window Wing",
+      "baseStatus": "available",
+      "notes": "",
+      "history": []
+    },
+    {
+      "number": "C05",
+      "zone": "Window Wing",
+      "baseStatus": "reserved",
+      "notes": "Owner reserved",
+      "history": []
+    },
+    {
+      "number": "C06",
+      "zone": "Window Wing",
+      "baseStatus": "available",
+      "notes": "",
+      "history": []
+    },
+    {
+      "number": "C07",
+      "zone": "Window Wing",
+      "baseStatus": "available",
+      "notes": "",
+      "history": []
+    },
+    {
+      "number": "C08",
+      "zone": "Window Wing",
+      "baseStatus": "available",
+      "notes": "",
+      "history": []
+    },
+    {
+      "number": "C09",
+      "zone": "Window Wing",
+      "baseStatus": "available",
+      "notes": "",
+      "history": []
+    },
+    {
+      "number": "C10",
+      "zone": "Window Wing",
+      "baseStatus": "available",
+      "notes": "",
+      "history": []
+    },
+    {
+      "number": "D01",
+      "zone": "Window Wing",
+      "baseStatus": "available",
+      "notes": "",
+      "history": []
+    },
+    {
+      "number": "D02",
+      "zone": "Window Wing",
+      "baseStatus": "available",
+      "notes": "",
+      "history": []
+    },
+    {
+      "number": "D03",
+      "zone": "Window Wing",
+      "baseStatus": "available",
+      "notes": "",
+      "history": []
+    },
+    {
+      "number": "D04",
+      "zone": "Window Wing",
+      "baseStatus": "available",
+      "notes": "",
+      "history": []
+    },
+    {
+      "number": "D05",
+      "zone": "Window Wing",
+      "baseStatus": "available",
+      "notes": "",
+      "history": []
+    },
+    {
+      "number": "D06",
+      "zone": "Window Wing",
+      "baseStatus": "available",
+      "notes": "",
+      "history": []
+    },
+    {
+      "number": "D07",
+      "zone": "Window Wing",
+      "baseStatus": "available",
+      "notes": "",
+      "history": []
+    },
+    {
+      "number": "D08",
+      "zone": "Window Wing",
+      "baseStatus": "available",
+      "notes": "",
+      "history": []
+    },
+    {
+      "number": "D09",
+      "zone": "Window Wing",
+      "baseStatus": "available",
+      "notes": "",
+      "history": []
+    },
+    {
+      "number": "D10",
+      "zone": "Window Wing",
+      "baseStatus": "available",
+      "notes": "",
+      "history": []
+    },
+    {
+      "number": "E01",
+      "zone": "Premium Cabin",
+      "baseStatus": "available",
+      "notes": "",
+      "history": []
+    },
+    {
+      "number": "E02",
+      "zone": "Premium Cabin",
+      "baseStatus": "available",
+      "notes": "",
+      "history": []
+    },
+    {
+      "number": "E03",
+      "zone": "Premium Cabin",
+      "baseStatus": "available",
+      "notes": "",
+      "history": []
+    },
+    {
+      "number": "E04",
+      "zone": "Premium Cabin",
+      "baseStatus": "available",
+      "notes": "",
+      "history": []
+    },
+    {
+      "number": "E05",
+      "zone": "Premium Cabin",
+      "baseStatus": "available",
+      "notes": "",
+      "history": []
+    },
+    {
+      "number": "E06",
+      "zone": "Premium Cabin",
+      "baseStatus": "available",
+      "notes": "",
+      "history": []
+    },
+    {
+      "number": "E07",
+      "zone": "Premium Cabin",
+      "baseStatus": "available",
+      "notes": "",
+      "history": []
+    },
+    {
+      "number": "E08",
+      "zone": "Premium Cabin",
+      "baseStatus": "available",
+      "notes": "",
+      "history": []
+    },
+    {
+      "number": "E09",
+      "zone": "Premium Cabin",
+      "baseStatus": "available",
+      "notes": "",
+      "history": []
+    },
+    {
+      "number": "E10",
+      "zone": "Premium Cabin",
+      "baseStatus": "available",
+      "notes": "",
+      "history": []
+    },
+    {
+      "number": "F01",
+      "zone": "Premium Cabin",
+      "baseStatus": "available",
+      "notes": "",
+      "history": []
+    },
+    {
+      "number": "F02",
+      "zone": "Premium Cabin",
+      "baseStatus": "reserved",
+      "notes": "Owner reserved",
+      "history": []
+    },
+    {
+      "number": "F03",
+      "zone": "Premium Cabin",
+      "baseStatus": "available",
+      "notes": "",
+      "history": []
+    },
+    {
+      "number": "F04",
+      "zone": "Premium Cabin",
+      "baseStatus": "available",
+      "notes": "",
+      "history": []
+    },
+    {
+      "number": "F05",
+      "zone": "Premium Cabin",
+      "baseStatus": "available",
+      "notes": "",
+      "history": []
+    },
+    {
+      "number": "F06",
+      "zone": "Premium Cabin",
+      "baseStatus": "available",
+      "notes": "",
+      "history": []
+    },
+    {
+      "number": "F07",
+      "zone": "Premium Cabin",
+      "baseStatus": "available",
+      "notes": "",
+      "history": []
+    },
+    {
+      "number": "F08",
+      "zone": "Premium Cabin",
+      "baseStatus": "available",
+      "notes": "",
+      "history": []
+    },
+    {
+      "number": "F09",
+      "zone": "Premium Cabin",
+      "baseStatus": "available",
+      "notes": "",
+      "history": []
+    },
+    {
+      "number": "F10",
+      "zone": "Premium Cabin",
+      "baseStatus": "available",
+      "notes": "",
+      "history": []
+    }
+  ],
+  "attendance": [
+    {
+      "id": "att-STU-2026-0001-2026-04-28",
+      "studentId": "STU-2026-0001",
+      "date": "2026-04-28",
+      "checkIn": "2026-04-29T04:38:00.000Z",
+      "checkOut": "2026-04-29T12:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0001-2026-04-27",
+      "studentId": "STU-2026-0001",
+      "date": "2026-04-27",
+      "checkIn": "2026-04-28T04:38:00.000Z",
+      "checkOut": "2026-04-28T12:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0001-2026-04-26",
+      "studentId": "STU-2026-0001",
+      "date": "2026-04-26",
+      "checkIn": "2026-04-27T04:38:00.000Z",
+      "checkOut": "2026-04-27T12:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0001-2026-04-25",
+      "studentId": "STU-2026-0001",
+      "date": "2026-04-25",
+      "checkIn": "2026-04-26T04:38:00.000Z",
+      "checkOut": "2026-04-26T12:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0001-2026-04-23",
+      "studentId": "STU-2026-0001",
+      "date": "2026-04-23",
+      "checkIn": "2026-04-24T04:38:00.000Z",
+      "checkOut": "2026-04-24T12:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0001-2026-04-22",
+      "studentId": "STU-2026-0001",
+      "date": "2026-04-22",
+      "checkIn": "2026-04-23T04:38:00.000Z",
+      "checkOut": "2026-04-23T12:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0001-2026-04-21",
+      "studentId": "STU-2026-0001",
+      "date": "2026-04-21",
+      "checkIn": "2026-04-22T04:38:00.000Z",
+      "checkOut": "2026-04-22T12:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0001-2026-04-20",
+      "studentId": "STU-2026-0001",
+      "date": "2026-04-20",
+      "checkIn": "2026-04-21T04:38:00.000Z",
+      "checkOut": "2026-04-21T12:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0001-2026-04-18",
+      "studentId": "STU-2026-0001",
+      "date": "2026-04-18",
+      "checkIn": "2026-04-19T04:38:00.000Z",
+      "checkOut": "2026-04-19T12:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0001-2026-04-17",
+      "studentId": "STU-2026-0001",
+      "date": "2026-04-17",
+      "checkIn": "2026-04-18T04:38:00.000Z",
+      "checkOut": "2026-04-18T12:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0001-2026-04-16",
+      "studentId": "STU-2026-0001",
+      "date": "2026-04-16",
+      "checkIn": "2026-04-17T04:38:00.000Z",
+      "checkOut": "2026-04-17T12:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0002-2026-04-29",
+      "studentId": "STU-2026-0002",
+      "date": "2026-04-29",
+      "checkIn": "2026-04-30T00:39:00.000Z",
+      "checkOut": "2026-04-30T04:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0002-2026-04-28",
+      "studentId": "STU-2026-0002",
+      "date": "2026-04-28",
+      "checkIn": "2026-04-29T00:39:00.000Z",
+      "checkOut": "2026-04-29T04:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0002-2026-04-27",
+      "studentId": "STU-2026-0002",
+      "date": "2026-04-27",
+      "checkIn": "2026-04-28T00:39:00.000Z",
+      "checkOut": "2026-04-28T04:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0002-2026-04-26",
+      "studentId": "STU-2026-0002",
+      "date": "2026-04-26",
+      "checkIn": "2026-04-27T00:39:00.000Z",
+      "checkOut": "2026-04-27T04:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0002-2026-04-24",
+      "studentId": "STU-2026-0002",
+      "date": "2026-04-24",
+      "checkIn": "2026-04-25T00:39:00.000Z",
+      "checkOut": "2026-04-25T04:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0002-2026-04-23",
+      "studentId": "STU-2026-0002",
+      "date": "2026-04-23",
+      "checkIn": "2026-04-24T00:39:00.000Z",
+      "checkOut": "2026-04-24T04:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0002-2026-04-22",
+      "studentId": "STU-2026-0002",
+      "date": "2026-04-22",
+      "checkIn": "2026-04-23T00:39:00.000Z",
+      "checkOut": "2026-04-23T04:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0002-2026-04-21",
+      "studentId": "STU-2026-0002",
+      "date": "2026-04-21",
+      "checkIn": "2026-04-22T00:39:00.000Z",
+      "checkOut": "2026-04-22T04:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0002-2026-04-19",
+      "studentId": "STU-2026-0002",
+      "date": "2026-04-19",
+      "checkIn": "2026-04-20T00:39:00.000Z",
+      "checkOut": "2026-04-20T04:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0002-2026-04-18",
+      "studentId": "STU-2026-0002",
+      "date": "2026-04-18",
+      "checkIn": "2026-04-19T00:39:00.000Z",
+      "checkOut": "2026-04-19T04:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0002-2026-04-17",
+      "studentId": "STU-2026-0002",
+      "date": "2026-04-17",
+      "checkIn": "2026-04-18T00:39:00.000Z",
+      "checkOut": "2026-04-18T04:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0002-2026-04-16",
+      "studentId": "STU-2026-0002",
+      "date": "2026-04-16",
+      "checkIn": "2026-04-17T00:39:00.000Z",
+      "checkOut": "2026-04-17T04:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0003-2026-04-29",
+      "studentId": "STU-2026-0003",
+      "date": "2026-04-29",
+      "checkIn": "2026-04-30T04:40:00.000Z",
+      "checkOut": "2026-04-30T08:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0003-2026-04-28",
+      "studentId": "STU-2026-0003",
+      "date": "2026-04-28",
+      "checkIn": "2026-04-29T04:40:00.000Z",
+      "checkOut": "2026-04-29T08:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0003-2026-04-27",
+      "studentId": "STU-2026-0003",
+      "date": "2026-04-27",
+      "checkIn": "2026-04-28T04:40:00.000Z",
+      "checkOut": "2026-04-28T08:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0003-2026-04-25",
+      "studentId": "STU-2026-0003",
+      "date": "2026-04-25",
+      "checkIn": "2026-04-26T04:40:00.000Z",
+      "checkOut": "2026-04-26T08:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0003-2026-04-24",
+      "studentId": "STU-2026-0003",
+      "date": "2026-04-24",
+      "checkIn": "2026-04-25T04:40:00.000Z",
+      "checkOut": "2026-04-25T08:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0003-2026-04-23",
+      "studentId": "STU-2026-0003",
+      "date": "2026-04-23",
+      "checkIn": "2026-04-24T04:40:00.000Z",
+      "checkOut": "2026-04-24T08:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0003-2026-04-22",
+      "studentId": "STU-2026-0003",
+      "date": "2026-04-22",
+      "checkIn": "2026-04-23T04:40:00.000Z",
+      "checkOut": "2026-04-23T08:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0003-2026-04-20",
+      "studentId": "STU-2026-0003",
+      "date": "2026-04-20",
+      "checkIn": "2026-04-21T04:40:00.000Z",
+      "checkOut": "2026-04-21T08:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0003-2026-04-19",
+      "studentId": "STU-2026-0003",
+      "date": "2026-04-19",
+      "checkIn": "2026-04-20T04:40:00.000Z",
+      "checkOut": "2026-04-20T08:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0003-2026-04-18",
+      "studentId": "STU-2026-0003",
+      "date": "2026-04-18",
+      "checkIn": "2026-04-19T04:40:00.000Z",
+      "checkOut": "2026-04-19T08:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0003-2026-04-17",
+      "studentId": "STU-2026-0003",
+      "date": "2026-04-17",
+      "checkIn": "2026-04-18T04:40:00.000Z",
+      "checkOut": "2026-04-18T08:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0004-2026-04-29",
+      "studentId": "STU-2026-0004",
+      "date": "2026-04-29",
+      "checkIn": "2026-04-30T04:41:00.000Z",
+      "checkOut": "2026-04-30T12:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0004-2026-04-28",
+      "studentId": "STU-2026-0004",
+      "date": "2026-04-28",
+      "checkIn": "2026-04-29T04:41:00.000Z",
+      "checkOut": "2026-04-29T12:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0004-2026-04-26",
+      "studentId": "STU-2026-0004",
+      "date": "2026-04-26",
+      "checkIn": "2026-04-27T04:41:00.000Z",
+      "checkOut": "2026-04-27T12:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0004-2026-04-25",
+      "studentId": "STU-2026-0004",
+      "date": "2026-04-25",
+      "checkIn": "2026-04-26T04:41:00.000Z",
+      "checkOut": "2026-04-26T12:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0004-2026-04-24",
+      "studentId": "STU-2026-0004",
+      "date": "2026-04-24",
+      "checkIn": "2026-04-25T04:41:00.000Z",
+      "checkOut": "2026-04-25T12:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0004-2026-04-23",
+      "studentId": "STU-2026-0004",
+      "date": "2026-04-23",
+      "checkIn": "2026-04-24T04:41:00.000Z",
+      "checkOut": "2026-04-24T12:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0004-2026-04-21",
+      "studentId": "STU-2026-0004",
+      "date": "2026-04-21",
+      "checkIn": "2026-04-22T04:41:00.000Z",
+      "checkOut": "2026-04-22T12:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0004-2026-04-20",
+      "studentId": "STU-2026-0004",
+      "date": "2026-04-20",
+      "checkIn": "2026-04-21T04:41:00.000Z",
+      "checkOut": "2026-04-21T12:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0004-2026-04-19",
+      "studentId": "STU-2026-0004",
+      "date": "2026-04-19",
+      "checkIn": "2026-04-20T04:41:00.000Z",
+      "checkOut": "2026-04-20T12:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0004-2026-04-18",
+      "studentId": "STU-2026-0004",
+      "date": "2026-04-18",
+      "checkIn": "2026-04-19T04:41:00.000Z",
+      "checkOut": "2026-04-19T12:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0004-2026-04-16",
+      "studentId": "STU-2026-0004",
+      "date": "2026-04-16",
+      "checkIn": "2026-04-17T04:41:00.000Z",
+      "checkOut": "2026-04-17T12:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0005-2026-04-29",
+      "studentId": "STU-2026-0005",
+      "date": "2026-04-29",
+      "checkIn": "2026-04-30T12:42:00.000Z",
+      "checkOut": "2026-04-30T16:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0005-2026-04-27",
+      "studentId": "STU-2026-0005",
+      "date": "2026-04-27",
+      "checkIn": "2026-04-28T12:42:00.000Z",
+      "checkOut": "2026-04-28T16:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0005-2026-04-26",
+      "studentId": "STU-2026-0005",
+      "date": "2026-04-26",
+      "checkIn": "2026-04-27T12:42:00.000Z",
+      "checkOut": "2026-04-27T16:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0005-2026-04-25",
+      "studentId": "STU-2026-0005",
+      "date": "2026-04-25",
+      "checkIn": "2026-04-26T12:42:00.000Z",
+      "checkOut": "2026-04-26T16:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0005-2026-04-24",
+      "studentId": "STU-2026-0005",
+      "date": "2026-04-24",
+      "checkIn": "2026-04-25T12:42:00.000Z",
+      "checkOut": "2026-04-25T16:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0005-2026-04-22",
+      "studentId": "STU-2026-0005",
+      "date": "2026-04-22",
+      "checkIn": "2026-04-23T12:42:00.000Z",
+      "checkOut": "2026-04-23T16:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0005-2026-04-21",
+      "studentId": "STU-2026-0005",
+      "date": "2026-04-21",
+      "checkIn": "2026-04-22T12:42:00.000Z",
+      "checkOut": "2026-04-22T16:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0005-2026-04-20",
+      "studentId": "STU-2026-0005",
+      "date": "2026-04-20",
+      "checkIn": "2026-04-21T12:42:00.000Z",
+      "checkOut": "2026-04-21T16:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0005-2026-04-19",
+      "studentId": "STU-2026-0005",
+      "date": "2026-04-19",
+      "checkIn": "2026-04-20T12:42:00.000Z",
+      "checkOut": "2026-04-20T16:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0005-2026-04-17",
+      "studentId": "STU-2026-0005",
+      "date": "2026-04-17",
+      "checkIn": "2026-04-18T12:42:00.000Z",
+      "checkOut": "2026-04-18T16:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0005-2026-04-16",
+      "studentId": "STU-2026-0005",
+      "date": "2026-04-16",
+      "checkIn": "2026-04-17T12:42:00.000Z",
+      "checkOut": "2026-04-17T16:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0006-2026-04-28",
+      "studentId": "STU-2026-0006",
+      "date": "2026-04-28",
+      "checkIn": "2026-04-29T04:43:00.000Z",
+      "checkOut": "2026-04-29T08:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0006-2026-04-27",
+      "studentId": "STU-2026-0006",
+      "date": "2026-04-27",
+      "checkIn": "2026-04-28T04:43:00.000Z",
+      "checkOut": "2026-04-28T08:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0006-2026-04-26",
+      "studentId": "STU-2026-0006",
+      "date": "2026-04-26",
+      "checkIn": "2026-04-27T04:43:00.000Z",
+      "checkOut": "2026-04-27T08:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0006-2026-04-25",
+      "studentId": "STU-2026-0006",
+      "date": "2026-04-25",
+      "checkIn": "2026-04-26T04:43:00.000Z",
+      "checkOut": "2026-04-26T08:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0006-2026-04-23",
+      "studentId": "STU-2026-0006",
+      "date": "2026-04-23",
+      "checkIn": "2026-04-24T04:43:00.000Z",
+      "checkOut": "2026-04-24T08:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0006-2026-04-22",
+      "studentId": "STU-2026-0006",
+      "date": "2026-04-22",
+      "checkIn": "2026-04-23T04:43:00.000Z",
+      "checkOut": "2026-04-23T08:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0006-2026-04-21",
+      "studentId": "STU-2026-0006",
+      "date": "2026-04-21",
+      "checkIn": "2026-04-22T04:43:00.000Z",
+      "checkOut": "2026-04-22T08:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0006-2026-04-20",
+      "studentId": "STU-2026-0006",
+      "date": "2026-04-20",
+      "checkIn": "2026-04-21T04:43:00.000Z",
+      "checkOut": "2026-04-21T08:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0006-2026-04-18",
+      "studentId": "STU-2026-0006",
+      "date": "2026-04-18",
+      "checkIn": "2026-04-19T04:43:00.000Z",
+      "checkOut": "2026-04-19T08:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0006-2026-04-17",
+      "studentId": "STU-2026-0006",
+      "date": "2026-04-17",
+      "checkIn": "2026-04-18T04:43:00.000Z",
+      "checkOut": "2026-04-18T08:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0006-2026-04-16",
+      "studentId": "STU-2026-0006",
+      "date": "2026-04-16",
+      "checkIn": "2026-04-17T04:43:00.000Z",
+      "checkOut": "2026-04-17T08:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0007-2026-04-29",
+      "studentId": "STU-2026-0007",
+      "date": "2026-04-29",
+      "checkIn": "2026-04-30T04:44:00.000Z",
+      "checkOut": "2026-04-30T12:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0007-2026-04-28",
+      "studentId": "STU-2026-0007",
+      "date": "2026-04-28",
+      "checkIn": "2026-04-29T04:44:00.000Z",
+      "checkOut": "2026-04-29T12:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0007-2026-04-27",
+      "studentId": "STU-2026-0007",
+      "date": "2026-04-27",
+      "checkIn": "2026-04-28T04:44:00.000Z",
+      "checkOut": "2026-04-28T12:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0007-2026-04-26",
+      "studentId": "STU-2026-0007",
+      "date": "2026-04-26",
+      "checkIn": "2026-04-27T04:44:00.000Z",
+      "checkOut": "2026-04-27T12:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0007-2026-04-24",
+      "studentId": "STU-2026-0007",
+      "date": "2026-04-24",
+      "checkIn": "2026-04-25T04:44:00.000Z",
+      "checkOut": "2026-04-25T12:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0007-2026-04-23",
+      "studentId": "STU-2026-0007",
+      "date": "2026-04-23",
+      "checkIn": "2026-04-24T04:44:00.000Z",
+      "checkOut": "2026-04-24T12:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0007-2026-04-22",
+      "studentId": "STU-2026-0007",
+      "date": "2026-04-22",
+      "checkIn": "2026-04-23T04:44:00.000Z",
+      "checkOut": "2026-04-23T12:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0007-2026-04-21",
+      "studentId": "STU-2026-0007",
+      "date": "2026-04-21",
+      "checkIn": "2026-04-22T04:44:00.000Z",
+      "checkOut": "2026-04-22T12:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0007-2026-04-19",
+      "studentId": "STU-2026-0007",
+      "date": "2026-04-19",
+      "checkIn": "2026-04-20T04:44:00.000Z",
+      "checkOut": "2026-04-20T12:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0007-2026-04-18",
+      "studentId": "STU-2026-0007",
+      "date": "2026-04-18",
+      "checkIn": "2026-04-19T04:44:00.000Z",
+      "checkOut": "2026-04-19T12:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0007-2026-04-17",
+      "studentId": "STU-2026-0007",
+      "date": "2026-04-17",
+      "checkIn": "2026-04-18T04:44:00.000Z",
+      "checkOut": "2026-04-18T12:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0007-2026-04-16",
+      "studentId": "STU-2026-0007",
+      "date": "2026-04-16",
+      "checkIn": "2026-04-17T04:44:00.000Z",
+      "checkOut": "2026-04-17T12:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0008-2026-04-29",
+      "studentId": "STU-2026-0008",
+      "date": "2026-04-29",
+      "checkIn": "2026-04-30T00:45:00.000Z",
+      "checkOut": "2026-04-30T04:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0008-2026-04-28",
+      "studentId": "STU-2026-0008",
+      "date": "2026-04-28",
+      "checkIn": "2026-04-29T00:45:00.000Z",
+      "checkOut": "2026-04-29T04:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0008-2026-04-27",
+      "studentId": "STU-2026-0008",
+      "date": "2026-04-27",
+      "checkIn": "2026-04-28T00:45:00.000Z",
+      "checkOut": "2026-04-28T04:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0008-2026-04-25",
+      "studentId": "STU-2026-0008",
+      "date": "2026-04-25",
+      "checkIn": "2026-04-26T00:45:00.000Z",
+      "checkOut": "2026-04-26T04:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0008-2026-04-24",
+      "studentId": "STU-2026-0008",
+      "date": "2026-04-24",
+      "checkIn": "2026-04-25T00:45:00.000Z",
+      "checkOut": "2026-04-25T04:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0008-2026-04-23",
+      "studentId": "STU-2026-0008",
+      "date": "2026-04-23",
+      "checkIn": "2026-04-24T00:45:00.000Z",
+      "checkOut": "2026-04-24T04:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0008-2026-04-22",
+      "studentId": "STU-2026-0008",
+      "date": "2026-04-22",
+      "checkIn": "2026-04-23T00:45:00.000Z",
+      "checkOut": "2026-04-23T04:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0008-2026-04-20",
+      "studentId": "STU-2026-0008",
+      "date": "2026-04-20",
+      "checkIn": "2026-04-21T00:45:00.000Z",
+      "checkOut": "2026-04-21T04:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0008-2026-04-19",
+      "studentId": "STU-2026-0008",
+      "date": "2026-04-19",
+      "checkIn": "2026-04-20T00:45:00.000Z",
+      "checkOut": "2026-04-20T04:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0008-2026-04-18",
+      "studentId": "STU-2026-0008",
+      "date": "2026-04-18",
+      "checkIn": "2026-04-19T00:45:00.000Z",
+      "checkOut": "2026-04-19T04:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0008-2026-04-17",
+      "studentId": "STU-2026-0008",
+      "date": "2026-04-17",
+      "checkIn": "2026-04-18T00:45:00.000Z",
+      "checkOut": "2026-04-18T04:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0009-2026-04-29",
+      "studentId": "STU-2026-0009",
+      "date": "2026-04-29",
+      "checkIn": "2026-04-30T04:46:00.000Z",
+      "checkOut": "2026-04-30T08:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0009-2026-04-28",
+      "studentId": "STU-2026-0009",
+      "date": "2026-04-28",
+      "checkIn": "2026-04-29T04:46:00.000Z",
+      "checkOut": "2026-04-29T08:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0009-2026-04-26",
+      "studentId": "STU-2026-0009",
+      "date": "2026-04-26",
+      "checkIn": "2026-04-27T04:46:00.000Z",
+      "checkOut": "2026-04-27T08:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0009-2026-04-25",
+      "studentId": "STU-2026-0009",
+      "date": "2026-04-25",
+      "checkIn": "2026-04-26T04:46:00.000Z",
+      "checkOut": "2026-04-26T08:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0009-2026-04-24",
+      "studentId": "STU-2026-0009",
+      "date": "2026-04-24",
+      "checkIn": "2026-04-25T04:46:00.000Z",
+      "checkOut": "2026-04-25T08:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0009-2026-04-23",
+      "studentId": "STU-2026-0009",
+      "date": "2026-04-23",
+      "checkIn": "2026-04-24T04:46:00.000Z",
+      "checkOut": "2026-04-24T08:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0009-2026-04-21",
+      "studentId": "STU-2026-0009",
+      "date": "2026-04-21",
+      "checkIn": "2026-04-22T04:46:00.000Z",
+      "checkOut": "2026-04-22T08:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0009-2026-04-20",
+      "studentId": "STU-2026-0009",
+      "date": "2026-04-20",
+      "checkIn": "2026-04-21T04:46:00.000Z",
+      "checkOut": "2026-04-21T08:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0009-2026-04-19",
+      "studentId": "STU-2026-0009",
+      "date": "2026-04-19",
+      "checkIn": "2026-04-20T04:46:00.000Z",
+      "checkOut": "2026-04-20T08:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0009-2026-04-18",
+      "studentId": "STU-2026-0009",
+      "date": "2026-04-18",
+      "checkIn": "2026-04-19T04:46:00.000Z",
+      "checkOut": "2026-04-19T08:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0009-2026-04-16",
+      "studentId": "STU-2026-0009",
+      "date": "2026-04-16",
+      "checkIn": "2026-04-17T04:46:00.000Z",
+      "checkOut": "2026-04-17T08:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0010-2026-04-29",
+      "studentId": "STU-2026-0010",
+      "date": "2026-04-29",
+      "checkIn": "2026-04-30T04:38:00.000Z",
+      "checkOut": "2026-04-30T12:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0010-2026-04-27",
+      "studentId": "STU-2026-0010",
+      "date": "2026-04-27",
+      "checkIn": "2026-04-28T04:38:00.000Z",
+      "checkOut": "2026-04-28T12:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0010-2026-04-26",
+      "studentId": "STU-2026-0010",
+      "date": "2026-04-26",
+      "checkIn": "2026-04-27T04:38:00.000Z",
+      "checkOut": "2026-04-27T12:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0010-2026-04-25",
+      "studentId": "STU-2026-0010",
+      "date": "2026-04-25",
+      "checkIn": "2026-04-26T04:38:00.000Z",
+      "checkOut": "2026-04-26T12:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0010-2026-04-24",
+      "studentId": "STU-2026-0010",
+      "date": "2026-04-24",
+      "checkIn": "2026-04-25T04:38:00.000Z",
+      "checkOut": "2026-04-25T12:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0010-2026-04-22",
+      "studentId": "STU-2026-0010",
+      "date": "2026-04-22",
+      "checkIn": "2026-04-23T04:38:00.000Z",
+      "checkOut": "2026-04-23T12:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0010-2026-04-21",
+      "studentId": "STU-2026-0010",
+      "date": "2026-04-21",
+      "checkIn": "2026-04-22T04:38:00.000Z",
+      "checkOut": "2026-04-22T12:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0010-2026-04-20",
+      "studentId": "STU-2026-0010",
+      "date": "2026-04-20",
+      "checkIn": "2026-04-21T04:38:00.000Z",
+      "checkOut": "2026-04-21T12:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0010-2026-04-19",
+      "studentId": "STU-2026-0010",
+      "date": "2026-04-19",
+      "checkIn": "2026-04-20T04:38:00.000Z",
+      "checkOut": "2026-04-20T12:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0010-2026-04-17",
+      "studentId": "STU-2026-0010",
+      "date": "2026-04-17",
+      "checkIn": "2026-04-18T04:38:00.000Z",
+      "checkOut": "2026-04-18T12:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0010-2026-04-16",
+      "studentId": "STU-2026-0010",
+      "date": "2026-04-16",
+      "checkIn": "2026-04-17T04:38:00.000Z",
+      "checkOut": "2026-04-17T12:30:00.000Z",
+      "source": "qr",
+      "status": "present"
+    }
+  ],
+  "payments": [
+    {
+      "id": "pay-1",
+      "receiptNumber": "RCP-2026-211117",
+      "studentId": "STU-2026-0001",
+      "amount": 5200,
+      "method": "UPI",
+      "month": "April 2026",
+      "paidAt": "2026-04-27",
+      "collectedBy": "usr-admin",
+      "status": "success",
+      "notes": "Monthly library subscription"
+    },
+    {
+      "id": "pay-2",
+      "receiptNumber": "RCP-2026-416749",
+      "studentId": "STU-2026-0002",
+      "amount": 1600,
+      "method": "UPI",
+      "month": "April 2026",
+      "paidAt": "2026-04-19",
+      "collectedBy": "usr-admin",
+      "status": "success",
+      "notes": "Monthly library subscription"
+    },
+    {
+      "id": "pay-3",
+      "receiptNumber": "RCP-2026-867778",
+      "studentId": "STU-2026-0004",
+      "amount": 4200,
+      "method": "UPI",
+      "month": "April 2026",
+      "paidAt": "2026-04-19",
+      "collectedBy": "usr-admin",
+      "status": "success",
+      "notes": "Monthly library subscription"
+    },
+    {
+      "id": "pay-4",
+      "receiptNumber": "RCP-2026-766710",
+      "studentId": "STU-2026-0005",
+      "amount": 1800,
+      "method": "UPI",
+      "month": "April 2026",
+      "paidAt": "2026-04-27",
+      "collectedBy": "usr-admin",
+      "status": "success",
+      "notes": "Monthly library subscription"
+    },
+    {
+      "id": "pay-5",
+      "receiptNumber": "RCP-2026-451295",
+      "studentId": "STU-2026-0006",
+      "amount": 2800,
+      "method": "UPI",
+      "month": "April 2026",
+      "paidAt": "2026-04-19",
+      "collectedBy": "usr-admin",
+      "status": "success",
+      "notes": "Monthly library subscription"
+    },
+    {
+      "id": "pay-6",
+      "receiptNumber": "RCP-2026-844902",
+      "studentId": "STU-2026-0007",
+      "amount": 3000,
+      "method": "UPI",
+      "month": "April 2026",
+      "paidAt": "2026-04-19",
+      "collectedBy": "usr-admin",
+      "status": "success",
+      "notes": "Monthly library subscription"
+    },
+    {
+      "id": "pay-7",
+      "receiptNumber": "RCP-2026-420449",
+      "studentId": "STU-2026-0008",
+      "amount": 2200,
+      "method": "UPI",
+      "month": "April 2026",
+      "paidAt": "2026-04-27",
+      "collectedBy": "usr-admin",
+      "status": "success",
+      "notes": "Monthly library subscription"
+    },
+    {
+      "id": "pay-8",
+      "receiptNumber": "RCP-2026-918856",
+      "studentId": "STU-2026-0009",
+      "amount": 2400,
+      "method": "UPI",
+      "month": "April 2026",
+      "paidAt": "2026-04-19",
+      "collectedBy": "usr-admin",
+      "status": "success",
+      "notes": "Monthly library subscription"
+    }
+  ],
+  "notifications": [
+    {
+      "id": "note-1",
+      "type": "fee_due",
+      "channel": "WhatsApp",
+      "title": "Fee reminder prepared",
+      "body": "Pending fee reminders are ready for students due this week.",
+      "status": "queued",
+      "createdAt": "2026-04-29T20:04:31.384Z"
+    }
+  ],
+  "auditLog": []
+}
