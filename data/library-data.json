@@ -3,8 +3,8 @@
     "name": "ExamDesk Library",
     "city": "New Delhi",
     "createdAt": "2026-04-29T20:04:31.384Z",
-    "updatedAt": "2026-04-29T20:05:24.517Z",
-    "nextStudentNumber": 11,
+    "updatedAt": "2026-04-29T20:31:06.834Z",
+    "nextStudentNumber": 13,
     "tokenTtlMinutes": 480,
     "inactivityLogoutMinutes": 20
   },
@@ -19,7 +19,7 @@
       "createdAt": "2026-04-29T20:04:31.384Z",
       "salt": "d5f010d68312a9bd8f37cd30cf007df6",
       "passwordHash": "a63686d067dad341710b28c6cedd1c1126bb19c2084eebe123a1af34ec78a4da140e5fb4ddc5203dae9049ff3e3203649077f538acf59bf84f0ed1da839126b4",
-      "lastLoginAt": "2026-04-29T20:05:24.425Z"
+      "lastLoginAt": "2026-04-29T20:19:05.842Z"
     },
     {
       "id": "usr-staff",
@@ -44,6 +44,30 @@
       "salt": "f81477bc0517e36f525d182636d46a74",
       "passwordHash": "d6de1cda87e25196b199915c2ff0ddca229df46893e8b9d8fb78182cd6206b0e0cb6061249d3ba8d8c7eadeca2ae013c67109e7a41dce7a11e0d9c4fc201291c",
       "lastLoginAt": "2026-04-29T20:05:24.517Z"
+    },
+    {
+      "id": "usr-stu-2026-0011",
+      "name": "akash kumar",
+      "email": "rvakash02@gmil.com",
+      "mobile": "7739727408",
+      "role": "student",
+      "studentId": "STU-2026-0011",
+      "status": "active",
+      "createdAt": "2026-04-29T20:24:09.938Z",
+      "salt": "bda85316dd77a9bb5c1bda7f94174e62",
+      "passwordHash": "0fdd64cc200978baadf35c1430493c1c190550704a5987372089711f66c5bcd25b24a3f78dadf9e4c277817ef74ea3790da48a522112ee0cdec3d0a1b7481886"
+    },
+    {
+      "id": "usr-stu-2026-0012",
+      "name": "rv",
+      "email": "adnaknka@gmail.com",
+      "mobile": "293272837",
+      "role": "student",
+      "studentId": "STU-2026-0012",
+      "status": "active",
+      "createdAt": "2026-04-29T20:29:20.584Z",
+      "salt": "694f3aa499233b79bd5ad831ca0a5105",
+      "passwordHash": "f5392509c0d8abd9e7f361a2afcdf088c199937a1ffd21c40c4fa778b308183748b4ab66d55c3ecb2d20ed097aae45beb3eee000f7cf9be44f3b480bde2424f2"
     }
   ],
   "students": [
@@ -121,15 +145,15 @@
       "seatNumber": "B04",
       "studyHours": 4,
       "monthlyFees": 2400,
-      "paidAmount": 0,
-      "pendingAmount": 2400,
-      "paymentMethod": "Cash",
+      "paidAmount": 2400,
+      "pendingAmount": 0,
+      "paymentMethod": "UPI",
       "dueDate": "2026-04-23",
-      "feeStatus": "overdue",
+      "feeStatus": "paid",
       "qrToken": "LIB-QR-STU-2026-0003-b9fd73af",
       "notes": "Banking preparation",
       "createdAt": "2026-04-29T20:04:31.384Z",
-      "updatedAt": "2026-04-29T20:04:31.384Z"
+      "updatedAt": "2026-04-29T20:20:26.885Z"
     },
     {
       "id": "STU-2026-0004",
@@ -326,6 +350,62 @@
       "notes": "UPSC CSE preparation",
       "createdAt": "2026-04-29T20:04:31.384Z",
       "updatedAt": "2026-04-29T20:04:31.384Z"
+    },
+    {
+      "id": "STU-2026-0011",
+      "photo": "data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22160%22%20height%3D%22160%22%20viewBox%3D%220%200%20160%20160%22%3E%3Crect%20width%3D%22160%22%20height%3D%22160%22%20rx%3D%2232%22%20fill%3D%22%23f8fafc%22%2F%3E%3Crect%20x%3D%2214%22%20y%3D%2214%22%20width%3D%22132%22%20height%3D%22132%22%20rx%3D%2226%22%20fill%3D%22%230f766e%22%2F%3E%3Ccircle%20cx%3D%2280%22%20cy%3D%2258%22%20r%3D%2225%22%20fill%3D%22%23fff%22%20opacity%3D%22.9%22%2F%3E%3Cpath%20d%3D%22M38%20133c7-25%2023-39%2042-39s35%2014%2042%2039%22%20fill%3D%22%23fff%22%20opacity%3D%22.88%22%2F%3E%3Ctext%20x%3D%2280%22%20y%3D%2288%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-size%3D%2232%22%20font-weight%3D%22700%22%20fill%3D%22%230f766e%22%3EAK%3C%2Ftext%3E%3C%2Fsvg%3E",
+      "fullName": "akash kumar",
+      "fatherName": "ranvijay kumar",
+      "gender": "Male",
+      "dob": "2005-11-01",
+      "mobile": "7739727408",
+      "email": "rvakash02@gmil.com",
+      "address": "noida,up",
+      "examTrack": "UPSC CSE",
+      "dateJoined": "2026-04-30",
+      "expiryDate": "2026-05-30",
+      "membershipStatus": "active",
+      "selectedShift": "shift-5",
+      "seatNumber": "B04",
+      "studyHours": 8,
+      "monthlyFees": 300,
+      "paidAmount": 300,
+      "paymentMethod": "Cash",
+      "dueDate": "2026-05-30",
+      "feeStatus": "paid",
+      "qrToken": "LIB-QR-STU-2026-0011-f39afd09",
+      "notes": "",
+      "createdAt": "2026-04-29T20:24:09.862Z",
+      "updatedAt": "2026-04-29T20:24:09.862Z",
+      "pendingAmount": 0
+    },
+    {
+      "id": "STU-2026-0012",
+      "photo": "data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22160%22%20height%3D%22160%22%20viewBox%3D%220%200%20160%20160%22%3E%3Crect%20width%3D%22160%22%20height%3D%22160%22%20rx%3D%2232%22%20fill%3D%22%23f8fafc%22%2F%3E%3Crect%20x%3D%2214%22%20y%3D%2214%22%20width%3D%22132%22%20height%3D%22132%22%20rx%3D%2226%22%20fill%3D%22%230f766e%22%2F%3E%3Ccircle%20cx%3D%2280%22%20cy%3D%2258%22%20r%3D%2225%22%20fill%3D%22%23fff%22%20opacity%3D%22.9%22%2F%3E%3Cpath%20d%3D%22M38%20133c7-25%2023-39%2042-39s35%2014%2042%2039%22%20fill%3D%22%23fff%22%20opacity%3D%22.88%22%2F%3E%3Ctext%20x%3D%2280%22%20y%3D%2288%22%20text-anchor%3D%22middle%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-size%3D%2232%22%20font-weight%3D%22700%22%20fill%3D%22%230f766e%22%3ER%3C%2Ftext%3E%3C%2Fsvg%3E",
+      "fullName": "rv",
+      "fatherName": "vvv",
+      "gender": "Male",
+      "dob": "0023-03-13",
+      "mobile": "293272837",
+      "email": "adnaknka@gmail.com",
+      "address": "up,gaya",
+      "examTrack": "UPSC CSE",
+      "dateJoined": "2026-04-29",
+      "expiryDate": "2024-03-24",
+      "membershipStatus": "expired",
+      "selectedShift": "shift-1",
+      "seatNumber": "A01",
+      "studyHours": 4,
+      "monthlyFees": 300,
+      "paidAmount": 0,
+      "paymentMethod": "UPI",
+      "dueDate": "2024-03-30",
+      "feeStatus": "overdue",
+      "qrToken": "LIB-QR-STU-2026-0012-8d951651",
+      "notes": "",
+      "createdAt": "2026-04-29T20:29:20.508Z",
+      "updatedAt": "2026-04-29T20:29:20.508Z",
+      "pendingAmount": 300
     }
   ],
   "shifts": [
@@ -807,6 +887,42 @@
     }
   ],
   "attendance": [
+    {
+      "id": "att-STU-2026-0001-2026-04-29-1777494666084",
+      "studentId": "STU-2026-0001",
+      "date": "2026-04-29",
+      "checkIn": "2026-04-29T20:31:06.084Z",
+      "checkOut": "2026-04-29T20:31:06.834Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0001-2026-04-29-1777494664317",
+      "studentId": "STU-2026-0001",
+      "date": "2026-04-29",
+      "checkIn": "2026-04-29T20:31:04.317Z",
+      "checkOut": "2026-04-29T20:31:05.483Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0001-2026-04-29-1777494001050",
+      "studentId": "STU-2026-0001",
+      "date": "2026-04-29",
+      "checkIn": "2026-04-29T20:20:01.050Z",
+      "checkOut": "2026-04-29T20:20:01.596Z",
+      "source": "qr",
+      "status": "present"
+    },
+    {
+      "id": "att-STU-2026-0001-2026-04-29-1777493999235",
+      "studentId": "STU-2026-0001",
+      "date": "2026-04-29",
+      "checkIn": "2026-04-29T20:19:59.235Z",
+      "checkOut": "2026-04-29T20:20:00.415Z",
+      "source": "qr",
+      "status": "present"
+    },
     {
       "id": "att-STU-2026-0001-2026-04-28",
       "studentId": "STU-2026-0001",
@@ -1912,9 +2028,341 @@
       "collectedBy": "usr-admin",
       "status": "success",
       "notes": "Monthly library subscription"
+    },
+    {
+      "id": "pay-1777494026885",
+      "receiptNumber": "RCP-2026-146659",
+      "studentId": "STU-2026-0003",
+      "amount": 2400,
+      "method": "UPI",
+      "month": "April 2026",
+      "paidAt": "2026-04-29",
+      "collectedBy": "usr-admin",
+      "status": "success",
+      "notes": "Monthly library subscription"
     }
   ],
   "notifications": [
+    {
+      "id": "note-1777494042531-6353",
+      "type": "fee_due",
+      "channel": "WhatsApp",
+      "studentId": "STU-2026-0002",
+      "title": "Fee reminder: Priya Verma",
+      "body": "Pending amount Rs 600 is due on 2026-05-02.",
+      "status": "queued",
+      "createdAt": "2026-04-29T20:20:42.531Z"
+    },
+    {
+      "id": "note-1777494042531-5229",
+      "type": "fee_due",
+      "channel": "SMS",
+      "studentId": "STU-2026-0002",
+      "title": "Fee reminder: Priya Verma",
+      "body": "Pending amount Rs 600 is due on 2026-05-02.",
+      "status": "queued",
+      "createdAt": "2026-04-29T20:20:42.531Z"
+    },
+    {
+      "id": "note-1777494042531-9213",
+      "type": "fee_due",
+      "channel": "WhatsApp",
+      "studentId": "STU-2026-0005",
+      "title": "Fee reminder: Rohan Mehta",
+      "body": "Pending amount Rs 800 is due on 2026-05-06.",
+      "status": "queued",
+      "createdAt": "2026-04-29T20:20:42.531Z"
+    },
+    {
+      "id": "note-1777494042531-7637",
+      "type": "fee_due",
+      "channel": "SMS",
+      "studentId": "STU-2026-0005",
+      "title": "Fee reminder: Rohan Mehta",
+      "body": "Pending amount Rs 800 is due on 2026-05-06.",
+      "status": "queued",
+      "createdAt": "2026-04-29T20:20:42.531Z"
+    },
+    {
+      "id": "note-1777494042531-4131",
+      "type": "fee_due",
+      "channel": "WhatsApp",
+      "studentId": "STU-2026-0007",
+      "title": "Fee reminder: Vikram Singh",
+      "body": "Pending amount Rs 2200 is due on 2026-04-30.",
+      "status": "queued",
+      "createdAt": "2026-04-29T20:20:42.531Z"
+    },
+    {
+      "id": "note-1777494042531-8189",
+      "type": "fee_due",
+      "channel": "SMS",
+      "studentId": "STU-2026-0007",
+      "title": "Fee reminder: Vikram Singh",
+      "body": "Pending amount Rs 2200 is due on 2026-04-30.",
+      "status": "queued",
+      "createdAt": "2026-04-29T20:20:42.531Z"
+    },
+    {
+      "id": "note-1777494042531-2165",
+      "type": "fee_due",
+      "channel": "WhatsApp",
+      "studentId": "STU-2026-0010",
+      "title": "Fee reminder: Tara Kapoor",
+      "body": "Pending amount Rs 4200 is due on 2026-04-27.",
+      "status": "queued",
+      "createdAt": "2026-04-29T20:20:42.531Z"
+    },
+    {
+      "id": "note-1777494042531-4334",
+      "type": "fee_due",
+      "channel": "SMS",
+      "studentId": "STU-2026-0010",
+      "title": "Fee reminder: Tara Kapoor",
+      "body": "Pending amount Rs 4200 is due on 2026-04-27.",
+      "status": "queued",
+      "createdAt": "2026-04-29T20:20:42.531Z"
+    },
+    {
+      "id": "note-1777494041912-2106",
+      "type": "fee_due",
+      "channel": "WhatsApp",
+      "studentId": "STU-2026-0002",
+      "title": "Fee reminder: Priya Verma",
+      "body": "Pending amount Rs 600 is due on 2026-05-02.",
+      "status": "queued",
+      "createdAt": "2026-04-29T20:20:41.912Z"
+    },
+    {
+      "id": "note-1777494041912-5708",
+      "type": "fee_due",
+      "channel": "SMS",
+      "studentId": "STU-2026-0002",
+      "title": "Fee reminder: Priya Verma",
+      "body": "Pending amount Rs 600 is due on 2026-05-02.",
+      "status": "queued",
+      "createdAt": "2026-04-29T20:20:41.912Z"
+    },
+    {
+      "id": "note-1777494041912-1027",
+      "type": "fee_due",
+      "channel": "WhatsApp",
+      "studentId": "STU-2026-0005",
+      "title": "Fee reminder: Rohan Mehta",
+      "body": "Pending amount Rs 800 is due on 2026-05-06.",
+      "status": "queued",
+      "createdAt": "2026-04-29T20:20:41.912Z"
+    },
+    {
+      "id": "note-1777494041912-1716",
+      "type": "fee_due",
+      "channel": "SMS",
+      "studentId": "STU-2026-0005",
+      "title": "Fee reminder: Rohan Mehta",
+      "body": "Pending amount Rs 800 is due on 2026-05-06.",
+      "status": "queued",
+      "createdAt": "2026-04-29T20:20:41.912Z"
+    },
+    {
+      "id": "note-1777494041912-1971",
+      "type": "fee_due",
+      "channel": "WhatsApp",
+      "studentId": "STU-2026-0007",
+      "title": "Fee reminder: Vikram Singh",
+      "body": "Pending amount Rs 2200 is due on 2026-04-30.",
+      "status": "queued",
+      "createdAt": "2026-04-29T20:20:41.912Z"
+    },
+    {
+      "id": "note-1777494041912-4531",
+      "type": "fee_due",
+      "channel": "SMS",
+      "studentId": "STU-2026-0007",
+      "title": "Fee reminder: Vikram Singh",
+      "body": "Pending amount Rs 2200 is due on 2026-04-30.",
+      "status": "queued",
+      "createdAt": "2026-04-29T20:20:41.912Z"
+    },
+    {
+      "id": "note-1777494041912-4206",
+      "type": "fee_due",
+      "channel": "WhatsApp",
+      "studentId": "STU-2026-0010",
+      "title": "Fee reminder: Tara Kapoor",
+      "body": "Pending amount Rs 4200 is due on 2026-04-27.",
+      "status": "queued",
+      "createdAt": "2026-04-29T20:20:41.912Z"
+    },
+    {
+      "id": "note-1777494041912-1133",
+      "type": "fee_due",
+      "channel": "SMS",
+      "studentId": "STU-2026-0010",
+      "title": "Fee reminder: Tara Kapoor",
+      "body": "Pending amount Rs 4200 is due on 2026-04-27.",
+      "status": "queued",
+      "createdAt": "2026-04-29T20:20:41.912Z"
+    },
+    {
+      "id": "note-1777494040783-7886",
+      "type": "fee_due",
+      "channel": "WhatsApp",
+      "studentId": "STU-2026-0002",
+      "title": "Fee reminder: Priya Verma",
+      "body": "Pending amount Rs 600 is due on 2026-05-02.",
+      "status": "queued",
+      "createdAt": "2026-04-29T20:20:40.783Z"
+    },
+    {
+      "id": "note-1777494040783-6051",
+      "type": "fee_due",
+      "channel": "SMS",
+      "studentId": "STU-2026-0002",
+      "title": "Fee reminder: Priya Verma",
+      "body": "Pending amount Rs 600 is due on 2026-05-02.",
+      "status": "queued",
+      "createdAt": "2026-04-29T20:20:40.783Z"
+    },
+    {
+      "id": "note-1777494040783-2075",
+      "type": "fee_due",
+      "channel": "WhatsApp",
+      "studentId": "STU-2026-0005",
+      "title": "Fee reminder: Rohan Mehta",
+      "body": "Pending amount Rs 800 is due on 2026-05-06.",
+      "status": "queued",
+      "createdAt": "2026-04-29T20:20:40.783Z"
+    },
+    {
+      "id": "note-1777494040783-8001",
+      "type": "fee_due",
+      "channel": "SMS",
+      "studentId": "STU-2026-0005",
+      "title": "Fee reminder: Rohan Mehta",
+      "body": "Pending amount Rs 800 is due on 2026-05-06.",
+      "status": "queued",
+      "createdAt": "2026-04-29T20:20:40.783Z"
+    },
+    {
+      "id": "note-1777494040783-5251",
+      "type": "fee_due",
+      "channel": "WhatsApp",
+      "studentId": "STU-2026-0007",
+      "title": "Fee reminder: Vikram Singh",
+      "body": "Pending amount Rs 2200 is due on 2026-04-30.",
+      "status": "queued",
+      "createdAt": "2026-04-29T20:20:40.783Z"
+    },
+    {
+      "id": "note-1777494040783-3126",
+      "type": "fee_due",
+      "channel": "SMS",
+      "studentId": "STU-2026-0007",
+      "title": "Fee reminder: Vikram Singh",
+      "body": "Pending amount Rs 2200 is due on 2026-04-30.",
+      "status": "queued",
+      "createdAt": "2026-04-29T20:20:40.783Z"
+    },
+    {
+      "id": "note-1777494040783-8061",
+      "type": "fee_due",
+      "channel": "WhatsApp",
+      "studentId": "STU-2026-0010",
+      "title": "Fee reminder: Tara Kapoor",
+      "body": "Pending amount Rs 4200 is due on 2026-04-27.",
+      "status": "queued",
+      "createdAt": "2026-04-29T20:20:40.783Z"
+    },
+    {
+      "id": "note-1777494040783-2594",
+      "type": "fee_due",
+      "channel": "SMS",
+      "studentId": "STU-2026-0010",
+      "title": "Fee reminder: Tara Kapoor",
+      "body": "Pending amount Rs 4200 is due on 2026-04-27.",
+      "status": "queued",
+      "createdAt": "2026-04-29T20:20:40.783Z"
+    },
+    {
+      "id": "note-1777494031200-3600",
+      "type": "fee_due",
+      "channel": "WhatsApp",
+      "studentId": "STU-2026-0002",
+      "title": "Fee reminder: Priya Verma",
+      "body": "Pending amount Rs 600 is due on 2026-05-02.",
+      "status": "queued",
+      "createdAt": "2026-04-29T20:20:31.200Z"
+    },
+    {
+      "id": "note-1777494031200-1294",
+      "type": "fee_due",
+      "channel": "SMS",
+      "studentId": "STU-2026-0002",
+      "title": "Fee reminder: Priya Verma",
+      "body": "Pending amount Rs 600 is due on 2026-05-02.",
+      "status": "queued",
+      "createdAt": "2026-04-29T20:20:31.200Z"
+    },
+    {
+      "id": "note-1777494031200-3537",
+      "type": "fee_due",
+      "channel": "WhatsApp",
+      "studentId": "STU-2026-0005",
+      "title": "Fee reminder: Rohan Mehta",
+      "body": "Pending amount Rs 800 is due on 2026-05-06.",
+      "status": "queued",
+      "createdAt": "2026-04-29T20:20:31.200Z"
+    },
+    {
+      "id": "note-1777494031200-6427",
+      "type": "fee_due",
+      "channel": "SMS",
+      "studentId": "STU-2026-0005",
+      "title": "Fee reminder: Rohan Mehta",
+      "body": "Pending amount Rs 800 is due on 2026-05-06.",
+      "status": "queued",
+      "createdAt": "2026-04-29T20:20:31.200Z"
+    },
+    {
+      "id": "note-1777494031200-7555",
+      "type": "fee_due",
+      "channel": "WhatsApp",
+      "studentId": "STU-2026-0007",
+      "title": "Fee reminder: Vikram Singh",
+      "body": "Pending amount Rs 2200 is due on 2026-04-30.",
+      "status": "queued",
+      "createdAt": "2026-04-29T20:20:31.200Z"
+    },
+    {
+      "id": "note-1777494031200-7449",
+      "type": "fee_due",
+      "channel": "SMS",
+      "studentId": "STU-2026-0007",
+      "title": "Fee reminder: Vikram Singh",
+      "body": "Pending amount Rs 2200 is due on 2026-04-30.",
+      "status": "queued",
+      "createdAt": "2026-04-29T20:20:31.200Z"
+    },
+    {
+      "id": "note-1777494031200-9036",
+      "type": "fee_due",
+      "channel": "WhatsApp",
+      "studentId": "STU-2026-0010",
+      "title": "Fee reminder: Tara Kapoor",
+      "body": "Pending amount Rs 4200 is due on 2026-04-27.",
+      "status": "queued",
+      "createdAt": "2026-04-29T20:20:31.200Z"
+    },
+    {
+      "id": "note-1777494031200-2823",
+      "type": "fee_due",
+      "channel": "SMS",
+      "studentId": "STU-2026-0010",
+      "title": "Fee reminder: Tara Kapoor",
+      "body": "Pending amount Rs 4200 is due on 2026-04-27.",
+      "status": "queued",
+      "createdAt": "2026-04-29T20:20:31.200Z"
+    },
     {
       "id": "note-1",
       "type": "fee_due",
@@ -1925,5 +2373,183 @@
       "createdAt": "2026-04-29T20:04:31.384Z"
     }
   ],
-  "auditLog": []
+  "auditLog": [
+    {
+      "id": "audit-1777494666834-1193",
+      "actorId": "usr-admin",
+      "actorRole": "super_admin",
+      "action": "checkout",
+      "entity": "attendance",
+      "entityId": "att-STU-2026-0001-2026-04-29-1777494666084",
+      "details": {
+        "studentId": "STU-2026-0001"
+      },
+      "createdAt": "2026-04-29T20:31:06.834Z"
+    },
+    {
+      "id": "audit-1777494666085-3012",
+      "actorId": "usr-admin",
+      "actorRole": "super_admin",
+      "action": "checkin",
+      "entity": "attendance",
+      "entityId": "att-STU-2026-0001-2026-04-29-1777494666084",
+      "details": {
+        "studentId": "STU-2026-0001"
+      },
+      "createdAt": "2026-04-29T20:31:06.085Z"
+    },
+    {
+      "id": "audit-1777494665483-3257",
+      "actorId": "usr-admin",
+      "actorRole": "super_admin",
+      "action": "checkout",
+      "entity": "attendance",
+      "entityId": "att-STU-2026-0001-2026-04-29-1777494664317",
+      "details": {
+        "studentId": "STU-2026-0001"
+      },
+      "createdAt": "2026-04-29T20:31:05.483Z"
+    },
+    {
+      "id": "audit-1777494664317-1059",
+      "actorId": "usr-admin",
+      "actorRole": "super_admin",
+      "action": "checkin",
+      "entity": "attendance",
+      "entityId": "att-STU-2026-0001-2026-04-29-1777494664317",
+      "details": {
+        "studentId": "STU-2026-0001"
+      },
+      "createdAt": "2026-04-29T20:31:04.317Z"
+    },
+    {
+      "id": "audit-1777494560584-7122",
+      "actorId": "usr-admin",
+      "actorRole": "super_admin",
+      "action": "create",
+      "entity": "student",
+      "entityId": "STU-2026-0012",
+      "details": {},
+      "createdAt": "2026-04-29T20:29:20.584Z"
+    },
+    {
+      "id": "audit-1777494249938-5525",
+      "actorId": "usr-admin",
+      "actorRole": "super_admin",
+      "action": "create",
+      "entity": "student",
+      "entityId": "STU-2026-0011",
+      "details": {},
+      "createdAt": "2026-04-29T20:24:09.938Z"
+    },
+    {
+      "id": "audit-1777494042532-3949",
+      "actorId": "usr-admin",
+      "actorRole": "super_admin",
+      "action": "send",
+      "entity": "notification",
+      "entityId": "fee_due",
+      "details": {
+        "count": 8
+      },
+      "createdAt": "2026-04-29T20:20:42.532Z"
+    },
+    {
+      "id": "audit-1777494041912-5652",
+      "actorId": "usr-admin",
+      "actorRole": "super_admin",
+      "action": "send",
+      "entity": "notification",
+      "entityId": "fee_due",
+      "details": {
+        "count": 8
+      },
+      "createdAt": "2026-04-29T20:20:41.912Z"
+    },
+    {
+      "id": "audit-1777494040783-4311",
+      "actorId": "usr-admin",
+      "actorRole": "super_admin",
+      "action": "send",
+      "entity": "notification",
+      "entityId": "fee_due",
+      "details": {
+        "count": 8
+      },
+      "createdAt": "2026-04-29T20:20:40.783Z"
+    },
+    {
+      "id": "audit-1777494031200-7314",
+      "actorId": "usr-admin",
+      "actorRole": "super_admin",
+      "action": "send",
+      "entity": "notification",
+      "entityId": "fee_due",
+      "details": {
+        "count": 8
+      },
+      "createdAt": "2026-04-29T20:20:31.200Z"
+    },
+    {
+      "id": "audit-1777494026885-4979",
+      "actorId": "usr-admin",
+      "actorRole": "super_admin",
+      "action": "collect",
+      "entity": "payment",
+      "entityId": "pay-1777494026885",
+      "details": {
+        "studentId": "STU-2026-0003",
+        "amount": 2400
+      },
+      "createdAt": "2026-04-29T20:20:26.886Z"
+    },
+    {
+      "id": "audit-1777494001596-9519",
+      "actorId": "usr-admin",
+      "actorRole": "super_admin",
+      "action": "checkout",
+      "entity": "attendance",
+      "entityId": "att-STU-2026-0001-2026-04-29-1777494001050",
+      "details": {
+        "studentId": "STU-2026-0001"
+      },
+      "createdAt": "2026-04-29T20:20:01.596Z"
+    },
+    {
+      "id": "audit-1777494001050-1491",
+      "actorId": "usr-admin",
+      "actorRole": "super_admin",
+      "action": "checkin",
+      "entity": "attendance",
+      "entityId": "att-STU-2026-0001-2026-04-29-1777494001050",
+      "details": {
+        "studentId": "STU-2026-0001"
+      },
+      "createdAt": "2026-04-29T20:20:01.050Z"
+    },
+    {
+      "id": "audit-1777494000415-1709",
+      "actorId": "usr-admin",
+      "actorRole": "super_admin",
+      "action": "checkout",
+      "entity": "attendance",
+      "entityId": "att-STU-2026-0001-2026-04-29-1777493999235",
+      "details": {
+        "studentId": "STU-2026-0001"
+      },
+      "createdAt": "2026-04-29T20:20:00.416Z"
+    },
+    {
+      "id": "audit-1777493999235-4071",
+      "actorId": "usr-admin",
+      "actorRole": "super_admin",
+      "action": "checkin",
+      "entity": "attendance",
+      "entityId": "att-STU-2026-0001-2026-04-29-1777493999235",
+      "details": {
+        "studentId": "STU-2026-0001"
+      },
+      "createdAt": "2026-04-29T20:19:59.235Z"
+    }
+  ]
 }

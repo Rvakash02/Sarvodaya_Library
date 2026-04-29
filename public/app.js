@@ -679,6 +679,7 @@ function renderStudents() {
           : renderEmpty('No students match this search.')
       }
     </section>
+    ${renderStudentProfileDirectory(students)}
   `;
 }
 
@@ -708,6 +709,100 @@ function renderStudentRow(student) {
         </div>
       </td>
     </tr>
+  `;
+}
+
+function renderStudentProfileDirectory(students = []) {
+  if (!students.length) return '';
+  return `
+    <section class="profile-directory">
+      <div class="panel-header">
+        <div>
+          <h3>Complete Student Profiles</h3>
+          <p>Every matching student with personal, library, fee, attendance, and contact details.</p>
+        </div>
+      </div>
+      <div class="student-profile-grid">
+        ${students.map(renderStudentProfileCard).join('')}
+      </div>
+    </section>
+  `;
+}
+
+function renderStudentProfileCard(student) {
+  return `
+    <article class="student-profile-card">
+      <header class="student-profile-head">
+        <div class="person-cell">
+          <img class="avatar large" src="${safe(student.photo)}" alt="" />
+          <div>
+            <h3>${safe(student.fullName)}</h3>
+            <span class="muted">${safe(student.id)} · ${safe(student.examTrack)}</span>
+          </div>
+        </div>
+        <div class="chip-row">
+          ${badge(student.membershipStatus)}
+          ${badge(student.feeStatus)}
+        </div>
+      </header>
+      <div class="profile-card-sections">
+        ${detailSection('Personal Details', [
+          ['Father name', student.fatherName],
+          ['Gender', student.gender],
+          ['Date of birth', niceDate(student.dob)],
+          ['Mobile', student.mobile],
+          ['Email', student.email || 'Not added'],
+          ['Address', student.address || 'Not added']
+        ])}
+        ${detailSection('Library Details', [
+          ['Date joined', niceDate(student.dateJoined)],
+          ['Expiry date', niceDate(student.expiryDate)],
+          ['Selected shift', student.shiftName],
+          ['Shift timing', student.shiftTiming],
+          ['Seat number', student.seatNumber],
+          ['Study hours', `${student.studyHours} hours`]
+        ])}
+        ${detailSection('Fee Details', [
+          ['Monthly fees', money(student.monthlyFees)],
+          ['Paid amount', money(student.paidAmount)],
+          ['Pending amount', money(student.pendingAmount)],
+          ['Payment method', student.paymentMethod || 'Not recorded'],
+          ['Due date', niceDate(student.dueDate)],
+          ['Fee status', student.feeStatus]
+        ])}
+        ${detailSection('Attendance & Security', [
+          ['Attendance', percent(student.attendancePercentage)],
+          ['QR token', student.qrToken],
+          ['Membership', student.membershipStatus],
+          ['Notes', student.notes || 'No notes']
+        ])}
+      </div>
+      <footer class="student-profile-actions">
+        <button class="btn ghost" data-view-student="${safe(student.id)}">${icon('eye')} View logs</button>
+        <button class="btn ghost" data-edit-student="${safe(student.id)}">${icon('edit')} Edit profile</button>
+        <button class="btn soft" data-pay-student="${safe(student.id)}">${icon('receipt')} Collect fee</button>
+      </footer>
+    </article>
+  `;
+}
+
+function detailSection(title, rows) {
+  return `
+    <div class="detail-section">
+      <strong>${safe(title)}</strong>
+      <div class="detail-list">
+        ${rows
+          .map(
+            ([label, value]) => `
+          <div class="detail-item">
+            <span>${safe(label)}</span>
+            <b>${safe(value ?? 'Not added')}</b>
+          </div>
+        `
+          )
+          .join('')}
+      </div>
+    </div>
   `;
 }
 
@@ -1206,22 +1301,32 @@ function renderStudentProfileModal() {
     <div class="modal-body stack">
       <div class="profile-grid">
         ${profileBlock('Personal', [
+          ['Student ID', student.id],
           ['Father', student.fatherName],
           ['Gender', student.gender],
           ['DOB', niceDate(student.dob)],
-          ['Mobile', student.mobile]
+          ['Mobile', student.mobile],
+          ['Email', student.email || 'Not added'],
+          ['Address', student.address || 'Not added']
         ])}
         ${profileBlock('Library', [
+          ['Date joined', niceDate(student.dateJoined)],
           ['Shift', student.shiftName],
+          ['Timing', student.shiftTiming],
           ['Seat', student.seatNumber],
           ['Study hours', student.studyHours],
-          ['Expiry', niceDate(student.expiryDate)]
+          ['Expiry', niceDate(student.expiryDate)],
+          ['Membership', student.membershipStatus]
         ])}
         ${profileBlock('Fee', [
           ['Monthly', money(student.monthlyFees)],
           ['Paid', money(student.paidAmount)],
           ['Pending', money(student.pendingAmount)],
-          ['Status', student.feeStatus]
+          ['Method', student.paymentMethod || 'Not recorded'],
+          ['Due date', niceDate(student.dueDate)],
+          ['Status', student.feeStatus],
+          ['Attendance', percent(student.attendancePercentage)],
+          ['QR token', student.qrToken]
         ])}
       </div>
       <div class="panel" style="box-shadow:none">
