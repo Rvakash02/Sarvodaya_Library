@@ -1,0 +1,15 @@
+{
+  "/(dashboard)/students/page": "app/(dashboard)/students/page.js",
+  "/_global-error/page": "app/_global-error/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/api/attendance/route": "app/api/attendance/route.js",
+  "/api/auth/login/route": "app/api/auth/login/route.js",
+  "/api/dashboard/route": "app/api/dashboard/route.js",
+  "/api/me/route": "app/api/me/route.js",
+  "/api/payments/route": "app/api/payments/route.js",
+  "/api/seats/route": "app/api/seats/route.js",
+  "/api/shifts/route": "app/api/shifts/route.js",
+  "/api/students/route": "app/api/students/route.js",
+  "/login/page": "app/login/page.js",
+  "/page": "app/page.js"
+}

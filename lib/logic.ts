@@ -1,4 +1,4 @@
-import { isoDate, isoDateTime, parseAmount, normalizeStatus } from './data';
+import { isoDate, isoDateTime, parseAmount, normalizeStatus, daysFromNow } from './data';
 
 export function getShift(data: any, shiftId: string) {
   return data.shifts.find((shift: any) => shift.id === shiftId);
@@ -136,7 +136,7 @@ export function queryStudents(data: any, searchParams: URLSearchParams) {
       return true;
     })
     .filter((student: any) => (shift === 'all' ? true : student.selectedShift === shift))
-    .filter((student) => (feeStatus === 'all' ? true : student.feeStatus === feeStatus))
+    .filter((student: any) => (feeStatus === 'all' ? true : student.feeStatus === feeStatus))
     .sort((a: any, b: any) => a.fullName.localeCompare(b.fullName));
 }
 

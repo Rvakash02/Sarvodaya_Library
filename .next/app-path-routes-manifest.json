@@ -1,0 +1,15 @@
+{
+  "/(dashboard)/students/page": "/students",
+  "/_global-error/page": "/_global-error",
+  "/_not-found/page": "/_not-found",
+  "/api/attendance/route": "/api/attendance",
+  "/api/auth/login/route": "/api/auth/login",
+  "/api/dashboard/route": "/api/dashboard",
+  "/api/me/route": "/api/me",
+  "/api/payments/route": "/api/payments",
+  "/api/seats/route": "/api/seats",
+  "/api/shifts/route": "/api/shifts",
+  "/api/students/route": "/api/students",
+  "/login/page": "/login",
+  "/page": "/"
+}

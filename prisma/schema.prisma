@@ -186,6 +186,7 @@ model Student {
   payments      Payment[]
   attendance    AttendanceLog[]
   seatHistory   SeatHistory[]
+  notifications Notification[]
 
   @@unique([libraryId, studentCode])
 }

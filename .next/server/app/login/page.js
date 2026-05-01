@@ -1,0 +1,13 @@
+var R=require("../../chunks/ssr/[turbopack]_runtime.js")("server/app/login/page.js")
+R.c("server/chunks/ssr/[root-of-the-server]__0a8p917._.js")
+R.c("server/chunks/ssr/086m_next_dist_esm_build_templates_app-page_0wo_j.r.js")
+R.c("server/chunks/ssr/[root-of-the-server]__0l_w8kj._.js")
+R.c("server/chunks/ssr/[root-of-the-server]__0g1v3rj._.js")
+R.c("server/chunks/ssr/[root-of-the-server]__0~_hxyw._.js")
+R.c("server/chunks/ssr/086m_next_dist_client_components_0xinm1a._.js")
+R.c("server/chunks/ssr/086m_next_dist_client_components_builtin_forbidden_0iwcn0j.js")
+R.c("server/chunks/ssr/086m_next_dist_client_components_builtin_unauthorized_0tztq6y.js")
+R.c("server/chunks/ssr/086m_next_dist_client_components_builtin_global-error_08-3.94.js")
+R.c("server/chunks/ssr/0m4n_GitHub_Sarvodaya_Library__next-internal_server_app_login_page_actions_03sfzvw.js")
+R.m(21349)
+module.exports=R.m(21349).exports
