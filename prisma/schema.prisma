@@ -1,0 +1,284 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  super_admin
+  staff
+  student
+}
+
+enum UserStatus {
+  active
+  disabled
+}
+
+enum GenderType {
+  Male
+  Female
+  Other
+}
+
+enum MembershipStatus {
+  active
+  expired
+  paused
+}
+
+enum FeeStatus {
+  paid
+  pending
+  overdue
+}
+
+enum SeatBaseStatus {
+  available
+  reserved
+}
+
+enum AttendanceStatus {
+  present
+  absent
+  manual_adjusted
+}
+
+enum PaymentMethod {
+  UPI
+  Cash
+  Card
+  Bank_transfer
+}
+
+enum NotificationChannel {
+  SMS
+  WhatsApp
+}
+
+enum NotificationStatus {
+  queued
+  sent
+  failed
+}
+
+model Library {
+  id        String   @id @default(uuid())
+  name      String
+  city      String?
+  address   String?
+  ownerId   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users         User[]
+  shifts        Shift[]
+  seats         Seat[]
+  students      Student[]
+  payments      Payment[]
+  attendance    AttendanceLog[]
+  seatHistory   SeatHistory[]
+  notifications Notification[]
+  auditLogs     AuditLog[]
+  backupJobs    BackupJob[]
+}
+
+model User {
+  id           String     @id @default(uuid())
+  libraryId    String
+  library      Library    @relation(fields: [libraryId], references: [id], onDelete: Cascade)
+  name         String
+  email        String?    @unique
+  mobile       String?
+  role         UserRole
+  status       UserStatus @default(active)
+  passwordHash String
+  passwordSalt String
+  lastLoginAt  DateTime?
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  studentId String? @unique
+  student   Student? @relation("UserToStudent", fields: [studentId], references: [id])
+
+  collectedPayments Payment[]
+  attendanceCreated AttendanceLog[]
+  movedSeats        SeatHistory[]
+  auditLogs         AuditLog[]
+  requestedBackups  BackupJob[]
+}
+
+model Shift {
+  id        String   @id @default(uuid())
+  libraryId String
+  library   Library  @relation(fields: [libraryId], references: [id], onDelete: Cascade)
+  name      String
+  startsAt  String
+  endsAt    String
+  studyHours Float
+  capacity  Int
+  color     String?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  students    Student[]
+  seatHistory SeatHistory[]
+}
+
+model Seat {
+  id         String         @id @default(uuid())
+  libraryId  String
+  library    Library        @relation(fields: [libraryId], references: [id], onDelete: Cascade)
+  seatNumber String
+  zone       String?
+  baseStatus SeatBaseStatus @default(available)
+  notes      String?
+  createdAt  DateTime       @default(now())
+  updatedAt  DateTime       @updatedAt
+
+  students      Student[]
+  historyFrom   SeatHistory[] @relation("FromSeat")
+  historyTo     SeatHistory[] @relation("ToSeat")
+
+  @@unique([libraryId, seatNumber])
+}
+
+model Student {
+  id             String           @id @default(uuid())
+  libraryId      String
+  library        Library          @relation(fields: [libraryId], references: [id], onDelete: Cascade)
+  userId         String?          @unique
+  user           User?            @relation("UserToStudent")
+  studentCode    String
+  fullName       String
+  photoUrl       String?
+  fatherName     String?
+  gender         GenderType?
+  dob            DateTime?
+  mobile         String
+  email          String?
+  address        String?
+  examTrack      String?
+  dateJoined     DateTime
+  expiryDate     DateTime
+  membershipStatus MembershipStatus @default(active)
+  shiftId        String
+  shift          Shift            @relation(fields: [shiftId], references: [id])
+  seatId         String
+  seat           Seat             @relation(fields: [seatId], references: [id])
+  studyHours     Float
+  monthlyFees    Decimal          @default(0)
+  paidAmount     Decimal          @default(0)
+  pendingAmount  Decimal          @default(0)
+  dueDate        DateTime
+  feeStatus      FeeStatus        @default(pending)
+  qrSecret       String
+  notes          String?
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+
+  payments      Payment[]
+  attendance    AttendanceLog[]
+  seatHistory   SeatHistory[]
+
+  @@unique([libraryId, studentCode])
+}
+
+model Payment {
+  id            String        @id @default(uuid())
+  libraryId     String
+  library       Library       @relation(fields: [libraryId], references: [id], onDelete: Cascade)
+  studentId     String
+  student       Student       @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  receiptNumber String
+  amount        Decimal
+  method        PaymentMethod
+  billingMonth  String
+  paidAt        DateTime      @default(now())
+  collectedById String?
+  collectedBy   User?         @relation(fields: [collectedById], references: [id])
+  status        String        @default("success")
+  notes         String?
+  createdAt     DateTime      @default(now())
+
+  @@unique([libraryId, receiptNumber])
+}
+
+model AttendanceLog {
+  id             String           @id @default(uuid())
+  libraryId      String
+  library        Library          @relation(fields: [libraryId], references: [id], onDelete: Cascade)
+  studentId      String
+  student        Student          @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  attendanceDate DateTime
+  checkInAt      DateTime?
+  checkOutAt     DateTime?
+  source         String           @default("qr")
+  status         AttendanceStatus @default(present)
+  createdById    String?
+  createdBy      User?            @relation(fields: [createdById], references: [id])
+  createdAt      DateTime         @default(now())
+}
+
+model SeatHistory {
+  id        String   @id @default(uuid())
+  libraryId String
+  library   Library  @relation(fields: [libraryId], references: [id], onDelete: Cascade)
+  studentId String
+  student   Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  fromSeatId String?
+  fromSeat   Seat?   @relation("FromSeat", fields: [fromSeatId], references: [id])
+  toSeatId   String?
+  toSeat     Seat?   @relation("ToSeat", fields: [toSeatId], references: [id])
+  shiftId    String?
+  shift      Shift?   @relation(fields: [shiftId], references: [id])
+  movedById  String?
+  movedBy    User?    @relation(fields: [movedById], references: [id])
+  movedAt    DateTime @default(now())
+}
+
+model Notification {
+  id                String              @id @default(uuid())
+  libraryId         String
+  library           Library             @relation(fields: [libraryId], references: [id], onDelete: Cascade)
+  studentId         String?
+  student           Student?            @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  type              String
+  channel           NotificationChannel
+  title             String
+  body              String
+  status            NotificationStatus  @default(queued)
+  providerMessageId String?
+  createdAt         DateTime            @default(now())
+  sentAt            DateTime?
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  libraryId String
+  library   Library  @relation(fields: [libraryId], references: [id], onDelete: Cascade)
+  actorId   String?
+  actor     User?    @relation(fields: [actorId], references: [id])
+  action    String
+  entity    String
+  entityId  String
+  details   Json     @default("{}")
+  createdAt DateTime @default(now())
+}
+
+model BackupJob {
+  id          String   @id @default(uuid())
+  libraryId   String
+  library     Library  @relation(fields: [libraryId], references: [id], onDelete: Cascade)
+  requestedById String?
+  requestedBy User?    @relation(fields: [requestedById], references: [id])
+  storageKey  String
+  status      String   @default("created")
+  createdAt   DateTime @default(now())
+}

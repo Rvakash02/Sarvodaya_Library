@@ -1,0 +1,50 @@
+globalThis.__BUILD_MANIFEST = {
+  "pages": {
+    "/_app": [
+      "static/chunks/086m_next_dist_compiled_01v~0a4._.js",
+      "static/chunks/086m_next_dist_shared_lib_0n~94mr._.js",
+      "static/chunks/086m_next_dist_client_0_.leyp._.js",
+      "static/chunks/086m_next_dist_0031aof._.js",
+      "static/chunks/086m_next_app_0og3lrm.js",
+      "static/chunks/[next]_entry_page-loader_ts_13me_h_._.js",
+      "static/chunks/086m_react-dom_0qinm9k._.js",
+      "static/chunks/086m_0i_0iuc._.js",
+      "static/chunks/[root-of-the-server]__06or.uf._.js",
+      "static/chunks/Documents_GitHub_Sarvodaya_Library_pages__app_07xvfw~._.js",
+      "static/chunks/turbopack-Documents_GitHub_Sarvodaya_Library_pages__app_057g_rb._.js"
+    ],
+    "/_error": [
+      "static/chunks/086m_next_dist_compiled_01v~0a4._.js",
+      "static/chunks/086m_next_dist_shared_lib_00-mz~v._.js",
+      "static/chunks/086m_next_dist_client_0_.leyp._.js",
+      "static/chunks/086m_next_dist_0b79ncb._.js",
+      "static/chunks/[next]_entry_page-loader_ts_0269w16._.js",
+      "static/chunks/086m_react-dom_0qinm9k._.js",
+      "static/chunks/086m_0i_0iuc._.js",
+      "static/chunks/[root-of-the-server]__0tp--4o._.js",
+      "static/chunks/Documents_GitHub_Sarvodaya_Library_pages__error_07xvfw~._.js",
+      "static/chunks/turbopack-Documents_GitHub_Sarvodaya_Library_pages__error_0apwp8~._.js"
+    ]
+  },
+  "devFiles": [],
+  "polyfillFiles": [
+    "static/chunks/086m_next_dist_build_polyfills_polyfill-nomodule.js"
+  ],
+  "lowPriorityFiles": [
+    "static/development/_buildManifest.js",
+    "static/development/_ssgManifest.js",
+    "static/development/_clientMiddlewareManifest.js"
+  ],
+  "rootMainFiles": [
+    "static/chunks/[turbopack]_browser_dev_hmr-client_hmr-client_ts_04o3nuy._.js",
+    "static/chunks/086m_next_dist_compiled_next-devtools_index_0q2r1ce.js",
+    "static/chunks/086m_next_dist_compiled_react-dom_0kv-gpx._.js",
+    "static/chunks/086m_next_dist_compiled_react-server-dom-turbopack_0v-na7y._.js",
+    "static/chunks/086m_next_dist_compiled_08xeqm2._.js",
+    "static/chunks/086m_next_dist_client_10lnmcg._.js",
+    "static/chunks/086m_next_dist_0b84on_._.js",
+    "static/chunks/086m_@swc_helpers_cjs_0g.o-81._.js",
+    "static/chunks/Documents_GitHub_Sarvodaya_Library_0rqeker._.js",
+    "static/chunks/turbopack-Documents_GitHub_Sarvodaya_Library_102lao3._.js"
+  ]
+};
