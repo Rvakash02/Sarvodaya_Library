@@ -1,9 +1,0 @@
-2026/07/29-15:45:49.004 7f7811 Reusing MANIFEST /Users/akashkumar/Desktop/projects/library/.wwebjs_auth/session/Default/Local Storage/leveldb/MANIFEST-000001
-2026/07/29-15:45:49.008 7f7811 Recovering log #4
-2026/07/29-15:45:49.008 7f7811 Reusing old log /Users/akashkumar/Desktop/projects/library/.wwebjs_auth/session/Default/Local Storage/leveldb/000004.log 
-2026/07/29-17:19:30.031 7f781b Level-0 table #8: started
-2026/07/29-17:19:30.043 7f781b Level-0 table #8: 14712 bytes OK
-2026/07/29-17:19:30.052 7f781b Delete type=0 #4
-2026/07/30-12:09:36.651 7f781b Level-0 table #10: started
-2026/07/30-12:09:36.666 7f781b Level-0 table #10: 14733 bytes OK
-2026/07/30-12:09:36.670 7f781b Delete type=0 #7
