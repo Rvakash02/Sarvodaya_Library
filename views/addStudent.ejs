@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('./partials/head.ejs') %>
+<body>
+     <%- include('./partials/nav.ejs') %>
+    <div class="container" style="max-width: 700px; margin-top: 40px;">
+        <a href="/admin/dashboard" style="font-size: 13px; padding: 6px 14px; background: var(--soft); color: var(--ink); border: 1px solid var(--line); border-radius: 8px; text-decoration: none; display: inline-block; margin-bottom: 16px; font-weight: 600;">← Back</a>
+        <h1 style="margin-bottom: 8px;">Add New Student</h1>
+
+        <!-- Message Alerts -->
+        <div id="errorAlert" class="alert alert-error" style="display: none;"></div>
+        <div id="successAlert" class="alert alert-success" style="display: none;"></div>
+
+        <form id="studentForm" style="background: none; border: none; box-shadow: none; padding: 0; margin: 0; max-width: 100%;">
+            <!-- Name -->
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" name="name" placeholder="Enter student's name" required>
+            </div>
+
+            <!-- Phone -->
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone" name="phone" placeholder="Enter 10-digit number" required>
+            </div>
+
+            <!-- Seat Number -->
+            <div class="form-group">
+                <label for="seatNumber">Assigned Seat (1 to 43)</label>
+                <input type="number" id="seatNumber" name="seatNumber" min="1" max="43" placeholder="e.g. 12" required>
+            </div>
+
+            <!-- Shifts Selection -->
+            <div class="form-group">
+                <label style="margin-bottom: 10px;">Select Shifts</label>
+                <div class="shift-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
+                    <label class="shift-checkbox-label" style="margin: 0; display: flex; align-items: center; gap: 8px;">
+                        <input type="checkbox" name="shifts" value="6am-10am"> 6:00 AM - 10:00 AM
+                    </label>
+                    <label class="shift-checkbox-label" style="margin: 0; display: flex; align-items: center; gap: 8px;">
+                        <input type="checkbox" name="shifts" value="10am-2pm"> 10:00 AM - 2:00 PM
+                    </label>
+                    <label class="shift-checkbox-label" style="margin: 0; display: flex; align-items: center; gap: 8px;">
+                        <input type="checkbox" name="shifts" value="2pm-6pm"> 2:00 PM - 6:00 PM
+                    </label>
+                    <label class="shift-checkbox-label" style="margin: 0; display: flex; align-items: center; gap: 8px;">
+                        <input type="checkbox" name="shifts" value="6pm-10pm"> 6:00 PM - 10:00 PM
+                    </label>
+                    <label class="shift-checkbox-label" style="margin: 0; display: flex; align-items: center; gap: 8px; grid-column: span 2;">
+                        <input type="checkbox" name="shifts" value="night"> Night Shift (10:00 PM onwards)
+                    </label>
+                </div>
+            </div>
+
+            <!-- Fee Status Toggle -->
+            <div class="form-group">
+                <div class="toggle-container" style="background-color: var(--soft); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px;">
+                    <div>
+                        <span style="font-weight: 500; font-size: 14px;">Admission Fee Paid</span>
+                    </div>
+                    <label class="switch" style="margin: 0;">
+                        <input type="checkbox" id="feePaid" name="feePaid" value="true">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+
+            <button type="submit" class="btn" style="margin-top: 15px;">Register Student</button>
+        </form>
+    </div>
+
+    <script>
+        // Toggle selected visual styling on shift labels when checked
+        const labels = document.querySelectorAll('.shift-checkbox-label');
+        labels.forEach(label => {
+            const checkbox = label.querySelector('input');
+            checkbox.addEventListener('change', () => {
+                if (checkbox.checked) {
+                    label.classList.add('selected');
+                } else {
+                    label.classList.remove('selected');
+                }
+            });
+        });
+
+        const form = document.getElementById('studentForm');
+        const errorAlert = document.getElementById('errorAlert');
+        const successAlert = document.getElementById('successAlert');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Clear old alerts
+            errorAlert.style.display = 'none';
+            successAlert.style.display = 'none';
+
+            // Gather selected shifts
+            const selectedShifts = Array.from(document.querySelectorAll('input[name="shifts"]:checked'))
+                                         .map(cb => cb.value);
+
+            if (selectedShifts.length === 0) {
+                errorAlert.textContent = "Please select at least one shift.";
+                errorAlert.style.display = 'block';
+                return;
+            }
+
+            const payload = {
+                name: document.getElementById('name').value,
+                phone: document.getElementById('phone').value,
+                seatNumber: parseInt(document.getElementById('seatNumber').value, 10),
+                shifts: selectedShifts,
+                feePaid: document.getElementById('feePaid').checked
+            };
+
+            try {
+                // Post payload to your register route
+                const response = await fetch('/admin/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    successAlert.textContent = data.message || "Student registered successfully!";
+                    successAlert.style.display = 'block';
+                    form.reset();
+                    // Remove active style from check labels
+                    labels.forEach(label => label.classList.remove('selected'));
+                } else {
+                    errorAlert.textContent = data.error || "Failed to register student.";
+                    errorAlert.style.display = 'block';
+                }
+            } catch (err) {
+                errorAlert.textContent = "A connection error occurred. Please try again.";
+                errorAlert.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,30 @@
+GET http://localhost:3000/
+
+###
+
+POST http://localhost:3000/api/user/register
+Content-Type: application/json
+
+{
+   "name": "abhishek kumar",
+    "email": "abhi@example.com",
+    "password": "abhi@#1234",
+    "role": "admin"
+}
+
+###
+
+POST http://localhost:3000/api/user/login
+Content-Type: application/json
+
+{
+    "email": "abhi@example.com",
+    "password": "abhi@#1234"
+}
+
+###
+
+DELETE  http://localhost:3000/users/6a573363088d157f273d0d04
+
+
+instead of a table when query for shift and filter status , i want all student with (seat, name, expireDate, fee status) (like when we search for any prodect on any shoping site) and can click to open the detail about the student

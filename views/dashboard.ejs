@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('./partials/head.ejs') %>
+<style>
+    /* Card Container Grid */
+    .student-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+        gap: 20px;
+        margin-top: 20px;
+    }
+
+    /* Product Card styling */
+    .student-card {
+        background: #ffffff;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 24px 20px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .student-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+        border-color: var(--primary);
+    }
+
+    /* Seat Badge */
+    .seat-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: #f1f5f9;
+        color: #475569;
+        font-size: 11px;
+        font-weight: 700;
+        padding: 4px 10px;
+        border-radius: 6px;
+        border: 1px solid var(--border);
+        text-transform: uppercase;
+    }
+
+    .student-card:hover .seat-badge {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+    }
+
+    /* Card Details */
+    .student-name {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--text-main);
+        margin: 15px 0 8px 0;
+    }
+
+    .expiry-info {
+        font-size: 13px;
+        color: var(--text-muted);
+        margin-bottom: 16px;
+    }
+
+    /* Status Badges */
+    .status-badge {
+        display: inline-block;
+        padding: 6px 12px;
+        font-size: 12px;
+        font-weight: 700;
+        border-radius: 20px;
+        text-align: center;
+        width: fit-content;
+    }
+
+    .status-paid {
+        background-color: #d1fae5;
+        color: #065f46;
+    }
+
+    .status-unpaid {
+        background-color: #fee2e2;
+        color: #991b1b;
+    }
+
+    /* Modal Overlay (Details PopUp) */
+    .modal-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(4px);
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    }
+
+    .modal-content {
+        background: #ffffff;
+        padding: 30px;
+        border-radius: 16px;
+        max-width: 440px;
+        width: 90%;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        position: relative;
+        animation: slideUp 0.25s ease-out;
+    }
+
+    @keyframes slideUp {
+        from { transform: translateY(15px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+
+    .close-btn {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: none;
+        border: none;
+        font-size: 26px;
+        cursor: pointer;
+        color: var(--text-muted);
+        line-height: 1;
+    }
+
+    .close-btn:hover {
+        color: var(--text-main);
+    }
+
+    .modal-title {
+        font-size: 22px;
+        font-weight: 700;
+        margin-bottom: 20px;
+        color: var(--text-main);
+        border-bottom: 2px solid #f1f5f9;
+        padding-bottom: 10px;
+    }
+
+    .detail-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 12px 0;
+        border-bottom: 1px solid #f1f5f9;
+        font-size: 14px;
+        align-items: center;
+    }
+
+    .detail-label {
+        font-weight: 500;
+        color: var(--text-muted);
+    }
+
+    .detail-value {
+        font-weight: 600;
+        color: var(--text-main);
+    }
+
+    .renew-btn {
+        width: 100%;
+        padding: 12px;
+        background-color: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        margin-top: 20px;
+        transition: background-color 0.2s;
+    }
+
+    .renew-btn:hover {
+        background-color: var(--primary-hover);
+    }
+
+    .shift-checkbox-btn:has(input:checked) {
+        border-color: #6366f1 !important;
+        background-color: #e0e7ff !important;
+        color: #4338ca !important;
+    }
+</style>
+
+<body>
+    <%- include('./partials/nav.ejs') %>
+        <div class="container">
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">Admin Dashboard</h1>
+            <div class="dashboard-controls">
+                <!-- Search Box -->
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Search name/phone...">
+                    <button onclick="triggerSearch()">Search</button>
+                </div>
+                <!-- Add Student Button -->
+                <div class="buttons" style="gap: 0; margin: 0;">
+                    <a href="/admin/register">Add student</a>
+                </div>
+        </div>
+
+        <!-- WhatsApp Connection Status Panel -->
+        <div id="whatsappWidget" class="card" style="max-width: 100%; margin: 10px 0 0 0; padding: 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <div id="whatsappDot" style="width: 12px; height: 12px; border-radius: 50%; background-color: #cbd5e1; transition: background-color 0.3s;"></div>
+                <div>
+                    <h3 style="font-size: 16px; margin: 0; font-weight: 700; color: var(--ink);">WhatsApp Messaging Service</h3>
+                    <p id="whatsappStatusText" style="font-size: 13px; color: var(--muted); margin: 2px 0 0 0;">Checking connection status...</p>
+                </div>
+            </div>
+            <div id="whatsappActionArea">
+                    <!-- QR / status injected dynamically -->
+                </div>
+            </div>
+        </div>
+
+        <div class="filters">
+            <div>
+                <label>Select Shift:</label>
+                <select id="shiftSelect">
+                    <option value="">Choose Shift...</option>
+                    <option value="6am-10am">6am - 10am</option>
+                    <option value="10am-2pm">10am - 2pm</option>
+                    <option value="2pm-6pm">2pm - 6pm</option>
+                    <option value="6pm-10pm">6pm - 10pm</option>
+                    <option value="night">Night</option>
+                </select>
+            </div>
+            <div>
+                <label>Filter Status:</label>
+                <select id="statusSelect">
+                    <option value="all">All Students</option>
+                    <option value="paid">Paid</option>
+                    <option value="unpaid">Unpaid (Not Paid)</option>
+                    <option value="vacant">Vacant Seats</option>
+                </select>
+            </div>
+            <button onclick="fetchDashboard()">Show Details</button>
+        </div>
+        <div id="resultsContainer">
+            <!-- Results will be displayed dynamically here -->
+        </div>
+    </div>
+
+    <!-- Student Detail Modal -->
+    <div id="studentModal" class="modal-overlay" onclick="closeStudentModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button class="close-btn" onclick="closeStudentModal()">&times;</button>
+            
+            <!-- VIEW MODE PANEL -->
+            <div id="modalViewMode">
+                <div id="modalSeatBadge" class="status-badge" style="margin-bottom: 10px;"></div>
+                <div class="modal-title" id="modalStudentName">Student Name</div>
+                
+                <div class="detail-row">
+                    <span class="detail-label">Phone Number</span>
+                    <span class="detail-value" id="modalPhone">-</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Shifts Enrolled</span>
+                    <span class="detail-value" id="modalShifts">-</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Admission Date</span>
+                    <span class="detail-value" id="modalAdmission">-</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Fee Expiry Date</span>
+                    <span class="detail-value" id="modalExpiry">-</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Payment Status</span>
+                    <span class="detail-value" id="modalStatus">-</span>
+                </div>
+
+                <div style="display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap;">
+                    <!-- Edit Button -->
+                    <button onclick="toggleEditMode(true)" style="flex: 1; padding: 10px; background-color: #6366f1; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; margin-top: 0;">
+                        Edit Info
+                    </button>
+                    <!-- Renew Fee Button -->
+                    <button id="modalRenewBtn" class="renew-btn" style="flex: 1.2; margin-top: 0; padding: 10px;">
+                        Renew (30 Days)
+                    </button>
+                    <!-- Send Fee Reminder (only visible when unpaid) -->
+                    <button id="modalReminderBtn" onclick="sendFeeReminder()" style="display: none; flex: 1.2; padding: 10px; background-color: #25d366; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; margin-top: 0; font-size: 13px;">
+                        📩 Send Reminder
+                    </button>
+                </div>
+            </div>
+
+            <!-- EDIT MODE PANEL (Hidden by Default) -->
+            <div id="modalEditMode" style="display: none;">
+                <div class="modal-title" style="font-size: 20px; margin-bottom: 15px;">Edit Student Info</div>
+                <form id="editStudentForm" onsubmit="saveStudentEdits(event)" style="padding: 0; border: none; box-shadow: none; margin: 0; max-width: 100%;">
+                    <input type="hidden" id="editStudentId">
+                    
+                    <div class="form-group" style="margin-bottom: 12px;">
+                        <label style="font-size: 13px; font-weight: 600; margin-bottom: 4px;">Full Name</label>
+                        <input type="text" id="editName" required>
+                    </div>
+                    
+                    <div class="form-group" style="margin-bottom: 12px;">
+                        <label style="font-size: 13px; font-weight: 600; margin-bottom: 4px;">Phone Number</label>
+                        <input type="tel" id="editPhone" required>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 12px;">
+                        <label style="font-size: 13px; font-weight: 600; margin-bottom: 4px;">Seat Number (1 to 43)</label>
+                        <input type="number" id="editSeat" min="1" max="43" required>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 12px;">
+                        <label style="font-size: 13px; font-weight: 600; margin-bottom: 4px;">Select Shifts</label>
+                        <div class="shift-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 4px;">
+                            <label class="shift-checkbox-label" style="padding: 8px 12px; font-size: 13px; margin: 0; display: flex; align-items: center; gap: 8px;">
+                                <input type="checkbox" name="editShifts" value="6am-10am"> 6am-10am
+                            </label>
+                            <label class="shift-checkbox-label" style="padding: 8px 12px; font-size: 13px; margin: 0; display: flex; align-items: center; gap: 8px;">
+                                <input type="checkbox" name="editShifts" value="10am-2pm"> 10am-2pm
+                            </label>
+                            <label class="shift-checkbox-label" style="padding: 8px 12px; font-size: 13px; margin: 0; display: flex; align-items: center; gap: 8px;">
+                                <input type="checkbox" name="editShifts" value="2pm-6pm"> 2pm-6pm
+                            </label>
+                            <label class="shift-checkbox-label" style="padding: 8px 12px; font-size: 13px; margin: 0; display: flex; align-items: center; gap: 8px;">
+                                <input type="checkbox" name="editShifts" value="6pm-10pm"> 6pm-10pm
+                            </label>
+                            <label class="shift-checkbox-label" style="padding: 8px 12px; font-size: 13px; margin: 0; display: flex; align-items: center; gap: 8px; grid-column: span 2;">
+                                <input type="checkbox" name="editShifts" value="night"> Night Shift
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 12px;">
+                        <label style="font-size: 13px; font-weight: 600; margin-bottom: 4px;">Fee Expiration Date</label>
+                        <input type="date" id="editExpiry" required>
+                    </div>
+
+                    <div style="display: flex; gap: 10px; margin-top: 18px;">
+                        <button type="button" onclick="toggleEditMode(false)" style="flex: 1; padding: 10px; background-color: #cbd5e1; color: #475569; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; margin-top: 0; width: auto; min-height: 40px;">
+                            Cancel
+                        </button>
+                        <button type="submit" style="flex: 1.2; padding: 10px; background-color: var(--success); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; margin-top: 0; width: auto; min-height: 40px;">
+                            Save Changes
+                        </button>
+                    </div>
+                    <button type="button" onclick="deleteStudentData()" style="width: 100%; padding: 10px; background-color: var(--error); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; margin-top: 12px; min-height: 40px;">
+                        Delete Student
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Confirmation Modal -->
+    <div id="confirmModal" class="modal-overlay" style="z-index: 1100;">
+        <div class="modal-content" style="max-width: 360px; text-align: center; padding: 24px;">
+            <div id="confirmModalTitle" style="font-size: 18px; font-weight: 700; color: var(--text-main); margin-bottom: 12px;">Confirm Action</div>
+            <p id="confirmModalMessage" style="font-size: 14px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5;">Are you sure you want to proceed?</p>
+            <div style="display: flex; gap: 12px; margin-top: 15px;">
+                <button id="confirmNoBtn" type="button" style="flex: 1; padding: 10px; background-color: #cbd5e1; color: #475569; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; margin-top: 0;">No</button>
+                <button id="confirmYesBtn" type="button" style="flex: 1; padding: 10px; background-color: var(--primary); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; margin-top: 0;">Yes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Alert Modal -->
+    <div id="alertModal" class="modal-overlay" style="z-index: 1200;">
+        <div class="modal-content" style="max-width: 360px; text-align: center; padding: 24px;">
+            <div id="alertModalTitle" style="font-size: 18px; font-weight: 700; color: var(--text-main); margin-bottom: 12px;">Notification</div>
+            <p id="alertModalMessage" style="font-size: 14px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5;">Message</p>
+            <button id="alertOkBtn" type="button" style="width: 100%; padding: 10px; background-color: var(--primary); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; margin-top: 15px;">OK</button>
+        </div>
+    </div>
+
+        <script>
+        function toggleManualMsg() {
+            const panel = document.getElementById('manualMsgPanel');
+            const btn = document.getElementById('manualMsgToggleBtn');
+            if (panel.style.display === 'none') {
+                panel.style.display = 'block';
+                btn.style.background = 'var(--ink)';
+                btn.style.color = 'var(--bg)';
+            } else {
+                panel.style.display = 'none';
+                btn.style.background = 'var(--bg)';
+                btn.style.color = 'var(--ink)';
+            }
+        }
+
+        async function sendManualWhatsApp() {
+            const phone = document.getElementById('waPhone').value.trim();
+            const message = document.getElementById('waMessage').value.trim();
+            const statusEl = document.getElementById('waSendStatus');
+            const sendBtn = document.getElementById('waSendBtn');
+
+            if (!phone || !message) {
+                statusEl.textContent = '⚠ Please enter both phone number and message.';
+                statusEl.style.color = '#f59e0b';
+                return;
+            }
+
+            sendBtn.disabled = true;
+            sendBtn.textContent = 'Sending...';
+            statusEl.textContent = '';
+
+            try {
+                const response = await fetch('/admin/send-whatsapp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ phone, message })
+                });
+                const data = await response.json();
+
+                if (response.ok) {
+                    statusEl.textContent = '✓ Message sent successfully!';
+                    statusEl.style.color = '#10b981';
+                    document.getElementById('waPhone').value = '';
+                    document.getElementById('waMessage').value = '';
+                } else {
+                    statusEl.textContent = '✗ ' + (data.error || 'Failed to send message.');
+                    statusEl.style.color = '#ef4444';
+                }
+            } catch (err) {
+                statusEl.textContent = '✗ Network error. Could not send message.';
+                statusEl.style.color = '#ef4444';
+            } finally {
+                sendBtn.disabled = false;
+                sendBtn.textContent = 'Send ➤';
+            }
+        }
+
+        async function sendFeeReminder() {
+            const student = window.selectedStudent;
+            if (!student) return;
+
+            const btn = document.getElementById('modalReminderBtn');
+            btn.disabled = true;
+            btn.textContent = 'Sending...';
+
+            const expiryStr = student.feeExpireDate ? new Date(student.feeExpireDate).toLocaleDateString('en-IN', {
+                day: 'numeric', month: 'short', year: 'numeric'
+            }) : 'N/A';
+            const shiftsStr = student.shifts.join(', ');
+            const message = `Dear ${student.name},\n\nThis is a reminder from Sarvodaya Library.\n\nYour fee for Seat ${student.seatNumber} (${shiftsStr}) is UNPAID (expired on ${expiryStr}).\n\nPlease renew your fee at the earliest to continue using your seat.\n\nThank you!`;
+
+            try {
+                const response = await fetch('/admin/send-whatsapp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ phone: student.phone, message })
+                });
+                const data = await response.json();
+
+                if (response.ok) {
+                    btn.textContent = '✓ Sent!';
+                    btn.style.backgroundColor = '#10b981';
+                    setTimeout(() => {
+                        btn.textContent = '📩 Send Reminder';
+                        btn.style.backgroundColor = '#25d366';
+                        btn.disabled = false;
+                    }, 2000);
+                } else {
+                    await showCustomAlert('Reminder Failed', data.error || 'Could not send reminder. Make sure WhatsApp is connected.');
+                    btn.textContent = '📩 Send Reminder';
+                    btn.disabled = false;
+                }
+            } catch (err) {
+                await showCustomAlert('Network Error', 'Could not send reminder. Check your connection.');
+                btn.textContent = '📩 Send Reminder';
+                btn.disabled = false;
+            }
+        }
+
+        async function triggerSearch() {
+            const search = document.getElementById('searchInput').value.trim();
+            const resultsContainer = document.getElementById('resultsContainer');
+            if (!search) {
+                await showCustomAlert("Search Input Needed", "Please enter a name or phone number to search.");
+                return;
+            }
+            resultsContainer.innerHTML = "<p>Searching...</p>";
+            try {
+                const response = await fetch(`/admin/dashboard-data?search=${encodeURIComponent(search)}`);
+                const data = await response.json();
+                if (!response.ok) {
+                    resultsContainer.innerHTML = `<p style="color:red;">Error: ${data.error}</p>`;
+                    return;
+                }
+                renderStudentCards(data.students || []);
+            } catch (err) {
+                console.error(err);
+                resultsContainer.innerHTML = "<p style='color:red;'>Failed to load search results.</p>";
+            }
+        }
+
+        async function checkWhatsAppStatus() {
+            try {
+                const response = await fetch('/admin/whatsapp-status');
+                const data = await response.json();
+                
+                const dot = document.getElementById('whatsappDot');
+                const statusText = document.getElementById('whatsappStatusText');
+                const actionArea = document.getElementById('whatsappActionArea');
+                
+                if (!dot || !statusText || !actionArea) return;
+
+                if (data.status === 'READY') {
+                    dot.style.backgroundColor = '#10b981'; // Green
+                    statusText.textContent = 'Service Connected & Running. Automated alerts are active.';
+                    actionArea.innerHTML = '';
+                } else if (data.status === 'QR' && data.qr) {
+                    dot.style.backgroundColor = '#f59e0b'; // Amber
+                    statusText.textContent = 'Link your WhatsApp account to start sending messages.';
+                    actionArea.innerHTML = `
+                        <div style="display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center;">
+                            <img src="${data.qr}" alt="WhatsApp Connection QR Code" style="width: 110px; height: 110px; border: 1px solid var(--line); border-radius: 8px; margin: 0;">
+                            <span style="font-size: 9px; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Scan QR with WhatsApp</span>
+                        </div>
+                    `;
+                } else if (data.status === 'CONNECTING') {
+                    dot.style.backgroundColor = '#3b82f6'; // Blue
+                    statusText.textContent = 'WhatsApp service is initializing. Please wait...';
+                    actionArea.innerHTML = '<span style="font-size: 11px; font-weight: 700; text-transform: uppercase;">Connecting...</span>';
+                } else {
+                    dot.style.backgroundColor = '#ef4444'; // Red
+                    statusText.textContent = 'Disconnected. Initializing or session failed.';
+                    actionArea.innerHTML = '';
+                }
+            } catch (err) {
+                console.error('Error polling WhatsApp status:', err);
+            }
+        }
+
+        // Attach key listener to Search Input and start polling WhatsApp status
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchInput = document.getElementById('searchInput');
+            if (searchInput) {
+                searchInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        triggerSearch();
+                    }
+                });
+            }
+            
+            // Poll WhatsApp status
+            checkWhatsAppStatus();
+            setInterval(checkWhatsAppStatus, 5000);
+        });
+
+        function renderStudentCards(students) {
+            const resultsContainer = document.getElementById('resultsContainer');
+            if (!students || students.length === 0) {
+                resultsContainer.innerHTML = "<p>No registered students found matching these criteria.</p>";
+                return;
+            }
+
+            // Sort students serially by seat number
+            students.sort((a, b) => Number(a.seatNumber || 0) - Number(b.seatNumber || 0));
+
+            // Store current student lists globally to look them up on click
+            window.currentStudents = students;
+
+            let html = `<div class="student-grid">`;
+            students.forEach((student, index) => {
+                const isPaid = student.feePaid;
+                const expiryStr = student.feeExpireDate ? new Date(student.feeExpireDate).toLocaleDateString('en-IN', {
+                    day: 'numeric',
+                    month: 'short',
+                    year: 'numeric'
+                }) : 'N/A';
+
+                html += `
+                    <div class="student-card" onclick="openStudentModal(${index})">
+                        <span class="seat-badge">Seat ${student.seatNumber}</span>
+                        <div class="student-name">${student.name}</div>
+                        <div class="expiry-info">
+                            <strong>Expires:</strong> ${expiryStr}
+                        </div>
+                        <span class="status-badge ${isPaid ? 'status-paid' : 'status-unpaid'}">
+                            ${isPaid ? 'PAID' : 'UNPAID'}
+                        </span>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+            resultsContainer.innerHTML = html;
+        }
+
+        async function fetchDashboard() {
+            const shift = document.getElementById('shiftSelect').value;
+            const status = document.getElementById('statusSelect').value;
+            const search = document.getElementById('searchInput').value.trim();
+            const resultsContainer = document.getElementById('resultsContainer');
+            if (!shift && !search) {
+                await showCustomAlert("Search Input Needed", "Please select a shift or enter a search query.");
+                return;
+            }
+            resultsContainer.innerHTML = "<p>Loading...</p>";
+            try {
+                const response = await fetch(`/admin/dashboard-data?shift=${shift}&status=${status}&search=${encodeURIComponent(search)}`);
+                const data = await response.json();
+                if (!response.ok) {
+                    resultsContainer.innerHTML = `<p style="color:red;">Error: ${data.error}</p>`;
+                    return;
+                }
+                if (status === 'vacant') {
+                    // Render vacant seats in a grid layout
+                    if (data.vacantSeats.length === 0) {
+                        resultsContainer.innerHTML = "<p>No vacant seats left for this shift!</p>";
+                    } else {
+                        let html = `<h3>Vacant Seats (${data.vacantSeats.length} available):</h3><div class="vacant-grid">`;
+                        data.vacantSeats.forEach(seat => {
+                            html += `<div class="seat">Seat ${seat}</div>`;
+                        });
+                        html += `</div>`;
+                        resultsContainer.innerHTML = html;
+                    }
+                } else {
+                    renderStudentCards(data.students || []);
+                }
+            } catch (err) {
+                resultsContainer.innerHTML = `<p style="color:red;">Failed to retrieve data.</p>`;
+            }
+        }
+
+        // Modal functions
+        function openStudentModal(index) {
+            const student = window.currentStudents[index];
+            if (!student) return;
+
+            window.selectedStudent = student; // Store globally for edit toggle reference
+            toggleEditMode(false); // Reset to view mode first
+
+            document.getElementById('modalStudentName').textContent = student.name;
+            document.getElementById('modalPhone').textContent = student.phone;
+            
+            // Format Seat Number Badge
+            const seatBadge = document.getElementById('modalSeatBadge');
+            seatBadge.textContent = `Seat ${student.seatNumber}`;
+            seatBadge.className = "status-badge status-paid";
+
+            // Format Shifts
+            document.getElementById('modalShifts').textContent = student.shifts.join(', ');
+            
+            // Format Dates
+            const admissionDate = student.admissionDate ? new Date(student.admissionDate).toLocaleDateString('en-IN') : 'N/A';
+            const expireDate = student.feeExpireDate ? new Date(student.feeExpireDate).toLocaleDateString('en-IN') : 'N/A';
+            document.getElementById('modalAdmission').textContent = admissionDate;
+            document.getElementById('modalExpiry').textContent = expireDate;
+            
+            // Format Payment Status Row
+            const statusVal = document.getElementById('modalStatus');
+            statusVal.textContent = student.feePaid ? 'PAID' : 'UNPAID';
+            statusVal.className = `detail-value status-badge ${student.feePaid ? 'status-paid' : 'status-unpaid'}`;
+
+            // Configure Renew Button Click
+            const renewBtn = document.getElementById('modalRenewBtn');
+            renewBtn.onclick = () => renewStudentFee(student._id);
+
+            // Show/hide Send Reminder button based on fee status
+            const reminderBtn = document.getElementById('modalReminderBtn');
+            if (!student.feePaid) {
+                reminderBtn.style.display = 'inline-block';
+            } else {
+                reminderBtn.style.display = 'none';
+            }
+
+            document.getElementById('studentModal').style.display = 'flex';
+        }
+
+        function closeStudentModal(event) {
+            // Close either clicking the button or clicking the dark background overlay
+            document.getElementById('studentModal').style.display = 'none';
+        }
+
+        function toggleEditMode(isEdit) {
+            const viewPanel = document.getElementById('modalViewMode');
+            const editPanel = document.getElementById('modalEditMode');
+            const student = window.selectedStudent;
+
+            if (isEdit) {
+                viewPanel.style.display = 'none';
+                editPanel.style.display = 'block';
+
+                // Populate form fields
+                document.getElementById('editStudentId').value = student._id;
+                document.getElementById('editName').value = student.name;
+                document.getElementById('editPhone').value = student.phone;
+                document.getElementById('editSeat').value = student.seatNumber;
+
+                // Toggle shift checkboxes
+                const checkboxes = document.querySelectorAll('input[name="editShifts"]');
+                checkboxes.forEach(cb => {
+                    cb.checked = student.shifts.includes(cb.value);
+                });
+
+                // Format expiry date as YYYY-MM-DD for HTML5 date input
+                if (student.feeExpireDate) {
+                    const date = new Date(student.feeExpireDate);
+                    const yyyy = date.getFullYear();
+                    const mm = String(date.getMonth() + 1).padStart(2, '0');
+                    const dd = String(date.getDate()).padStart(2, '0');
+                    document.getElementById('editExpiry').value = `${yyyy}-${mm}-${dd}`;
+                } else {
+                    document.getElementById('editExpiry').value = '';
+                }
+            } else {
+                viewPanel.style.display = 'block';
+                editPanel.style.display = 'none';
+            }
+        }
+
+        function showCustomAlert(title, message) {
+            return new Promise((resolve) => {
+                const modal = document.getElementById('alertModal');
+                document.getElementById('alertModalTitle').textContent = title;
+                document.getElementById('alertModalMessage').textContent = message;
+
+                const okBtn = document.getElementById('alertOkBtn');
+                const handleOk = () => {
+                    modal.style.display = 'none';
+                    okBtn.removeEventListener('click', handleOk);
+                    resolve();
+                };
+
+                okBtn.addEventListener('click', handleOk);
+                modal.style.display = 'flex';
+            });
+        }
+
+        function showCustomConfirm(title, message) {
+            return new Promise((resolve) => {
+                const modal = document.getElementById('confirmModal');
+                document.getElementById('confirmModalTitle').textContent = title;
+                document.getElementById('confirmModalMessage').textContent = message;
+
+                const yesBtn = document.getElementById('confirmYesBtn');
+                const noBtn = document.getElementById('confirmNoBtn');
+
+                const handleYes = () => {
+                    cleanup();
+                    resolve(true);
+                };
+
+                const handleNo = () => {
+                    cleanup();
+                    resolve(false);
+                };
+
+                const cleanup = () => {
+                    modal.style.display = 'none';
+                    yesBtn.removeEventListener('click', handleYes);
+                    noBtn.removeEventListener('click', handleNo);
+                };
+
+                yesBtn.addEventListener('click', handleYes);
+                noBtn.addEventListener('click', handleNo);
+
+                modal.style.display = 'flex';
+            });
+        }
+
+        async function saveStudentEdits(event) {
+            event.preventDefault();
+
+            const studentId = document.getElementById('editStudentId').value;
+            const name = document.getElementById('editName').value;
+            const phone = document.getElementById('editPhone').value;
+            const seatNumber = parseInt(document.getElementById('editSeat').value, 10);
+            const feeExpireDate = document.getElementById('editExpiry').value;
+
+            const shifts = Array.from(document.querySelectorAll('input[name="editShifts"]:checked'))
+                                .map(cb => cb.value);
+
+            if (shifts.length === 0) {
+                await showCustomAlert("Validation Error", "Please select at least one shift.");
+                return;
+            }
+
+            // Determine feePaid status dynamically (if expiry is in future, it's paid)
+            const feePaid = new Date(feeExpireDate) >= new Date();
+
+            const confirmed = await showCustomConfirm("Save Changes?", "Are you sure you want to save these changes to this student?");
+            if (!confirmed) return;
+
+            try {
+                const response = await fetch('/admin/update-student', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        studentId,
+                        name,
+                        phone,
+                        seatNumber,
+                        shifts,
+                        feeExpireDate,
+                        feePaid
+                    })
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    await showCustomAlert("Success", "Student details updated successfully!");
+                    closeStudentModal();
+                    fetchDashboard(); // Refresh cards list
+                } else {
+                    await showCustomAlert("Update Failed", data.error || "Failed to update student details.");
+                }
+            } catch (err) {
+                await showCustomAlert("Error", "Connection failed. Could not reach server.");
+            }
+        }
+
+        async function deleteStudentData() {
+            const studentId = document.getElementById('editStudentId').value;
+            if (!studentId) return;
+
+            const confirmed = await showCustomConfirm("Delete Student?", "Are you sure you want to delete this student? This action cannot be undone.");
+            if (!confirmed) return;
+
+            try {
+                const response = await fetch('/admin/delete-student', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ studentId })
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    await showCustomAlert("Success", "Student deleted successfully!");
+                    closeStudentModal();
+                    fetchDashboard(); // Refresh cards list
+                } else {
+                    await showCustomAlert("Delete Failed", data.error || "Failed to delete student.");
+                }
+            } catch (err) {
+                await showCustomAlert("Error", "Connection failed. Could not reach server.");
+            }
+        }
+
+        async function renewStudentFee(studentId) {
+            const confirmed = await showCustomConfirm("Renew Fee?", "Extend fees for another 30 days from previous expiry date?");
+            if (!confirmed) return;
+            try {
+                const response = await fetch('/admin/renew-fee', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ studentId })
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    await showCustomAlert("Success", data.message);
+                    closeStudentModal();
+                    fetchDashboard(); // Reload current view cards
+                } else {
+                    await showCustomAlert("Renewal Failed", data.error || "Could not renew fee.");
+                }
+            } catch (err) {
+                await showCustomAlert("Error", "Failed to connect to the server.");
+            }
+        }
+    </script>
+</body>
+</html>

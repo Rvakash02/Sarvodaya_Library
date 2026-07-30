@@ -1,0 +1,5 @@
+2026/07/26-14:08:18.820 7c5a89 Creating DB /Users/akashkumar/Desktop/projects/library/.wwebjs_auth/session/Default/Local Storage/leveldb since it was missing.
+2026/07/26-14:08:18.833 7c5a89 Reusing MANIFEST /Users/akashkumar/Desktop/projects/library/.wwebjs_auth/session/Default/Local Storage/leveldb/MANIFEST-000001
+2026/07/26-16:55:28.308 7c5a8c Level-0 table #5: started
+2026/07/26-16:55:28.311 7c5a8c Level-0 table #5: 17835 bytes OK
+2026/07/26-16:55:28.315 7c5a8c Delete type=0 #3

@@ -1,0 +1,32 @@
+
+<header class="site-header">
+    <nav>
+        <div class="left">
+            <div class="site-title">
+                <a href="/user/home">
+                    <h1 >Sarvodaya</h1>
+                    <p>the library</p>
+                </a>
+            </div>
+        </div>
+    
+        <ul class="nav-links">
+             <li><a href="/user/home">Home</a></li>
+             <li><a href="/user/contact">Contact Us</a></li>
+             <li><a href="/user/liveseats">Live Seats</a></li>
+            <% if(user){ %>
+                <li><a href="/admin/dashboard">Dashboard</a></li>
+            <% } %>
+        </ul>
+    
+         <% if (user) { %>
+            <div class="buttons">
+                <a href="/user/logout">Logout</a>
+            </div>
+        <% } else { %>
+            <div class="buttons">
+                <a href="/user/login">Admin Login</a>
+            </div>
+        <% } %>
+    </nav>
+</header>
