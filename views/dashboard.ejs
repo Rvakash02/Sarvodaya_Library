@@ -52,28 +52,28 @@
         </div>
 
         <!-- Filters bar -->
-        <div class="filters-bar">
-            <div class="filter-group">
-                <label for="shiftSelect">Shift</label>
-                <select id="shiftSelect">
-                    <option value="">All shifts…</option>
-                    <option value="6am-10am">6 AM – 10 AM</option>
-                    <option value="10am-2pm">10 AM – 2 PM</option>
-                    <option value="2pm-6pm">2 PM – 6 PM</option>
-                    <option value="6pm-10pm">6 PM – 10 PM</option>
-                    <option value="night">Night</option>
-                </select>
+        <div class="filters-bar" style="display:flex; flex-wrap:wrap; align-items:flex-end; gap:14px; background:var(--bg-elevated); padding:16px; border-radius:var(--r-lg); border:1px solid var(--border);">
+            <div class="filter-group" style="flex:2; min-width:260px;">
+                <label style="font-size:11px; font-weight:700; color:var(--fg-muted); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:8px; display:block;">Shifts (Select one or multiple)</label>
+                <div id="filterShiftPills" style="display:flex; flex-wrap:wrap; gap:6px;">
+                    <button type="button" class="shift-filter-btn active" data-shift="" onclick="toggleFilterShift(this)">All</button>
+                    <button type="button" class="shift-filter-btn" data-shift="6am-10am" onclick="toggleFilterShift(this)">6–10 AM</button>
+                    <button type="button" class="shift-filter-btn" data-shift="10am-2pm" onclick="toggleFilterShift(this)">10 AM–2 PM</button>
+                    <button type="button" class="shift-filter-btn" data-shift="2pm-6pm" onclick="toggleFilterShift(this)">2–6 PM</button>
+                    <button type="button" class="shift-filter-btn" data-shift="6pm-10pm" onclick="toggleFilterShift(this)">6–10 PM</button>
+                    <button type="button" class="shift-filter-btn" data-shift="night" onclick="toggleFilterShift(this)">Night</button>
+                </div>
             </div>
-            <div class="filter-group">
-                <label for="statusSelect">Fee Status</label>
-                <select id="statusSelect">
+            <div class="filter-group" style="flex:1; min-width:160px;">
+                <label for="statusSelect" style="font-size:11px; font-weight:700; color:var(--fg-muted); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:8px; display:block;">Fee Status</label>
+                <select id="statusSelect" onchange="fetchDashboard()" style="width:100%; padding:9px 12px; border-radius:var(--r-sm); border:1px solid var(--border); font-size:13.5px; font-weight:600; background:var(--bg); cursor:pointer;">
                     <option value="all">All students</option>
                     <option value="paid">Paid</option>
                     <option value="unpaid">Unpaid</option>
                     <option value="vacant">Vacant seats</option>
                 </select>
             </div>
-            <button onclick="fetchDashboard()" class="btn btn-primary" style="align-self:flex-end;">Apply</button>
+            <button onclick="fetchDashboard()" class="btn btn-primary" style="padding:10px 18px; font-size:13.5px;">Apply Filter</button>
         </div>
 
         <div id="resultsContainer"></div>
@@ -113,15 +113,19 @@
                 <div style="display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap;">
                     <!-- Edit Button -->
                     <button onclick="toggleEditMode(true)" style="flex: 1; padding: 10px; background-color: #6366f1; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; margin-top: 0;">
-                        Edit Info
+                        ✏️ Edit Info
                     </button>
                     <!-- Renew Fee Button -->
                     <button id="modalRenewBtn" class="renew-btn" style="flex: 1.2; margin-top: 0; padding: 10px;">
-                        Renew (30 Days)
+                        🔄 Renew (30 Days)
                     </button>
                     <!-- Send Fee Reminder (only visible when unpaid) -->
                     <button id="modalReminderBtn" onclick="sendFeeReminder()" style="display: none; flex: 1.2; padding: 10px; background-color: #25d366; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; margin-top: 0; font-size: 13px;">
                         📩 Send Reminder
+                    </button>
+                    <!-- Delete Button in View Mode -->
+                    <button onclick="deleteStudentData()" style="flex: 1; padding: 10px; background-color: #ef4444; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; margin-top: 0;">
+                        🗑️ Delete Student
                     </button>
                 </div>
             </div>
@@ -148,21 +152,24 @@
                     </div>
 
                     <div class="form-group" style="margin-bottom: 12px;">
-                        <label style="font-size: 13px; font-weight: 600; margin-bottom: 4px;">Select Shifts</label>
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 6px;">
+                            <label style="font-size: 13px; font-weight: 600; margin: 0;">Select Shifts (Select multiple)</label>
+                            <button type="button" onclick="selectAllEditShifts()" style="background:none; border:none; color:var(--brand); font-size:12px; font-weight:600; cursor:pointer; padding:0;">Select All / Clear</button>
+                        </div>
                         <div class="shift-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 4px;">
-                            <label class="shift-checkbox-label" style="padding: 8px 12px; font-size: 13px; margin: 0; display: flex; align-items: center; gap: 8px;">
+                            <label class="shift-checkbox-label" style="padding: 8px 12px; font-size: 13px; margin: 0; display: flex; align-items: center; gap: 8px; cursor:pointer;">
                                 <input type="checkbox" name="editShifts" value="6am-10am"> 6am-10am
                             </label>
-                            <label class="shift-checkbox-label" style="padding: 8px 12px; font-size: 13px; margin: 0; display: flex; align-items: center; gap: 8px;">
+                            <label class="shift-checkbox-label" style="padding: 8px 12px; font-size: 13px; margin: 0; display: flex; align-items: center; gap: 8px; cursor:pointer;">
                                 <input type="checkbox" name="editShifts" value="10am-2pm"> 10am-2pm
                             </label>
-                            <label class="shift-checkbox-label" style="padding: 8px 12px; font-size: 13px; margin: 0; display: flex; align-items: center; gap: 8px;">
+                            <label class="shift-checkbox-label" style="padding: 8px 12px; font-size: 13px; margin: 0; display: flex; align-items: center; gap: 8px; cursor:pointer;">
                                 <input type="checkbox" name="editShifts" value="2pm-6pm"> 2pm-6pm
                             </label>
-                            <label class="shift-checkbox-label" style="padding: 8px 12px; font-size: 13px; margin: 0; display: flex; align-items: center; gap: 8px;">
+                            <label class="shift-checkbox-label" style="padding: 8px 12px; font-size: 13px; margin: 0; display: flex; align-items: center; gap: 8px; cursor:pointer;">
                                 <input type="checkbox" name="editShifts" value="6pm-10pm"> 6pm-10pm
                             </label>
-                            <label class="shift-checkbox-label" style="padding: 8px 12px; font-size: 13px; margin: 0; display: flex; align-items: center; gap: 8px; grid-column: span 2;">
+                            <label class="shift-checkbox-label" style="padding: 8px 12px; font-size: 13px; margin: 0; display: flex; align-items: center; gap: 8px; grid-column: span 2; cursor:pointer;">
                                 <input type="checkbox" name="editShifts" value="night"> Night Shift
                             </label>
                         </div>
@@ -178,11 +185,11 @@
                             Cancel
                         </button>
                         <button type="submit" style="flex: 1.2; padding: 10px; background-color: var(--success); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; margin-top: 0; width: auto; min-height: 40px;">
-                            Save Changes
+                            💾 Save Changes
                         </button>
                     </div>
                     <button type="button" onclick="deleteStudentData()" style="width: 100%; padding: 10px; background-color: var(--error); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; margin-top: 12px; min-height: 40px;">
-                        Delete Student
+                        🗑️ Delete Student
                     </button>
                 </form>
             </div>
@@ -434,27 +441,52 @@
             resultsContainer.innerHTML = html;
         }
 
+        function toggleFilterShift(btn) {
+            const val = btn.getAttribute('data-shift');
+            const allBtn = document.querySelector('.shift-filter-btn[data-shift=""]');
+            if (val === '') {
+                document.querySelectorAll('.shift-filter-btn').forEach(b => b.classList.remove('active'));
+                if (allBtn) allBtn.classList.add('active');
+            } else {
+                if (allBtn) allBtn.classList.remove('active');
+                btn.classList.toggle('active');
+                const activeSpecific = document.querySelectorAll('.shift-filter-btn.active');
+                if (activeSpecific.length === 0 && allBtn) {
+                    allBtn.classList.add('active');
+                }
+            }
+            fetchDashboard();
+        }
+
+        function getSelectedFilterShifts() {
+            const activeBtns = Array.from(document.querySelectorAll('.shift-filter-btn.active'))
+                                     .map(b => b.getAttribute('data-shift'))
+                                     .filter(Boolean);
+            return activeBtns.join(',');
+        }
+
+        function selectAllEditShifts() {
+            const checkboxes = document.querySelectorAll('input[name="editShifts"]');
+            const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+            checkboxes.forEach(cb => cb.checked = !allChecked);
+        }
+
         async function fetchDashboard() {
-            const shift = document.getElementById('shiftSelect').value;
+            const shift = getSelectedFilterShifts();
             const status = document.getElementById('statusSelect').value;
             const search = document.getElementById('searchInput').value.trim();
             const resultsContainer = document.getElementById('resultsContainer');
-            if (!shift && !search) {
-                await showCustomAlert("Search Input Needed", "Please select a shift or enter a search query.");
-                return;
-            }
-            resultsContainer.innerHTML = "<p>Loading...</p>";
+            resultsContainer.innerHTML = "<p style='padding: 20px; color: var(--fg-muted);'>Loading...</p>";
             try {
-                const response = await fetch(`/admin/dashboard-data?shift=${shift}&status=${status}&search=${encodeURIComponent(search)}`);
+                const response = await fetch(`/admin/dashboard-data?shift=${encodeURIComponent(shift)}&status=${status}&search=${encodeURIComponent(search)}`);
                 const data = await response.json();
                 if (!response.ok) {
                     resultsContainer.innerHTML = `<p style="color:red;">Error: ${data.error}</p>`;
                     return;
                 }
                 if (status === 'vacant') {
-                    // Render vacant seats in a grid layout
                     if (data.vacantSeats.length === 0) {
-                        resultsContainer.innerHTML = "<p>No vacant seats left for this shift!</p>";
+                        resultsContainer.innerHTML = "<p>No vacant seats left for selected shift(s)!</p>";
                     } else {
                         let html = `<h3>Vacant Seats (${data.vacantSeats.length} available):</h3><div class="vacant-grid">`;
                         data.vacantSeats.forEach(seat => {
@@ -477,6 +509,7 @@
             if (!student) return;
 
             window.selectedStudent = student; // Store globally for edit toggle reference
+            document.getElementById('editStudentId').value = student._id; // Ensure ID is populated immediately
             toggleEditMode(false); // Reset to view mode first
 
             document.getElementById('modalStudentName').textContent = student.name;
@@ -488,7 +521,7 @@
             seatBadge.className = "status-badge status-paid";
 
             // Format Shifts
-            document.getElementById('modalShifts').textContent = student.shifts.join(', ');
+            document.getElementById('modalShifts').textContent = Array.isArray(student.shifts) ? student.shifts.join(', ') : student.shifts;
             
             // Format Dates
             const admissionDate = student.admissionDate ? new Date(student.admissionDate).toLocaleDateString('en-IN') : 'N/A';
@@ -531,26 +564,28 @@
                 editPanel.style.display = 'block';
 
                 // Populate form fields
-                document.getElementById('editStudentId').value = student._id;
-                document.getElementById('editName').value = student.name;
-                document.getElementById('editPhone').value = student.phone;
-                document.getElementById('editSeat').value = student.seatNumber;
+                if (student) {
+                    document.getElementById('editStudentId').value = student._id;
+                    document.getElementById('editName').value = student.name;
+                    document.getElementById('editPhone').value = student.phone;
+                    document.getElementById('editSeat').value = student.seatNumber;
 
-                // Toggle shift checkboxes
-                const checkboxes = document.querySelectorAll('input[name="editShifts"]');
-                checkboxes.forEach(cb => {
-                    cb.checked = student.shifts.includes(cb.value);
-                });
+                    // Toggle shift checkboxes
+                    const checkboxes = document.querySelectorAll('input[name="editShifts"]');
+                    checkboxes.forEach(cb => {
+                        cb.checked = Array.isArray(student.shifts) && student.shifts.includes(cb.value);
+                    });
 
-                // Format expiry date as YYYY-MM-DD for HTML5 date input
-                if (student.feeExpireDate) {
-                    const date = new Date(student.feeExpireDate);
-                    const yyyy = date.getFullYear();
-                    const mm = String(date.getMonth() + 1).padStart(2, '0');
-                    const dd = String(date.getDate()).padStart(2, '0');
-                    document.getElementById('editExpiry').value = `${yyyy}-${mm}-${dd}`;
-                } else {
-                    document.getElementById('editExpiry').value = '';
+                    // Format expiry date as YYYY-MM-DD for HTML5 date input
+                    if (student.feeExpireDate) {
+                        const date = new Date(student.feeExpireDate);
+                        const yyyy = date.getFullYear();
+                        const mm = String(date.getMonth() + 1).padStart(2, '0');
+                        const dd = String(date.getDate()).padStart(2, '0');
+                        document.getElementById('editExpiry').value = `${yyyy}-${mm}-${dd}`;
+                    } else {
+                        document.getElementById('editExpiry').value = '';
+                    }
                 }
             } else {
                 viewPanel.style.display = 'block';
@@ -662,7 +697,8 @@
         }
 
         async function deleteStudentData() {
-            const studentId = document.getElementById('editStudentId').value;
+            const student = window.selectedStudent;
+            const studentId = document.getElementById('editStudentId').value || (student && student._id);
             if (!studentId) return;
 
             const confirmed = await showCustomConfirm("Delete Student?", "Are you sure you want to delete this student? This action cannot be undone.");
