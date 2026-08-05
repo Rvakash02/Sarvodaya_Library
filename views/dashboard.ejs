@@ -387,6 +387,9 @@
                     }
                 });
             }
+
+            // Load initial student list (all shifts, all students)
+            fetchDashboard();
             
             // Poll WhatsApp status
             checkWhatsAppStatus();
@@ -440,20 +443,18 @@
         }
 
         async function fetchDashboard() {
-            const shift = document.getElementById('shiftSelect').value;
+            const shiftSelect = document.getElementById('shiftSelect');
+            const shift = shiftSelect ? shiftSelect.value : '';
             const status = document.getElementById('statusSelect').value;
             const search = document.getElementById('searchInput').value.trim();
             const resultsContainer = document.getElementById('resultsContainer');
-            if (!shift && !search) {
-                await showCustomAlert("Search Input Needed", "Please select a shift or enter a search query.");
-                return;
-            }
-            resultsContainer.innerHTML = "<p>Loading...</p>";
+            
+            resultsContainer.innerHTML = "<p style='padding:20px; color:var(--fg-muted);'>Loading...</p>";
             try {
-                const response = await fetch(`/admin/dashboard-data?shift=${shift}&status=${status}&search=${encodeURIComponent(search)}`);
+                const response = await fetch(`/admin/dashboard-data?shift=${encodeURIComponent(shift)}&status=${status}&search=${encodeURIComponent(search)}`);
                 const data = await response.json();
                 if (!response.ok) {
-                    resultsContainer.innerHTML = `<p style="color:red;">Error: ${data.error}</p>`;
+                    resultsContainer.innerHTML = `<p style="color:red;">Error: ${data.error || 'Failed to load data'}</p>`;
                     return;
                 }
                 if (status === 'vacant') {

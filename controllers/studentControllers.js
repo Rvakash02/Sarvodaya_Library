@@ -55,9 +55,6 @@ const addStudent = async (req, res) => {
 const getDashboardData = async (req, res) => {
     try {
         const { shift, status, search } = req.query;
-        if (!shift && !search) {
-            return res.status(400).json({ error: "Please select a shift or enter a search term." });
-        }
 
         // Parse shifts parameter (can be string, array, or comma-separated list)
         let shiftsArray = [];
@@ -76,9 +73,13 @@ const getDashboardData = async (req, res) => {
 
         let students = [];
         let vacantSeats = [];
-        if (status === 'vacant' && shiftsArray.length > 0) {
-            // Find all occupied seats in the selected shifts
-            const occupiedStudents = await Student.find({ shifts: { $in: shiftsArray } });
+        if (status === 'vacant') {
+            // Find all occupied seats (in selected shifts, or across all shifts if none selected)
+            let occupiedQuery = {};
+            if (shiftsArray.length > 0) {
+                occupiedQuery.shifts = { $in: shiftsArray };
+            }
+            const occupiedStudents = await Student.find(occupiedQuery);
             const occupiedSeats = occupiedStudents.map(s => s.seatNumber);
             // Calculate remaining available seats (from 43 total)
             for (let i = 1; i <= 43; i++) {
