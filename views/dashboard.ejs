@@ -149,24 +149,17 @@
                         <input type="number" id="editSeat" min="1" max="43" required>
                     </div>
 
-                    <div class="form-group" style="margin-bottom: 12px;">
-                        <label style="font-size: 13px; font-weight: 600; margin-bottom: 4px;">Select Shifts</label>
-                        <div class="shift-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 4px;">
-                            <label class="shift-checkbox-label" style="padding: 8px 12px; font-size: 13px; margin: 0; display: flex; align-items: center; gap: 8px;">
-                                <input type="checkbox" name="editShifts" value="6am-10am"> 6am-10am
-                            </label>
-                            <label class="shift-checkbox-label" style="padding: 8px 12px; font-size: 13px; margin: 0; display: flex; align-items: center; gap: 8px;">
-                                <input type="checkbox" name="editShifts" value="10am-2pm"> 10am-2pm
-                            </label>
-                            <label class="shift-checkbox-label" style="padding: 8px 12px; font-size: 13px; margin: 0; display: flex; align-items: center; gap: 8px;">
-                                <input type="checkbox" name="editShifts" value="2pm-6pm"> 2pm-6pm
-                            </label>
-                            <label class="shift-checkbox-label" style="padding: 8px 12px; font-size: 13px; margin: 0; display: flex; align-items: center; gap: 8px;">
-                                <input type="checkbox" name="editShifts" value="6pm-10pm"> 6pm-10pm
-                            </label>
-                            <label class="shift-checkbox-label" style="padding: 8px 12px; font-size: 13px; margin: 0; display: flex; align-items: center; gap: 8px; grid-column: span 2;">
-                                <input type="checkbox" name="editShifts" value="night"> Night Shift
-                            </label>
+                    <div class="form-group" style="margin-bottom: 14px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 6px;">
+                            <label style="font-size: 13px; font-weight: 600; margin: 0;">Select Shifts (Select multiple)</label>
+                            <button type="button" onclick="selectAllEditShifts()" style="background:none; border:none; color:var(--brand); font-size:12px; font-weight:600; cursor:pointer; padding:0;">Select All / Clear</button>
+                        </div>
+                        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 4px;">
+                            <label class="shift-pill"><input type="checkbox" name="editShifts" value="6am-10am"> 6 AM – 10 AM</label>
+                            <label class="shift-pill"><input type="checkbox" name="editShifts" value="10am-2pm"> 10 AM – 2 PM</label>
+                            <label class="shift-pill"><input type="checkbox" name="editShifts" value="2pm-6pm"> 2 PM – 6 PM</label>
+                            <label class="shift-pill"><input type="checkbox" name="editShifts" value="6pm-10pm"> 6 PM – 10 PM</label>
+                            <label class="shift-pill" style="grid-column: span 2;"><input type="checkbox" name="editShifts" value="night"> Night shift (10 PM onwards)</label>
                         </div>
                     </div>
 
@@ -523,12 +516,36 @@
             document.getElementById('studentModal').style.display = 'none';
         }
 
+        function selectAllEditShifts() {
+            const checkboxes = document.querySelectorAll('input[name="editShifts"]');
+            const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+            checkboxes.forEach(cb => {
+                cb.checked = !allChecked;
+                const pill = cb.closest('.shift-pill');
+                if (pill) {
+                    if (cb.checked) pill.classList.add('selected');
+                    else pill.classList.remove('selected');
+                }
+            });
+        }
+
+        // Auto-update shift-pill visual state when editing shifts
+        document.addEventListener('change', (e) => {
+            if (e.target && e.target.name === 'editShifts') {
+                const pill = e.target.closest('.shift-pill');
+                if (pill) {
+                    if (e.target.checked) pill.classList.add('selected');
+                    else pill.classList.remove('selected');
+                }
+            }
+        });
+
         function toggleEditMode(isEdit) {
             const viewPanel = document.getElementById('modalViewMode');
             const editPanel = document.getElementById('modalEditMode');
             const student = window.selectedStudent;
 
-            if (isEdit) {
+            if (isEdit && student) {
                 viewPanel.style.display = 'none';
                 editPanel.style.display = 'block';
 
@@ -538,10 +555,19 @@
                 document.getElementById('editPhone').value = student.phone;
                 document.getElementById('editSeat').value = student.seatNumber;
 
-                // Toggle shift checkboxes
+                // Parse and toggle shift checkboxes & visual pill styling
+                const currentShifts = Array.isArray(student.shifts) 
+                    ? student.shifts 
+                    : (typeof student.shifts === 'string' ? student.shifts.split(',').map(s => s.trim()) : []);
+
                 const checkboxes = document.querySelectorAll('input[name="editShifts"]');
                 checkboxes.forEach(cb => {
-                    cb.checked = student.shifts.includes(cb.value);
+                    cb.checked = currentShifts.includes(cb.value);
+                    const pill = cb.closest('.shift-pill');
+                    if (pill) {
+                        if (cb.checked) pill.classList.add('selected');
+                        else pill.classList.remove('selected');
+                    }
                 });
 
                 // Format expiry date as YYYY-MM-DD for HTML5 date input

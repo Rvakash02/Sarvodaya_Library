@@ -781,6 +781,7 @@ input:checked + .slider::before { transform: translateX(20px); }
   background: var(--brand-faint);
 }
 
+.shift-pill.selected,
 .shift-pill:has(input:checked) {
   border-color: var(--brand);
   background: var(--brand-light);
