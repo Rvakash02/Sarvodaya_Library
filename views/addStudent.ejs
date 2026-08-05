@@ -31,7 +31,10 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Shifts</label>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                        <label class="form-label" style="margin:0;">Select Shifts (Select multiple)</label>
+                        <button type="button" onclick="selectAllAddShifts()" style="background:none; border:none; color:var(--brand); font-size:12px; font-weight:600; cursor:pointer; padding:0;">Select All / Clear</button>
+                    </div>
                     <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:8px; margin-top:4px;">
                         <label class="shift-pill"><input type="checkbox" name="shifts" value="6am-10am"> 6 AM – 10 AM</label>
                         <label class="shift-pill"><input type="checkbox" name="shifts" value="10am-2pm"> 10 AM – 2 PM</label>
@@ -57,17 +60,28 @@
     </div>
 
     <script>
-        // Toggle selected visual styling on shift labels when checked
-        const labels = document.querySelectorAll('.shift-pill');
-        labels.forEach(label => {
-            const checkbox = label.querySelector('input');
-            checkbox.addEventListener('change', () => {
-                if (checkbox.checked) {
-                    label.classList.add('selected');
-                } else {
-                    label.classList.remove('selected');
+        function selectAllAddShifts() {
+            const checkboxes = document.querySelectorAll('input[name="shifts"]');
+            const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+            checkboxes.forEach(cb => {
+                cb.checked = !allChecked;
+                const pill = cb.closest('.shift-pill');
+                if (pill) {
+                    if (cb.checked) pill.classList.add('selected');
+                    else pill.classList.remove('selected');
                 }
             });
+        }
+
+        // Toggle selected visual styling on shift labels when checked
+        document.addEventListener('change', (e) => {
+            if (e.target && e.target.name === 'shifts') {
+                const pill = e.target.closest('.shift-pill');
+                if (pill) {
+                    if (e.target.checked) pill.classList.add('selected');
+                    else pill.classList.remove('selected');
+                }
+            }
         });
 
         const form = document.getElementById('studentForm');

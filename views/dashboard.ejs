@@ -163,6 +163,16 @@
                         </div>
                     </div>
 
+                    <div class="form-group" style="margin-bottom: 14px;">
+                        <div style="display:flex; align-items:center; justify-content:space-between; background:var(--bg-subtle); border:1px solid var(--border); border-radius:var(--r-md); padding:12px 14px;">
+                            <span style="font-size: 13.5px; font-weight: 600; color: var(--fg);">Fee paid</span>
+                            <label class="switch" style="margin:0;">
+                                <input type="checkbox" id="editFeePaid" name="feePaid" value="true">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
                     <div class="form-group" style="margin-bottom: 12px;">
                         <label style="font-size: 13px; font-weight: 600; margin-bottom: 4px;">Fee Expiration Date</label>
                         <input type="date" id="editExpiry" required>
@@ -555,6 +565,8 @@
                 document.getElementById('editPhone').value = student.phone;
                 document.getElementById('editSeat').value = student.seatNumber;
 
+                document.getElementById('editFeePaid').checked = Boolean(student.feePaid);
+
                 // Parse and toggle shift checkboxes & visual pill styling
                 const currentShifts = Array.isArray(student.shifts) 
                     ? student.shifts 
@@ -653,8 +665,7 @@
                 return;
             }
 
-            // Determine feePaid status dynamically (if expiry is in future, it's paid)
-            const feePaid = new Date(feeExpireDate) >= new Date();
+            const feePaid = document.getElementById('editFeePaid').checked;
 
             const confirmed = await showCustomConfirm("Save Changes?", "Are you sure you want to save these changes to this student?");
             if (!confirmed) return;

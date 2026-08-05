@@ -760,8 +760,8 @@ input:checked + .slider::before { transform: translateX(20px); }
 .shift-pill {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 8px 14px;
+  gap: 8px;
+  padding: 9px 14px;
   background: var(--bg-elevated);
   border: 1.5px solid var(--border);
   border-radius: var(--r-sm);
@@ -773,7 +773,13 @@ input:checked + .slider::before { transform: translateX(20px); }
   transition: all 0.18s var(--ease);
 }
 
-.shift-pill input[type="checkbox"] { width: 14px; height: 14px; accent-color: var(--brand); }
+.shift-pill input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: var(--brand);
+  margin: 0;
+}
 
 .shift-pill:hover {
   border-color: var(--brand);
@@ -786,6 +792,7 @@ input:checked + .slider::before { transform: translateX(20px); }
   border-color: var(--brand);
   background: var(--brand-light);
   color: var(--brand);
+  box-shadow: 0 1px 3px rgba(91, 79, 207, 0.15);
 }
 
 /* ------------------------------------------------------------------
