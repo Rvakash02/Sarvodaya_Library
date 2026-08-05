@@ -31,10 +31,7 @@
                 </div>
 
                 <div class="form-group">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-                        <label class="form-label" style="margin:0;">Select Shifts (Multiple shifts allowed)</label>
-                        <button type="button" onclick="selectAllShifts()" style="background:none; border:none; color:var(--brand); font-size:12px; font-weight:600; cursor:pointer; padding:0;">Select All / Clear</button>
-                    </div>
+                    <label class="form-label">Shifts</label>
                     <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:8px; margin-top:4px;">
                         <label class="shift-pill"><input type="checkbox" name="shifts" value="6am-10am"> 6 AM – 10 AM</label>
                         <label class="shift-pill"><input type="checkbox" name="shifts" value="10am-2pm"> 10 AM – 2 PM</label>
@@ -60,19 +57,6 @@
     </div>
 
     <script>
-        function selectAllShifts() {
-            const checkboxes = document.querySelectorAll('input[name="shifts"]');
-            const allChecked = Array.from(checkboxes).every(cb => cb.checked);
-            checkboxes.forEach(cb => {
-                cb.checked = !allChecked;
-                const label = cb.closest('.shift-pill');
-                if (label) {
-                    if (cb.checked) label.classList.add('selected');
-                    else label.classList.remove('selected');
-                }
-            });
-        }
-
         // Toggle selected visual styling on shift labels when checked
         const labels = document.querySelectorAll('.shift-pill');
         labels.forEach(label => {
