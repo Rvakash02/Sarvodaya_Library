@@ -38,18 +38,32 @@ let isInitialising  = false;
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
-/** Remove Chrome singleton/lock files so a fresh session can start */
+const { execSync } = require('child_process');
+
+/** Remove Chrome singleton/lock files & kill orphaned session browsers so a fresh session can start */
 function clearLockFiles() {
+    try {
+        if (process.platform !== 'win32') {
+            execSync("pkill -f '\\.wwebjs_auth/session' || true", { stdio: 'ignore' });
+        }
+    } catch (_) {}
+
     if (!fs.existsSync(SESSION_DIR)) return;
-    for (const file of LOCK_FILES) {
-        const p = path.join(SESSION_DIR, file);
-        try {
-            if (fs.existsSync(p)) {
-                fs.unlinkSync(p);
-                console.log(`[WhatsApp] Removed stale lock file: ${file}`);
+    const dirsToClean = [SESSION_DIR, path.join(SESSION_DIR, 'Default')];
+    const extraLocks = [...LOCK_FILES, 'LOCK', 'DevToolsActivePort'];
+
+    for (const dir of dirsToClean) {
+        if (!fs.existsSync(dir)) continue;
+        for (const file of extraLocks) {
+            const p = path.join(dir, file);
+            try {
+                if (fs.existsSync(p)) {
+                    fs.unlinkSync(p);
+                    console.log(`[WhatsApp] Removed stale lock file: ${p}`);
+                }
+            } catch (e) {
+                console.warn(`[WhatsApp] Could not remove lock file ${p}:`, e.message);
             }
-        } catch (e) {
-            console.warn(`[WhatsApp] Could not remove lock file ${file}:`, e.message);
         }
     }
 }
