@@ -12,6 +12,8 @@
         --muted: var(--fg-muted);
         --line: var(--border);
         --soft: var(--bg-subtle);
+        --error: #ef4444;
+        --success: #10b981;
     }
 </style>
 
@@ -177,12 +179,12 @@
                         <button type="button" onclick="toggleEditMode(false)" style="flex: 1; padding: 10px; background-color: #cbd5e1; color: #475569; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; margin-top: 0; width: auto; min-height: 40px;">
                             Cancel
                         </button>
-                        <button type="submit" style="flex: 1.2; padding: 10px; background-color: var(--success); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; margin-top: 0; width: auto; min-height: 40px;">
+                        <button type="submit" style="flex: 1.2; padding: 10px; background-color: #10b981; color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; margin-top: 0; width: auto; min-height: 40px;">
                             Save Changes
                         </button>
                     </div>
-                    <button type="button" onclick="deleteStudentData()" style="width: 100%; padding: 10px; background-color: var(--error); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; margin-top: 12px; min-height: 40px;">
-                        Delete Student
+                    <button type="button" onclick="deleteStudentData()" style="width: 100%; padding: 12px; background-color: #ef4444; color: white; border: none; border-radius: 8px; font-weight: 700; cursor: pointer; margin-top: 14px; min-height: 42px; font-size: 14px; box-shadow: 0 2px 4px rgba(239, 68, 68, 0.2);">
+                        🗑️ Delete Student
                     </button>
                 </form>
             </div>
@@ -662,7 +664,8 @@
         }
 
         async function deleteStudentData() {
-            const studentId = document.getElementById('editStudentId').value;
+            const student = window.selectedStudent;
+            const studentId = document.getElementById('editStudentId').value || (student && student._id);
             if (!studentId) return;
 
             const confirmed = await showCustomConfirm("Delete Student?", "Are you sure you want to delete this student? This action cannot be undone.");
