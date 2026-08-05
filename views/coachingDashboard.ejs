@@ -373,23 +373,60 @@
                 const modalBody = document.getElementById('waModalBody');
 
                 if (data.status === 'READY') {
+                    window.whatsappStatus = 'READY';
                     dot.style.background = '#10b981';
                     text.innerText = 'WhatsApp Connected';
                     modalBody.innerHTML = '<p style="color: #059669; font-weight: 700;">✅ WhatsApp client is active and connected!</p>';
                 } else if (data.status === 'QR' && data.qr) {
+                    window.whatsappStatus = 'QR';
                     dot.style.background = '#f59e0b';
                     text.innerText = 'Scan QR Code';
                     modalBody.innerHTML = `
-                        <p style="margin-bottom: 12px;">Scan this QR code with WhatsApp on your phone:</p>
+                        <p style="margin-bottom: 12px; font-weight:600;">Scan this QR code with WhatsApp on your phone:</p>
                         <img src="${data.qr}" alt="WhatsApp QR Code" style="width: 220px; border-radius: 12px; border: 1px solid #e2e8f0;">
                     `;
+                } else if (data.status === 'CONNECTING') {
+                    window.whatsappStatus = 'CONNECTING';
+                    dot.style.background = '#3b82f6';
+                    text.innerText = 'Connecting…';
+                    modalBody.innerHTML = '<p style="color: #2563eb; font-weight: 600;">⏳ Initializing WhatsApp client... Please wait a moment.</p>';
                 } else {
+                    window.whatsappStatus = 'DISCONNECTED';
                     dot.style.background = '#ef4444';
                     text.innerText = 'WhatsApp Disconnected';
-                    modalBody.innerHTML = '<p style="color: #dc2626;">⚠️ WhatsApp client is disconnected or initializing.</p>';
+                    modalBody.innerHTML = `
+                        <div style="padding: 10px 0;">
+                            <p style="color: #dc2626; font-weight: 600; margin-bottom: 14px;">⚠️ WhatsApp is currently disconnected.</p>
+                            <button onclick="reconnectWhatsAppClient(event)" class="btn btn-primary" style="padding: 10px 18px; font-size: 14px; font-weight: 700; border-radius: 8px; cursor: pointer;">
+                                📷 Show QR Code / Reconnect
+                            </button>
+                        </div>
+                    `;
                 }
             } catch (err) {
                 console.error(err);
+            }
+        }
+
+        async function reconnectWhatsAppClient(e) {
+            if (e) e.preventDefault();
+            const modalBody = document.getElementById('waModalBody');
+            const text = document.getElementById('waText');
+            if (text) text.innerText = 'Generating QR Code…';
+            if (modalBody) modalBody.innerHTML = '<p style="color: #4f46e5; font-weight: 600;">⌛ Launching browser and generating fresh QR code...</p>';
+
+            try {
+                await fetch('/admin/whatsapp-reconnect', { method: 'POST' });
+                let count = 0;
+                const interval = setInterval(async () => {
+                    count++;
+                    await checkWhatsAppStatus();
+                    if (window.whatsappStatus === 'QR' || window.whatsappStatus === 'READY' || count > 12) {
+                        clearInterval(interval);
+                    }
+                }, 1500);
+            } catch (err) {
+                if (modalBody) modalBody.innerHTML = '<p style="color: #dc2626;">Failed to restart WhatsApp client.</p>';
             }
         }
 

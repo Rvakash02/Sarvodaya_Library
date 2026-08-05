@@ -9,7 +9,7 @@ const {
     deleteCoachingStudent 
 } = require('../controllers/coachingControllers');
 const { basicAuth, roleAuth } = require('../middleware/auth');
-const { getWhatsAppStatus, sendWhatsAppMessage } = require('../services/whatsapp');
+const { getWhatsAppStatus, sendWhatsAppMessage, reconnectWhatsApp } = require('../services/whatsapp');
 const Student = require('../models/studentSchema');
 const CoachingStudent = require('../models/coachingStudentSchema');
 
@@ -20,6 +20,15 @@ router.use(roleAuth('admin'));
 // WhatsApp Endpoints
 router.get('/whatsapp-status', (req, res) => {
     res.json(getWhatsAppStatus());
+});
+
+router.post('/whatsapp-reconnect', async (req, res) => {
+    try {
+        await reconnectWhatsApp(true);
+        res.json({ success: true, message: 'WhatsApp client re-initialization started.' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 });
 
 router.post('/send-whatsapp', async (req, res) => {

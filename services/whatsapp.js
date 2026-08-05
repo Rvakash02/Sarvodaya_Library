@@ -227,6 +227,47 @@ function initWhatsApp() {
     });
 }
 
+function wipeAuthSession() {
+    try {
+        if (process.platform !== 'win32') {
+            execSync("pkill -f '\\.wwebjs_auth/session' || true", { stdio: 'ignore' });
+        }
+    } catch (_) {}
+
+    try {
+        if (fs.existsSync(AUTH_DATA_PATH)) {
+            fs.rmSync(AUTH_DATA_PATH, { recursive: true, force: true });
+            console.log('[WhatsApp] Auth session wiped for fresh QR generation.');
+        }
+    } catch (err) {
+        console.warn('[WhatsApp] Could not wipe auth session:', err.message);
+    }
+}
+
+async function reconnectWhatsApp(forceFresh = false) {
+    console.log(`[WhatsApp] Manual reconnect triggered (forceFresh=${forceFresh})...`);
+
+    if (retryTimer) {
+        clearTimeout(retryTimer);
+        retryTimer = null;
+    }
+
+    isInitialising = false;
+    await destroyClient();
+
+    if (forceFresh) {
+        wipeAuthSession();
+    } else {
+        clearLockFiles();
+    }
+
+    status = 'DISCONNECTED';
+    retryCount = 0;
+
+    initWhatsApp();
+    return true;
+}
+
 // ── Public API ────────────────────────────────────────────────────────────────
 
 function getWhatsAppStatus() {
@@ -273,4 +314,4 @@ async function sendWhatsAppMessage(phone, message) {
     }
 }
 
-module.exports = { initWhatsApp, getWhatsAppStatus, sendWhatsAppMessage };
+module.exports = { initWhatsApp, getWhatsAppStatus, sendWhatsAppMessage, reconnectWhatsApp };
