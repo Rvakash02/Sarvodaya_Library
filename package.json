@@ -4,7 +4,9 @@
   "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "clean-locks": "node -e \"const fs=require('fs'),p='.wwebjs_auth/session';['SingletonLock','SingletonSocket','SingletonCookie'].forEach(f=>{try{fs.unlinkSync(p+'/'+f);console.log('removed',f)}catch(e){}});\""
   },
   "keywords": [],
   "author": "",
