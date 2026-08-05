@@ -138,13 +138,9 @@ async function destroyClient() {
     }
 }
 
-function initWhatsApp() {
-    if (isInitialising) {
+function initWhatsApp(force = false) {
+    if (isInitialising && !force) {
         console.log('[WhatsApp] Already initialising — skipped duplicate call.');
-        return;
-    }
-    if (status === 'FAILED') {
-        console.warn('[WhatsApp] Service is in FAILED state. Restart the Node process to try again.');
         return;
     }
 
@@ -172,6 +168,7 @@ function initWhatsApp() {
         status = 'QR';
         try {
             qrCodeDataUrl = await qrcode.toDataURL(qr);
+            console.log('[WhatsApp] QR code Data URL generated successfully.');
         } catch (err) {
             console.error('[WhatsApp] QR generation failed:', err.message);
         }
@@ -198,6 +195,7 @@ function initWhatsApp() {
         qrCodeDataUrl = null;
         isInitialising = false;
         await destroyClient();
+        wipeAuthSession();
         scheduleRestart();
     });
 
@@ -208,9 +206,10 @@ function initWhatsApp() {
         isInitialising = false;
         await destroyClient();
 
-        // Don't restart on intentional logout
-        if (reason === 'LOGOUT') {
-            console.log('[WhatsApp] Session logged out. Re-initialising for fresh QR scan...');
+        // If logged out or disconnected, wipe session for clean reconnect
+        if (reason === 'LOGOUT' || reason === 'NAVIGATION') {
+            console.log('[WhatsApp] Session unlinked/disconnected. Wiping auth session for fresh QR scan...');
+            wipeAuthSession();
             retryCount = 0;
         }
         scheduleRestart();
@@ -223,6 +222,7 @@ function initWhatsApp() {
         qrCodeDataUrl = null;
         isInitialising = false;
         await destroyClient();
+        wipeAuthSession();
         scheduleRestart();
     });
 }
@@ -230,22 +230,23 @@ function initWhatsApp() {
 function wipeAuthSession() {
     try {
         if (process.platform !== 'win32') {
-            execSync("pkill -f '\\.wwebjs_auth/session' || true", { stdio: 'ignore' });
+            execSync("pkill -f 'chrome' || true", { stdio: 'ignore' });
+            execSync("pkill -f '\\.wwebjs_auth' || true", { stdio: 'ignore' });
         }
     } catch (_) {}
 
     try {
         if (fs.existsSync(AUTH_DATA_PATH)) {
             fs.rmSync(AUTH_DATA_PATH, { recursive: true, force: true });
-            console.log('[WhatsApp] Auth session wiped for fresh QR generation.');
+            console.log('[WhatsApp] Auth session wiped & unlinked for fresh QR generation.');
         }
     } catch (err) {
         console.warn('[WhatsApp] Could not wipe auth session:', err.message);
     }
 }
 
-async function reconnectWhatsApp(forceFresh = false) {
-    console.log(`[WhatsApp] Manual reconnect triggered (forceFresh=${forceFresh})...`);
+async function reconnectWhatsApp(forceFresh = true) {
+    console.log(`[WhatsApp] Manual reconnect/unlink triggered (forceFresh=${forceFresh})...`);
 
     if (retryTimer) {
         clearTimeout(retryTimer);
@@ -253,6 +254,9 @@ async function reconnectWhatsApp(forceFresh = false) {
     }
 
     isInitialising = false;
+    status = 'CONNECTING';
+    retryCount = 0;
+
     await destroyClient();
 
     if (forceFresh) {
@@ -261,10 +265,7 @@ async function reconnectWhatsApp(forceFresh = false) {
         clearLockFiles();
     }
 
-    status = 'DISCONNECTED';
-    retryCount = 0;
-
-    initWhatsApp();
+    initWhatsApp(true);
     return true;
 }
 

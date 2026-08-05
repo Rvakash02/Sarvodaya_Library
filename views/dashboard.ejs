@@ -352,7 +352,15 @@
                     dot.classList.add('connected');
                     dot.classList.remove('qr', 'disconnected');
                     statusText.textContent = 'Connected — automated reminders are active.';
-                    actionArea.innerHTML = '';
+                    actionArea.innerHTML = `
+                        <button onclick="reconnectWhatsAppClient(event)" class="btn btn-secondary btn-sm" style="padding:5px 10px; font-size:11px; border-radius:6px; cursor:pointer;">
+                            🔓 Unlink / Change WhatsApp
+                        </button>
+                    `;
+                    const container = document.getElementById('waModalQrContainer');
+                    if (container && document.getElementById('whatsappQrModal').style.display === 'flex') {
+                        container.innerHTML = '<p style="color:#059669; font-weight:700; font-size:14px;">✅ WhatsApp Connected Successfully!</p>';
+                    }
                 } else if (data.status === 'QR' && data.qr) {
                     window.whatsappStatus = 'QR';
                     dot.classList.add('qr');
@@ -360,23 +368,36 @@
                     statusText.textContent = 'Scan with WhatsApp to connect.';
                     actionArea.innerHTML = `
                         <div style="display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;">
-                            <img src="${data.qr}" alt="WhatsApp QR" style="width:110px;height:110px;border:1px solid var(--border);border-radius:8px;margin:0;">
-                            <span style="font-size:10px;color:var(--fg-muted);font-weight:700;text-transform:uppercase;letter-spacing:0.5px;">Scan QR with WhatsApp</span>
+                            <img src="${data.qr}" alt="WhatsApp QR" style="width:110px;height:110px;border:1px solid var(--border);border-radius:8px;margin:0;cursor:pointer;" onclick="openWaQrModal()">
+                            <button onclick="openWaQrModal()" class="btn btn-primary btn-sm" style="padding:4px 8px; font-size:11px; border-radius:4px; cursor:pointer;">
+                                🔍 View Large QR
+                            </button>
                         </div>
                     `;
+                    const container = document.getElementById('waModalQrContainer');
+                    if (container) {
+                        container.innerHTML = `
+                            <img src="${data.qr}" alt="WhatsApp QR Code" style="width:210px; height:210px; border-radius:10px; border:1px solid var(--border);">
+                            <span style="font-size:11px; color:var(--fg-muted); font-weight:700; text-transform:uppercase;">Scan with WhatsApp app on phone</span>
+                        `;
+                    }
                 } else if (data.status === 'CONNECTING') {
                     window.whatsappStatus = 'CONNECTING';
                     dot.style.backgroundColor = '#3b82f6';
                     statusText.textContent = 'Initializing — please wait…';
                     actionArea.innerHTML = '<span style="font-size:11px;font-weight:700;color:var(--brand);">Connecting browser…</span>';
+                    const container = document.getElementById('waModalQrContainer');
+                    if (container && document.getElementById('whatsappQrModal').style.display === 'flex') {
+                        container.innerHTML = '<p style="font-size:13px; color:var(--brand); font-weight:600;">Connecting to browser... generating QR code...</p>';
+                    }
                 } else {
                     window.whatsappStatus = 'DISCONNECTED';
                     dot.classList.add('disconnected');
                     dot.classList.remove('connected', 'qr');
-                    statusText.textContent = 'Disconnected — session expired or offline.';
+                    statusText.textContent = 'Disconnected — session expired or unlinked.';
                     actionArea.innerHTML = `
                         <button onclick="reconnectWhatsAppClient(event)" class="btn btn-primary" style="padding:6px 12px; font-size:12px; border-radius:6px; cursor:pointer;">
-                            📷 Show QR Code / Reconnect
+                            📷 Show QR Code / Unlink
                         </button>
                     `;
                 }
@@ -385,26 +406,42 @@
             }
         }
 
-        async function reconnectWhatsAppClient(e) {
-            if (e) e.preventDefault();
-            const statusText = document.getElementById('whatsappStatusText');
-            const actionArea = document.getElementById('whatsappActionArea');
-            if (statusText) statusText.textContent = 'Generating QR Code... please wait.';
-            if (actionArea) actionArea.innerHTML = '<span style="font-size:11px;font-weight:700;color:var(--brand);">Generating QR...</span>';
+        function openWaQrModal() {
+            document.getElementById('whatsappQrModal').style.display = 'flex';
+        }
 
+        function closeWaQrModal() {
+            document.getElementById('whatsappQrModal').style.display = 'none';
+        }
+
+        async function triggerUnlinkWhatsApp() {
+            const container = document.getElementById('waModalQrContainer');
+            if (container) {
+                container.innerHTML = '<p style="font-size:13px; color:var(--brand); font-weight:600;">Unlinking previous session & generating QR code...</p>';
+            }
             try {
                 await fetch('/admin/whatsapp-reconnect', { method: 'POST' });
-                let count = 0;
-                const interval = setInterval(async () => {
-                    count++;
-                    await checkWhatsAppStatus();
-                    if (window.whatsappStatus === 'QR' || window.whatsappStatus === 'READY' || count > 12) {
-                        clearInterval(interval);
-                    }
-                }, 1500);
+                pollForQr();
             } catch (err) {
-                if (statusText) statusText.textContent = 'Failed to restart WhatsApp.';
+                if (container) container.innerHTML = '<p style="color:red; font-size:13px;">Failed to trigger reconnect.</p>';
             }
+        }
+
+        async function reconnectWhatsAppClient(e) {
+            if (e) e.preventDefault();
+            openWaQrModal();
+            triggerUnlinkWhatsApp();
+        }
+
+        function pollForQr() {
+            let count = 0;
+            const interval = setInterval(async () => {
+                count++;
+                await checkWhatsAppStatus();
+                if (window.whatsappStatus === 'QR' || window.whatsappStatus === 'READY' || count > 15) {
+                    clearInterval(interval);
+                }
+            }, 1500);
         }
 
         // Attach key listener to Search Input and start polling WhatsApp status
@@ -791,5 +828,27 @@
             }
         }
     </script>
+
+    <!-- WhatsApp QR Code Modal -->
+    <div id="whatsappQrModal" class="modal-overlay" style="display:none; align-items:center; justify-content:center; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.65); z-index:99999;">
+        <div style="background:var(--bg-elevated); border:1.5px solid var(--border); border-radius:16px; padding:26px; max-width:380px; width:90%; text-align:center; box-shadow:0 12px 30px rgba(0,0,0,0.25); position:relative;">
+            <button onclick="closeWaQrModal()" style="position:absolute; top:12px; right:14px; background:none; border:none; font-size:22px; cursor:pointer; color:var(--fg-muted); font-weight:700;">&times;</button>
+            <h3 style="margin-bottom:6px; font-family:'DM Serif Display', Georgia, serif; font-size:22px; color:var(--fg);">WhatsApp Web Link</h3>
+            <p id="waModalSubtitle" style="font-size:13px; color:var(--fg-muted); margin-bottom:16px;">Scan this QR code with WhatsApp on your phone to link automated reminders.</p>
+            
+            <div id="waModalQrContainer" style="min-height:220px; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:12px; background:var(--bg-subtle); border-radius:12px; padding:16px;">
+                <p style="font-size:13px; color:var(--fg-muted); font-weight:600;">Generating QR Code... please wait</p>
+            </div>
+
+            <div style="display:flex; gap:10px; margin-top:18px;">
+                <button onclick="triggerUnlinkWhatsApp()" style="flex:1; padding:10px 12px; font-size:12px; background:#fee2e2; color:#dc2626; border:1.5px solid #fca5a5; border-radius:8px; font-weight:700; cursor:pointer;">
+                    🔓 Unlink & New QR
+                </button>
+                <button onclick="closeWaQrModal()" style="flex:1; padding:10px 12px; font-size:12px; background:var(--bg-subtle); color:var(--fg); border:1.5px solid var(--border); border-radius:8px; font-weight:700; cursor:pointer;">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
