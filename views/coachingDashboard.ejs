@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('./partials/head.ejs') %>
+<style>
+    :root {
+        --primary: var(--brand);
+        --primary-hover: var(--brand-hover);
+        --text-main: var(--fg);
+        --text-muted: var(--fg-muted);
+    }
+
+    .coaching-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 16px;
+        margin-top: 4px;
+    }
+
+    .coaching-card {
+        background: #fff;
+        border: 1.5px solid var(--border);
+        border-radius: var(--r-lg);
+        padding: 20px 18px;
+        cursor: pointer;
+        transition: all 0.22s var(--ease);
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        min-height: 155px;
+    }
+
+    .coaching-card:hover {
+        border-color: var(--amber);
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-lg);
+    }
+
+    .batch-badge {
+        position: absolute;
+        top: 14px; right: 14px;
+        background: var(--amber-light);
+        color: var(--amber);
+        font-size: 10.5px;
+        font-weight: 700;
+        padding: 3px 9px;
+        border-radius: var(--r-full);
+        border: 1px solid #fde68a;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+    }
+
+    .subject-info {
+        font-size: 12.5px;
+        color: var(--fg-muted);
+        font-weight: 500;
+        margin-bottom: 3px;
+    }
+</style>
+
+<body>
+    <%- include('./partials/nav.ejs') %>
+
+    <div class="container" style="padding-top: 8px; padding-bottom: 60px;">
+
+        <!-- Switcher + WhatsApp badge row -->
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:8px;">
+            <div class="dash-switcher">
+                <a href="/admin/dashboard">← Overview</a>
+                <a href="/admin/dashboard/library">📚 Library</a>
+                <a href="/admin/dashboard/coaching" class="active">🎓 Coaching</a>
+            </div>
+
+            <div id="waStatusBadge" style="cursor:pointer; display:flex; align-items:center; gap:8px; font-size:13px; font-weight:600; padding:7px 14px; background:#fff; border:1px solid var(--border); border-radius:var(--r-full); box-shadow:var(--shadow-xs);" onclick="openWaModal()">
+                <span class="wa-dot" id="waDot"></span>
+                <span id="waText">Checking WhatsApp…</span>
+            </div>
+        </div>
+
+        <!-- Page header -->
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">Coaching students</h1>
+            <div class="dashboard-controls">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Search name, phone, batch…" onkeyup="if(event.key==='Enter') triggerSearch()">
+                    <button onclick="triggerSearch()">Search</button>
+                </div>
+                <select id="statusFilter" onchange="triggerSearch()" style="padding:10px 14px; border:1px solid var(--border); border-radius:var(--r-sm); font-size:14px; font-weight:600; color:var(--fg); background:var(--bg-elevated); cursor:pointer; outline:none;">
+                    <option value="">All statuses</option>
+                    <option value="paid">Paid</option>
+                    <option value="unpaid">Unpaid</option>
+                </select>
+                <a href="/admin/coaching/register" class="btn btn-green" style="text-decoration:none;">+ Add student</a>
+            </div>
+        </div>
+
+        <!-- Student Grid -->
+        <div id="coachingGrid" class="coaching-grid"></div>
+
+        <!-- Empty State -->
+        <div id="emptyState" class="empty-state" style="display:none;">
+            <div class="empty-icon">🎓</div>
+            <h3>No coaching students found</h3>
+            <p>Try adjusting your filter or register a new student.</p>
+            <a href="/admin/coaching/register" class="btn btn-primary">+ Register student</a>
+        </div>
+    </div>
+
+    <!-- COACHING STUDENT DETAILS / EDIT MODAL -->
+    <div id="studentModal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeStudentModal()">&times;</button>
+            <h2 class="modal-title">Coaching Student Details</h2>
+            
+            <form id="editStudentForm" onsubmit="saveStudentChanges(event)">
+                <input type="hidden" id="modalStudentId">
+
+                <div class="form-group" style="margin-bottom: 12px;">
+                    <label style="font-size: 12px; font-weight: 600; color: #64748b;">Full Name</label>
+                    <input type="text" id="modalName" required style="width: 100%; padding: 8px 12px; border-radius: 8px; border: 1px solid #cbd5e1;">
+                </div>
+
+                <div class="form-group" style="margin-bottom: 12px;">
+                    <label style="font-size: 12px; font-weight: 600; color: #64748b;">Phone Number</label>
+                    <input type="tel" id="modalPhone" required style="width: 100%; padding: 8px 12px; border-radius: 8px; border: 1px solid #cbd5e1;">
+                </div>
+
+                <div class="form-group" style="margin-bottom: 12px;">
+                    <label style="font-size: 12px; font-weight: 600; color: #64748b;">Batch / Class</label>
+                    <input type="text" id="modalBatch" required style="width: 100%; padding: 8px 12px; border-radius: 8px; border: 1px solid #cbd5e1;">
+                </div>
+
+                <div class="form-group" style="margin-bottom: 12px;">
+                    <label style="font-size: 12px; font-weight: 600; color: #64748b;">Subject(s)</label>
+                    <input type="text" id="modalSubject" placeholder="e.g. Physics, Math" style="width: 100%; padding: 8px 12px; border-radius: 8px; border: 1px solid #cbd5e1;">
+                </div>
+
+                <div class="form-group" style="margin-bottom: 12px;">
+                    <label style="font-size: 12px; font-weight: 600; color: #64748b;">Monthly Fee (₹)</label>
+                    <input type="number" id="modalMonthlyFee" style="width: 100%; padding: 8px 12px; border-radius: 8px; border: 1px solid #cbd5e1;">
+                </div>
+
+                <div class="form-group" style="margin-bottom: 12px;">
+                    <label style="font-size: 12px; font-weight: 600; color: #64748b;">Fee Status</label>
+                    <select id="modalFeePaid" style="width: 100%; padding: 8px 12px; border-radius: 8px; border: 1px solid #cbd5e1; font-weight: 600;">
+                        <option value="true">Paid</option>
+                        <option value="false">Unpaid</option>
+                    </select>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 16px;">
+                    <label style="font-size: 12px; font-weight: 600; color: #64748b;">Fee Expiry Date</label>
+                    <input type="date" id="modalFeeExpireDate" style="width: 100%; padding: 8px 12px; border-radius: 8px; border: 1px solid #cbd5e1;">
+                </div>
+
+                <!-- Renewal Button -->
+                <button type="button" onclick="renewCoachingFee()" class="btn btn-green" style="width: 100%; padding: 12px; border-radius: 8px; font-weight: 700; cursor: pointer; margin-bottom: 10px; border: none;">
+                    Renew Monthly Fee (+30 Days)
+                </button>
+
+                <div style="display: flex; gap: 10px;">
+                    <button type="submit" class="btn" style="flex: 1; padding: 10px; background-color: #4f46e5; color: white; border: none; border-radius: 8px; font-weight: 700; cursor: pointer;">Save Changes</button>
+                    <button type="button" onclick="deleteCoachingStudent()" class="btn btn-red" style="padding: 10px 14px; border: none; border-radius: 8px; font-weight: 700; cursor: pointer;">Delete</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- WHATSAPP STATUS / QR MODAL -->
+    <div id="waModal" class="modal-overlay">
+        <div class="modal-content" style="text-align: center;">
+            <button class="close-btn" onclick="closeWaModal()">&times;</button>
+            <h2 class="modal-title">WhatsApp Web Service</h2>
+            <div id="waModalBody" style="margin: 20px 0;">
+                <p>Loading WhatsApp status...</p>
+            </div>
+            <button onclick="checkWhatsAppStatus()" class="btn" style="background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer;">Refresh Status</button>
+        </div>
+    </div>
+
+    <script>
+        let currentStudentsData = [];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchCoachingData();
+            checkWhatsAppStatus();
+            setInterval(checkWhatsAppStatus, 15000);
+        });
+
+        async function fetchCoachingData() {
+            const search = document.getElementById('searchInput').value.trim();
+            const status = document.getElementById('statusFilter').value;
+
+            const queryParams = new URLSearchParams();
+            if (search) queryParams.append('search', search);
+            if (status) queryParams.append('status', status);
+
+            try {
+                const res = await fetch(`/admin/coaching/dashboard-data?${queryParams.toString()}`);
+                const data = await res.json();
+                
+                if (res.ok) {
+                    currentStudentsData = data.students || [];
+                    renderStudents(currentStudentsData);
+                } else {
+                    alert(data.error || 'Failed to fetch coaching data');
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        function triggerSearch() {
+            fetchCoachingData();
+        }
+
+        function renderStudents(students) {
+            const grid = document.getElementById('coachingGrid');
+            const emptyState = document.getElementById('emptyState');
+
+            if (!students || students.length === 0) {
+                grid.style.display = 'none';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            grid.style.display = 'grid';
+            emptyState.style.display = 'none';
+
+            grid.innerHTML = students.map(student => {
+                const statusClass = student.feePaid ? 'status-paid' : 'status-unpaid';
+                const statusText = student.feePaid ? 'Paid' : 'Unpaid';
+                const expiryDate = student.feeExpireDate 
+                    ? new Date(student.feeExpireDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
+                    : 'N/A';
+
+                return `
+                    <div class="coaching-card" onclick="openStudentModal('${student._id}')">
+                        <span class="batch-badge">${escapeHtml(student.batch)}</span>
+                        <div>
+                            <h3 class="student-name">${escapeHtml(student.name)}</h3>
+                            <div class="subject-info">📞 ${escapeHtml(student.phone)}</div>
+                            ${student.subject ? `<div class="subject-info">📖 ${escapeHtml(student.subject)}</div>` : ''}
+                            ${student.monthlyFee ? `<div class="subject-info">💵 ₹${student.monthlyFee}/month</div>` : ''}
+                        </div>
+                        <div style="margin-top: 14px; display: flex; justify-content: space-between; align-items: center;">
+                            <span class="status-badge ${statusClass}">${statusText}</span>
+                            <span class="expiry-info" style="margin:0;">Exp: ${expiryDate}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+        }
+
+        function openStudentModal(id) {
+            const student = currentStudentsData.find(s => s._id === id);
+            if (!student) return;
+
+            document.getElementById('modalStudentId').value = student._id;
+            document.getElementById('modalName').value = student.name;
+            document.getElementById('modalPhone').value = student.phone;
+            document.getElementById('modalBatch').value = student.batch;
+            document.getElementById('modalSubject').value = student.subject || '';
+            document.getElementById('modalMonthlyFee').value = student.monthlyFee || 0;
+            document.getElementById('modalFeePaid').value = student.feePaid ? 'true' : 'false';
+
+            if (student.feeExpireDate) {
+                const d = new Date(student.feeExpireDate);
+                const year = d.getFullYear();
+                const month = String(d.getMonth() + 1).padStart(2, '0');
+                const day = String(d.getDate()).padStart(2, '0');
+                document.getElementById('modalFeeExpireDate').value = `${year}-${month}-${day}`;
+            } else {
+                document.getElementById('modalFeeExpireDate').value = '';
+            }
+
+            document.getElementById('studentModal').style.display = 'flex';
+        }
+
+        function closeStudentModal() {
+            document.getElementById('studentModal').style.display = 'none';
+        }
+
+        async function renewCoachingFee() {
+            const studentId = document.getElementById('modalStudentId').value;
+            if (!studentId) return;
+
+            try {
+                const res = await fetch('/admin/coaching/renew-fee', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ studentId })
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    alert('Fee renewed successfully (+30 Days)');
+                    closeStudentModal();
+                    fetchCoachingData();
+                } else {
+                    alert(data.error || 'Failed to renew fee');
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function saveStudentChanges(e) {
+            e.preventDefault();
+            const studentId = document.getElementById('modalStudentId').value;
+            const name = document.getElementById('modalName').value;
+            const phone = document.getElementById('modalPhone').value;
+            const batch = document.getElementById('modalBatch').value;
+            const subject = document.getElementById('modalSubject').value;
+            const monthlyFee = document.getElementById('modalMonthlyFee').value;
+            const feePaid = document.getElementById('modalFeePaid').value === 'true';
+            const feeExpireDate = document.getElementById('modalFeeExpireDate').value;
+
+            try {
+                const res = await fetch('/admin/coaching/update-student', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ studentId, name, phone, batch, subject, monthlyFee, feePaid, feeExpireDate })
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    alert('Student updated successfully');
+                    closeStudentModal();
+                    fetchCoachingData();
+                } else {
+                    alert(data.error || 'Failed to update student');
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function deleteCoachingStudent() {
+            const studentId = document.getElementById('modalStudentId').value;
+            if (!studentId) return;
+            if (!confirm('Are you sure you want to delete this coaching student?')) return;
+
+            try {
+                const res = await fetch('/admin/coaching/delete-student', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ studentId })
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    alert('Coaching student deleted');
+                    closeStudentModal();
+                    fetchCoachingData();
+                } else {
+                    alert(data.error || 'Failed to delete student');
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        // --- WHATSAPP UTILITIES ---
+        async function checkWhatsAppStatus() {
+            try {
+                const res = await fetch('/admin/whatsapp-status');
+                const data = await res.json();
+                const dot = document.getElementById('waDot');
+                const text = document.getElementById('waText');
+                const modalBody = document.getElementById('waModalBody');
+
+                if (data.status === 'READY') {
+                    dot.style.background = '#10b981';
+                    text.innerText = 'WhatsApp Connected';
+                    modalBody.innerHTML = '<p style="color: #059669; font-weight: 700;">✅ WhatsApp client is active and connected!</p>';
+                } else if (data.status === 'QR' && data.qr) {
+                    dot.style.background = '#f59e0b';
+                    text.innerText = 'Scan QR Code';
+                    modalBody.innerHTML = `
+                        <p style="margin-bottom: 12px;">Scan this QR code with WhatsApp on your phone:</p>
+                        <img src="${data.qr}" alt="WhatsApp QR Code" style="width: 220px; border-radius: 12px; border: 1px solid #e2e8f0;">
+                    `;
+                } else {
+                    dot.style.background = '#ef4444';
+                    text.innerText = 'WhatsApp Disconnected';
+                    modalBody.innerHTML = '<p style="color: #dc2626;">⚠️ WhatsApp client is disconnected or initializing.</p>';
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        function openWaModal() {
+            document.getElementById('waModal').style.display = 'flex';
+        }
+
+        function closeWaModal() {
+            document.getElementById('waModal').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

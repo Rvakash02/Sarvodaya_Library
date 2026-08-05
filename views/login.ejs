@@ -1,26 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
 <%- include('./partials/head.ejs') %>
-
 <body>
-     <%- include('./partials/nav.ejs') %>
-    <form action="/user/login" method="POST">
-        <div class="login">
-            <h1>Login</h1>
-        </div>
-        <div class="form-group">
-            <label>Email</label>
-            <input type="email" name="email" placeholder="abc@gmail.com" required>
-        </div>
-        <div class="input-group">
-            <label>Password</label>
-            <input type="password" name="password" placeholder="Enter your password" required>
-        </div>
-        <button type="submit">Login</button>
+    <%- include('./partials/nav.ejs') %>
 
-        <% if (error) { %>
-             <p class="failed" style="color: red;"><%= error %></p>
-        <% } %>
-    </form>
+    <div class="login-page">
+        <div class="login-card">
+            <h1 class="login-logo">Sarvodaya</h1>
+            <p class="subtitle">Admin portal — sign in to manage your students</p>
+
+            <% if (error) { %>
+                <div class="alert alert-error" role="alert">
+                    <span>⚠️</span> <%= error %>
+                </div>
+            <% } %>
+
+            <form action="/user/login" method="POST" novalidate>
+                <div class="form-group">
+                    <label class="form-label" for="email">Email address</label>
+                    <input
+                        class="form-input"
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="admin@sarvodaya.com"
+                        autocomplete="email"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="password">Password</label>
+                    <input
+                        class="form-input"
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="••••••••"
+                        autocomplete="current-password"
+                        required
+                    >
+                </div>
+
+                <button type="submit">Sign in to Dashboard</button>
+            </form>
+        </div>
+    </div>
 </body>
 </html>

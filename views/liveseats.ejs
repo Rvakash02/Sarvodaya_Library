@@ -1,305 +1,104 @@
 <!DOCTYPE html>
 <html lang="en">
 <%- include('./partials/head.ejs') %>
-
-<style>
-    .live-seats-container {
-        width: 100%;
-        max-width: 1000px;
-        margin: 40px auto;
-        padding: 0 20px;
-        box-sizing: border-box;
-    }
-
-    .live-header {
-        text-align: center;
-        margin-bottom: 30px;
-    }
-
-    .live-header h2 {
-        font-size: 32px;
-        font-weight: 800;
-        background: linear-gradient(135deg, #10b981, #0ea5e9);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        margin-bottom: 8px;
-    }
-
-    .live-header p {
-        color: var(--text-muted);
-        font-size: 15px;
-    }
-
-    /* Shift Selector */
-    .shift-selector-card {
-        background: #ffffff;
-        border: 1px solid var(--border);
-        border-radius: 20px;
-        padding: 20px 30px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 20px;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
-        margin-bottom: 40px;
-    }
-
-    .selector-group {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        flex: 1;
-    }
-
-    .selector-group label {
-        font-weight: 700;
-        font-size: 15px;
-        color: var(--text-main);
-        margin-bottom: 0;
-    }
-
-    .selector-group select {
-        max-width: 320px;
-    }
-
-    .legend {
-        display: flex;
-        gap: 16px;
-        font-size: 13px;
-        font-weight: 600;
-    }
-
-    .legend-item {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .legend-color {
-        width: 16px;
-        height: 16px;
-        border-radius: 4px;
-    }
-
-    /* Visual Grid Layout */
-    .seating-chart {
-        background: #ffffff;
-        border: 1px solid var(--border);
-        border-radius: 24px;
-        padding: 40px;
-        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.02);
-    }
-
-    .chart-header {
-        font-size: 18px;
-        font-weight: 700;
-        margin-bottom: 24px;
-        color: var(--text-main);
-        text-align: center;
-        padding-bottom: 12px;
-        border-bottom: 1px solid var(--border);
-    }
-
-    .grid-container {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
-        gap: 16px;
-    }
-
-    /* Seat Card design */
-    .seat-box {
-        aspect-ratio: 1;
-        border-radius: 12px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        font-weight: 700;
-        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        border: 1px solid transparent;
-        position: relative;
-    }
-
-    .seat-box .num {
-        font-size: 18px;
-        margin-bottom: 2px;
-    }
-
-    .seat-box .lbl {
-        font-size: 9px;
-        text-transform: uppercase;
-        font-weight: 800;
-        letter-spacing: 0.5px;
-    }
-
-    /* Active Green State (Available) */
-    .seat-available {
-        background-color: #ecfdf5;
-        border-color: #a7f3d0;
-        color: #047857;
-    }
-
-    .seat-available:hover {
-        transform: scale(1.05);
-        background-color: #10b981;
-        color: #ffffff;
-        border-color: #10b981;
-        box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.25);
-    }
-
-    /* Greyed Out State (Occupied) */
-    .seat-occupied {
-        background-color: #f1f5f9;
-        border-color: #e2e8f0;
-        color: #94a3b8;
-        cursor: not-allowed;
-    }
-
-    @media (max-width: 768px) {
-        .shift-selector-card {
-            flex-direction: column;
-            align-items: stretch;
-            padding: 20px;
-        }
-
-        .selector-group select {
-            max-width: 100%;
-        }
-
-        .legend {
-            justify-content: center;
-            border-top: 1px solid var(--border);
-            padding-top: 12px;
-        }
-
-        .seating-chart {
-            padding: 24px;
-        }
-    }
-
-    .shift-checkbox-btn:has(input:checked) {
-        border-color: #6366f1 !important;
-        background-color: #e0e7ff !important;
-        color: #4338ca !important;
-    }
-</style>
-
 <body>
     <%- include('./partials/nav.ejs') %>
 
-    <div class="live-seats-container">
-        <div class="live-header">
-            <h2>Live Seat Availability</h2>
-        </div>
+    <div class="liveseats-page">
+        <h1>Live seat availability</h1>
+        <p class="sub">Select one or more shifts to see which seats are open right now.</p>
 
-        <!-- Shift Selector & Legends -->
+        <!-- Shift Selector Card -->
         <div class="shift-selector-card">
-            <div class="selector-group" style="flex-direction: column; align-items: flex-start; gap: 10px;">
-                <label style="font-weight: 700; font-size: 15px; color: var(--text-main); margin-bottom: 5px;">Select Shifts (select multiple to see vacant seats in all of them):</label>
-                <div style="display: flex; flex-wrap: wrap; gap: 10px;">
-                    <label class="shift-checkbox-btn" style="cursor: pointer; display: flex; align-items: center; gap: 6px; padding: 8px 14px; border: 1px solid var(--border); border-radius: 12px; font-weight: 600; font-size: 13px; user-select: none; background: #fafafa; transition: all 0.2s;">
-                        <input type="checkbox" name="liveShifts" value="6am-10am" checked onchange="fetchLiveSeats()"> 6am - 10am
-                    </label>
-                    <label class="shift-checkbox-btn" style="cursor: pointer; display: flex; align-items: center; gap: 6px; padding: 8px 14px; border: 1px solid var(--border); border-radius: 12px; font-weight: 600; font-size: 13px; user-select: none; background: #fafafa; transition: all 0.2s;">
-                        <input type="checkbox" name="liveShifts" value="10am-2pm" onchange="fetchLiveSeats()"> 10am - 2pm
-                    </label>
-                    <label class="shift-checkbox-btn" style="cursor: pointer; display: flex; align-items: center; gap: 6px; padding: 8px 14px; border: 1px solid var(--border); border-radius: 12px; font-weight: 600; font-size: 13px; user-select: none; background: #fafafa; transition: all 0.2s;">
-                        <input type="checkbox" name="liveShifts" value="2pm-6pm" onchange="fetchLiveSeats()"> 2pm - 6pm
-                    </label>
-                    <label class="shift-checkbox-btn" style="cursor: pointer; display: flex; align-items: center; gap: 6px; padding: 8px 14px; border: 1px solid var(--border); border-radius: 12px; font-weight: 600; font-size: 13px; user-select: none; background: #fafafa; transition: all 0.2s;">
-                        <input type="checkbox" name="liveShifts" value="6pm-10pm" onchange="fetchLiveSeats()"> 6pm - 10pm
-                    </label>
-                    <label class="shift-checkbox-btn" style="cursor: pointer; display: flex; align-items: center; gap: 6px; padding: 8px 14px; border: 1px solid var(--border); border-radius: 12px; font-weight: 600; font-size: 13px; user-select: none; background: #fafafa; transition: all 0.2s;">
-                        <input type="checkbox" name="liveShifts" value="night" onchange="fetchLiveSeats()"> Night
-                    </label>
-                </div>
+            <h3>Select Shifts</h3>
+
+            <div class="shift-pills-row">
+                <label class="shift-pill">
+                    <input type="checkbox" name="liveShifts" value="6am-10am" checked onchange="fetchLiveSeats()">
+                    6 AM – 10 AM
+                </label>
+                <label class="shift-pill">
+                    <input type="checkbox" name="liveShifts" value="10am-2pm" onchange="fetchLiveSeats()">
+                    10 AM – 2 PM
+                </label>
+                <label class="shift-pill">
+                    <input type="checkbox" name="liveShifts" value="2pm-6pm" onchange="fetchLiveSeats()">
+                    2 PM – 6 PM
+                </label>
+                <label class="shift-pill">
+                    <input type="checkbox" name="liveShifts" value="6pm-10pm" onchange="fetchLiveSeats()">
+                    6 PM – 10 PM
+                </label>
+                <label class="shift-pill">
+                    <input type="checkbox" name="liveShifts" value="night" onchange="fetchLiveSeats()">
+                    Night
+                </label>
             </div>
 
-            <div class="legend">
+            <!-- Legend -->
+            <div class="legend-row">
                 <div class="legend-item">
-                    <div class="legend-color" style="background-color: #ecfdf5; border: 1px solid #a7f3d0;"></div>
-                    <span>Vacant (Available)</span>
+                    <div class="legend-dot" style="background:#dcfce7; border:1.5px solid #86efac;"></div>
+                    Vacant — available
                 </div>
                 <div class="legend-item">
-                    <div class="legend-color" style="background-color: #f1f5f9; border: 1px solid #e2e8f0;"></div>
-                    <span>Occupied</span>
+                    <div class="legend-dot" style="background:#f4f3f2; border:1.5px solid #e7e5e4;"></div>
+                    Booked
                 </div>
             </div>
         </div>
 
-        <!-- Seating Map Grid -->
+        <!-- Seating map -->
         <div class="seating-chart">
             <div id="vacantCountHeader" class="chart-header">
-                Checking vacant seats...
+                Loading seating map…
             </div>
-            
-            <div id="seatingGrid" class="grid-container">
-                <!-- Visual boxes 1 to 43 generated dynamically -->
-            </div>
+            <div id="seatingGrid" class="grid-container"></div>
         </div>
     </div>
 
     <script>
         async function fetchLiveSeats() {
-            const checkedBoxes = document.querySelectorAll('input[name="liveShifts"]:checked');
-            const shifts = Array.from(checkedBoxes).map(cb => cb.value);
-            const grid = document.getElementById('seatingGrid');
+            const checked = document.querySelectorAll('input[name="liveShifts"]:checked');
+            const shifts  = Array.from(checked).map(cb => cb.value);
+            const grid    = document.getElementById('seatingGrid');
+            const header  = document.getElementById('vacantCountHeader');
 
-            if (shifts.length === 0) {
-                document.getElementById('vacantCountHeader').textContent = "No Shifts Selected";
-                grid.innerHTML = "<p style='grid-column: 1/-1; text-align: center; color: var(--text-muted);'>Please select at least one shift to see seat availability.</p>";
+            if (!shifts.length) {
+                header.textContent = 'No shift selected';
+                grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:var(--fg-muted);padding:24px 0;">Select at least one shift to see availability.</p>';
                 return;
             }
 
-            grid.innerHTML = "<p style='grid-column: 1/-1; text-align: center;'>Updating seating layout...</p>";
+            grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:var(--fg-muted);padding:24px 0;">Updating…</p>';
 
             try {
-                // Fetch the vacant seats list from our public API endpoint (supporting multiple shifts)
-                const response = await fetch(`/user/liveseats-data?shifts=${shifts.join(',')}`);
-                const data = await response.json();
+                const res  = await fetch('/user/liveseats-data?shifts=' + shifts.join(','));
+                const data = await res.json();
 
-                if (!response.ok) {
-                    document.getElementById('vacantCountHeader').textContent = "Error Loading Seating";
-                    grid.innerHTML = `<p style="grid-column: 1/-1; color: red; text-align: center;">Error: ${data.error}</p>`;
+                if (!res.ok) {
+                    header.textContent = 'Error loading seats';
+                    grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:var(--red);padding:24px 0;">' + (data.error || 'Server error') + '</p>';
                     return;
                 }
 
-                const vacantList = data.vacantSeats;
-                document.getElementById('vacantCountHeader').textContent = `Vacant Seats: ${vacantList.length} Available`;
-                let html = "";
+                const vacant = data.vacantSeats || [];
+                header.textContent = vacant.length + ' of 43 seats available';
 
-                // Generate boxes for all 43 seats
+                let html = '';
                 for (let i = 1; i <= 43; i++) {
-                    const isVacant = vacantList.includes(i);
-                    
-                    if (isVacant) {
-                        html += `
-                            <div class="seat-box seat-available" title="Seat ${i} is Available">
-                                <span class="num">${i}</span>
-                                <span class="lbl">Vacant</span>
-                            </div>
-                        `;
-                    } else {
-                        html += `
-                            <div class="seat-box seat-occupied" title="Seat ${i} is Occupied">
-                                <span class="num">${i}</span>
-                                <span class="lbl">Booked</span>
-                            </div>
-                        `;
-                    }
+                    const isVacant = vacant.includes(i);
+                    html += isVacant
+                        ? `<div class="seat-box seat-available" title="Seat ${i} — Available"><span class="num">${i}</span><span class="lbl">Open</span></div>`
+                        : `<div class="seat-box seat-occupied" title="Seat ${i} — Booked"><span class="num">${i}</span><span class="lbl">Taken</span></div>`;
                 }
-
                 grid.innerHTML = html;
-
             } catch (err) {
-                grid.innerHTML = "<p style='grid-column: 1/-1; color: red; text-align: center;'>Failed to connect to real-time server.</p>";
+                grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:var(--red);padding:24px 0;">Connection error — please refresh.</p>';
             }
         }
 
-        // Trigger default load for the first shift on page ready
-        document.addEventListener("DOMContentLoaded", () => {
-            fetchLiveSeats();
-        });
+        document.addEventListener('DOMContentLoaded', fetchLiveSeats);
     </script>
 </body>
 </html>

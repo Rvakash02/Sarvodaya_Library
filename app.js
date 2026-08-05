@@ -1,4 +1,6 @@
 const express = require('express');
+const dns = require('dns');
+try { dns.setServers(['8.8.8.8', '1.1.1.1']); } catch(e) {}
 const app = express();
 const connectDB = require('./database/connectDB')
 require('dotenv').config();
@@ -17,6 +19,9 @@ app.use(cookieParser());
 app.use(authenticateUser);
 
 //routes
+app.get('/', (req, res)=>{
+    res.render('index');
+})
 app.use('/user',userRoutes);
 app.use('/admin', dashboardRoutes);
 

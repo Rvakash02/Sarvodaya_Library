@@ -2,9 +2,6 @@ const express = require('express')
 const router = express.Router();
 const {register,login, logout} = require('../controllers/userControllers')
 
-router.get('/home', (req, res)=>{
-    res.render('index');
-})
 router.get('/login', (req, res) => {
    res.render('login', { error: null });
 });

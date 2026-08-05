@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('./partials/head.ejs') %>
+<body>
+    <%- include('./partials/nav.ejs') %>
+
+    <div style="max-width:900px; margin:0 auto; padding:32px 20px 64px;">
+
+        <!-- Page heading -->
+        <div style="margin-bottom:36px;">
+            <h1 style="font-size:clamp(26px,4vw,40px); font-weight:400; margin-bottom:6px;">Dashboard overview</h1>
+            <p style="color:var(--fg-muted); font-size:15px;">Choose a system to manage your students, fees, and notifications.</p>
+        </div>
+
+        <!-- Cards grid -->
+        <div class="selector-grid">
+
+            <!-- Library -->
+            <a href="/admin/dashboard/library" style="text-decoration:none;" class="selector-card">
+                <div>
+                    <div class="selector-icon">📚</div>
+                    <h2>Library</h2>
+                    <p>Track 43 seats across five shifts, manage memberships, and send WhatsApp reminders to library students.</p>
+                </div>
+
+                <div>
+                    <div class="selector-stats">
+                        <div class="sel-stat">
+                            <div class="num"><%= stats ? stats.libraryTotal : 0 %></div>
+                            <div class="lbl">Total</div>
+                        </div>
+                        <div class="sel-stat paid">
+                            <div class="num"><%= stats ? stats.libraryPaid : 0 %></div>
+                            <div class="lbl">Paid</div>
+                        </div>
+                        <div class="sel-stat unpaid">
+                            <div class="num"><%= stats ? stats.libraryUnpaid : 0 %></div>
+                            <div class="lbl">Unpaid</div>
+                        </div>
+                    </div>
+
+                    <div style="display:flex; flex-direction:column; gap:8px; margin-top:16px;">
+                        <span class="btn btn-primary" style="width:100%; justify-content:center; pointer-events:none;">
+                            Open Library Dashboard →
+                        </span>
+                        <a href="/admin/register" class="btn btn-secondary btn-sm" style="width:100%; justify-content:center;" onclick="event.stopPropagation(); event.preventDefault(); window.location.href='/admin/register';">
+                            + Register Library Student
+                        </a>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Coaching -->
+            <a href="/admin/dashboard/coaching" style="text-decoration:none;" class="selector-card coaching">
+                <div>
+                    <div class="selector-icon" style="background:var(--amber-light);">🎓</div>
+                    <h2>Coaching</h2>
+                    <p>Manage batch enrolments, subjects, monthly fees, and send automated WhatsApp reminders to coaching students.</p>
+                </div>
+
+                <div>
+                    <div class="selector-stats">
+                        <div class="sel-stat">
+                            <div class="num"><%= stats ? stats.coachingTotal : 0 %></div>
+                            <div class="lbl">Total</div>
+                        </div>
+                        <div class="sel-stat paid">
+                            <div class="num"><%= stats ? stats.coachingPaid : 0 %></div>
+                            <div class="lbl">Paid</div>
+                        </div>
+                        <div class="sel-stat unpaid">
+                            <div class="num"><%= stats ? stats.coachingUnpaid : 0 %></div>
+                            <div class="lbl">Unpaid</div>
+                        </div>
+                    </div>
+
+                    <div style="display:flex; flex-direction:column; gap:8px; margin-top:16px;">
+                        <span class="btn btn-primary" style="background:var(--amber); border-color:var(--amber); box-shadow:0 2px 8px rgba(217,119,6,.22); width:100%; justify-content:center; pointer-events:none;">
+                            Open Coaching Dashboard →
+                        </span>
+                        <a href="/admin/coaching/register" class="btn btn-secondary btn-sm" style="width:100%; justify-content:center;" onclick="event.stopPropagation(); event.preventDefault(); window.location.href='/admin/coaching/register';">
+                            + Register Coaching Student
+                        </a>
+                    </div>
+                </div>
+            </a>
+
+        </div>
+    </div>
+
+    <script>
+        // Make secondary buttons work independently
+        document.querySelectorAll('.selector-card a').forEach(function(link) {
+            link.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+        });
+    </script>
+</body>
+</html>

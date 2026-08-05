@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('./partials/head.ejs') %>
+<body>
+    <%- include('./partials/nav.ejs') %>
+
+    <div class="container" style="max-width: 650px; margin-top: 40px; padding-bottom: 60px;">
+        <a href="/admin/dashboard/coaching" class="btn btn-secondary btn-sm" style="margin-bottom: 20px;">← Back to Coaching</a>
+
+        <h1 style="font-size:clamp(24px,3.5vw,34px); margin-bottom:6px;">Register coaching student</h1>
+        <p style="color:var(--fg-muted); font-size:15px; margin-bottom:28px;">Enrol a student into a coaching batch, class, or subject group.</p>
+
+        <div id="errorAlert" class="alert alert-error" style="display: none;"></div>
+        <div id="successAlert" class="alert alert-success" style="display: none;"></div>
+
+        <div class="form-card">
+            <form id="coachingForm">
+                <div class="form-group">
+                    <label class="form-label" for="name">Full name</label>
+                    <input class="form-input" type="text" id="name" name="name" placeholder="e.g. Rahul Sharma" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="phone">Phone number</label>
+                    <input class="form-input" type="tel" id="phone" name="phone" placeholder="91XXXXXXXXXX" required>
+                    <span class="form-hint">Include country code (e.g. 91XXXXXXXXXX for India)</span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="batch">Batch / Class</label>
+                    <input class="form-input" type="text" id="batch" name="batch" placeholder="e.g. Class 10th, NEET Target" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="subject">Subject(s)</label>
+                    <input class="form-input" type="text" id="subject" name="subject" placeholder="e.g. Mathematics & Physics">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="monthlyFee">Monthly fee (₹)</label>
+                    <input class="form-input" type="number" id="monthlyFee" name="monthlyFee" placeholder="e.g. 1500">
+                </div>
+
+                <div class="form-group">
+                    <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:16px; background:var(--bg-subtle); border:1px solid var(--border); border-radius:var(--r-md); padding:14px 16px;">
+                        <div>
+                            <div style="font-weight:600; font-size:14px;">Initial fee paid</div>
+                            <div style="font-size:12px; color:var(--fg-muted); margin-top:2px;">Sets status as paid & expiry 30 days from today</div>
+                        </div>
+                        <label class="switch" style="margin:0; flex-shrink:0;">
+                            <input type="checkbox" id="feePaid" name="feePaid" value="true">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-green" style="width:100%; padding:14px; font-size:15px;">Register coaching student</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('coachingForm');
+        const errorAlert = document.getElementById('errorAlert');
+        const successAlert = document.getElementById('successAlert');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            errorAlert.style.display = 'none';
+            successAlert.style.display = 'none';
+
+            const payload = {
+                name: document.getElementById('name').value,
+                phone: document.getElementById('phone').value,
+                batch: document.getElementById('batch').value,
+                subject: document.getElementById('subject').value,
+                monthlyFee: document.getElementById('monthlyFee').value,
+                feePaid: document.getElementById('feePaid').checked
+            };
+
+            try {
+                const res = await fetch('/admin/coaching/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await res.json();
+
+                if (res.ok) {
+                    successAlert.innerText = data.message || 'Coaching student registered successfully!';
+                    successAlert.style.display = 'block';
+                    form.reset();
+                    setTimeout(() => {
+                        window.location.href = '/admin/dashboard/coaching';
+                    }, 1200);
+                } else {
+                    errorAlert.innerText = data.error || 'Failed to register student';
+                    errorAlert.style.display = 'block';
+                }
+            } catch (err) {
+                errorAlert.innerText = 'Network error occurred. Please try again.';
+                errorAlert.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>

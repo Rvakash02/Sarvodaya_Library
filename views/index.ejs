@@ -1,20 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
 <%- include('./partials/head.ejs') %>
-
 <body>
     <%- include('./partials/nav.ejs') %>
-    <div class="hero-container">
-        <div class="hero-content">
-            <h1>Sarvodaya - The Library</h1>
-            <p>A calm, focused place to Study</p>
-        </div> 
-        <div class="hero-gallery">
-            <img src="/images/IMG_5471.jpg" class="gallery-image" alt="img1">
-            <img src="/images/IMG_5473.jpg" class="gallery-image" alt="img2">
-            <img src="/images/IMG_5474.jpg" class="gallery-image" alt="img3">
-            <img src="/images/IMG_5475.jpg" class="gallery-image" alt="img4">
-        </div>
-    </div>
+
+    <main>
+        <section class="hero-section">
+            <!-- Top pill badge -->
+            <div class="hero-pill">
+                ✦ &nbsp;43 seats · 5 shifts · Expert Coaching
+            </div>
+
+            <!-- Heading -->
+            <h1>Your quiet corner<br>to <em>study &amp; grow</em></h1>
+            <p>Sarvodaya is a focused, air-conditioned reading space with round-the-clock shifts — plus expert coaching for Class 10, 12 &amp; competitive exams. Find your seat, start your journey.</p>
+
+            <!-- Stats -->
+            <div class="hero-stats">
+                <div class="hero-stat-item">
+                    <strong>43</strong>
+                    <span>Library Seats</span>
+                </div>
+                <div class="hero-stat-item">
+                    <strong>5</strong>
+                    <span>Daily Shifts</span>
+                </div>
+                <div class="hero-stat-item">
+                    <strong>24/7</strong>
+                    <span>Study Access</span>
+                </div>
+            </div>
+
+            <!-- CTAs -->
+            <div class="hero-actions">
+                <a href="/user/liveseats" class="btn btn-primary btn-lg">Check Live Seats →</a>
+                <a href="/user/contact" class="btn btn-secondary btn-lg">Get in Touch</a>
+            </div>
+
+            <!-- Photo Gallery -->
+            <div class="hero-gallery">
+                <img src="/images/IMG_5471.jpg" alt="Sarvodaya study hall interior" loading="lazy">
+                <img src="/images/IMG_5473.jpg" alt="Reading area with desks" loading="lazy">
+                <img src="/images/IMG_5474.jpg" alt="Comfortable seating arrangement" loading="lazy">
+                <img src="/images/IMG_5475.jpg" alt="Library ambiance" loading="lazy">
+            </div>
+        </section>
+    </main>
 </body>
 </html>

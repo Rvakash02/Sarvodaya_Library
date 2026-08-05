@@ -3,75 +3,62 @@
 <%- include('./partials/head.ejs') %>
 <body>
      <%- include('./partials/nav.ejs') %>
-    <div class="container" style="max-width: 700px; margin-top: 40px;">
-        <a href="/admin/dashboard" style="font-size: 13px; padding: 6px 14px; background: var(--soft); color: var(--ink); border: 1px solid var(--line); border-radius: 8px; text-decoration: none; display: inline-block; margin-bottom: 16px; font-weight: 600;">← Back</a>
-        <h1 style="margin-bottom: 8px;">Add New Student</h1>
+    <div class="container" style="max-width: 700px; margin-top: 40px; padding-bottom: 60px;">
+        <a href="/admin/dashboard/library" class="btn btn-secondary btn-sm" style="margin-bottom: 20px;">← Back to Library</a>
 
-        <!-- Message Alerts -->
+        <h1 style="font-size:clamp(24px,3.5vw,34px); margin-bottom:6px;">Register library student</h1>
+        <p style="color:var(--fg-muted); font-size:15px; margin-bottom:28px;">Add a new student to the library management system.</p>
+
         <div id="errorAlert" class="alert alert-error" style="display: none;"></div>
         <div id="successAlert" class="alert alert-success" style="display: none;"></div>
 
-        <form id="studentForm" style="background: none; border: none; box-shadow: none; padding: 0; margin: 0; max-width: 100%;">
-            <!-- Name -->
-            <div class="form-group">
-                <label for="name">Full Name</label>
-                <input type="text" id="name" name="name" placeholder="Enter student's name" required>
-            </div>
-
-            <!-- Phone -->
-            <div class="form-group">
-                <label for="phone">Phone Number</label>
-                <input type="tel" id="phone" name="phone" placeholder="Enter 10-digit number" required>
-            </div>
-
-            <!-- Seat Number -->
-            <div class="form-group">
-                <label for="seatNumber">Assigned Seat (1 to 43)</label>
-                <input type="number" id="seatNumber" name="seatNumber" min="1" max="43" placeholder="e.g. 12" required>
-            </div>
-
-            <!-- Shifts Selection -->
-            <div class="form-group">
-                <label style="margin-bottom: 10px;">Select Shifts</label>
-                <div class="shift-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
-                    <label class="shift-checkbox-label" style="margin: 0; display: flex; align-items: center; gap: 8px;">
-                        <input type="checkbox" name="shifts" value="6am-10am"> 6:00 AM - 10:00 AM
-                    </label>
-                    <label class="shift-checkbox-label" style="margin: 0; display: flex; align-items: center; gap: 8px;">
-                        <input type="checkbox" name="shifts" value="10am-2pm"> 10:00 AM - 2:00 PM
-                    </label>
-                    <label class="shift-checkbox-label" style="margin: 0; display: flex; align-items: center; gap: 8px;">
-                        <input type="checkbox" name="shifts" value="2pm-6pm"> 2:00 PM - 6:00 PM
-                    </label>
-                    <label class="shift-checkbox-label" style="margin: 0; display: flex; align-items: center; gap: 8px;">
-                        <input type="checkbox" name="shifts" value="6pm-10pm"> 6:00 PM - 10:00 PM
-                    </label>
-                    <label class="shift-checkbox-label" style="margin: 0; display: flex; align-items: center; gap: 8px; grid-column: span 2;">
-                        <input type="checkbox" name="shifts" value="night"> Night Shift (10:00 PM onwards)
-                    </label>
+        <div class="form-card">
+            <form id="studentForm">
+                <div class="form-group">
+                    <label class="form-label" for="name">Full name</label>
+                    <input class="form-input" type="text" id="name" name="name" placeholder="Rahul Sharma" required>
                 </div>
-            </div>
 
-            <!-- Fee Status Toggle -->
-            <div class="form-group">
-                <div class="toggle-container" style="background-color: var(--soft); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px;">
-                    <div>
-                        <span style="font-weight: 500; font-size: 14px;">Admission Fee Paid</span>
+                <div class="form-group">
+                    <label class="form-label" for="phone">Phone number</label>
+                    <input class="form-input" type="tel" id="phone" name="phone" placeholder="91XXXXXXXXXX" required>
+                    <span class="form-hint">Include country code (e.g. 91XXXXXXXXXX for India)</span>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="seatNumber">Assigned seat (1 – 43)</label>
+                    <input class="form-input" type="number" id="seatNumber" name="seatNumber" min="1" max="43" placeholder="e.g. 12" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Shifts</label>
+                    <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:8px; margin-top:4px;">
+                        <label class="shift-pill"><input type="checkbox" name="shifts" value="6am-10am"> 6 AM – 10 AM</label>
+                        <label class="shift-pill"><input type="checkbox" name="shifts" value="10am-2pm"> 10 AM – 2 PM</label>
+                        <label class="shift-pill"><input type="checkbox" name="shifts" value="2pm-6pm"> 2 PM – 6 PM</label>
+                        <label class="shift-pill"><input type="checkbox" name="shifts" value="6pm-10pm"> 6 PM – 10 PM</label>
+                        <label class="shift-pill" style="grid-column:span 2;"><input type="checkbox" name="shifts" value="night"> Night shift (10 PM onwards)</label>
                     </div>
-                    <label class="switch" style="margin: 0;">
-                        <input type="checkbox" id="feePaid" name="feePaid" value="true">
-                        <span class="slider"></span>
-                    </label>
                 </div>
-            </div>
 
-            <button type="submit" class="btn" style="margin-top: 15px;">Register Student</button>
-        </form>
+                <div class="form-group">
+                    <div style="display:flex; align-items:center; justify-content:space-between; background:var(--bg-subtle); border:1px solid var(--border); border-radius:var(--r-md); padding:14px 16px;">
+                        <span style="font-weight:600; font-size:14px;">Fee paid</span>
+                        <label class="switch" style="margin:0;">
+                            <input type="checkbox" id="feePaid" name="feePaid" value="true">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width:100%; padding:14px; font-size:15px; margin-top:8px;">Register student</button>
+            </form>
+        </div>
     </div>
 
     <script>
         // Toggle selected visual styling on shift labels when checked
-        const labels = document.querySelectorAll('.shift-checkbox-label');
+        const labels = document.querySelectorAll('.shift-pill');
         labels.forEach(label => {
             const checkbox = label.querySelector('input');
             checkbox.addEventListener('change', () => {

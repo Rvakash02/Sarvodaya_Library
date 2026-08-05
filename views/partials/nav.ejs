@@ -1,32 +1,114 @@
-
-<header class="site-header">
-    <nav>
-        <div class="left">
-            <div class="site-title">
-                <a href="/user/home">
-                    <h1 >Sarvodaya</h1>
-                    <p>the library</p>
-                </a>
-            </div>
+<header class="site-header" role="banner">
+    <div class="nav-inner">
+        <!-- Brand -->
+        <div class="site-title">
+            <a href="/">
+                <h1>Sarvodaya</h1>
+                <span class="tagline">Library &amp; Coaching</span>
+            </a>
         </div>
-    
-        <ul class="nav-links">
-             <li><a href="/user/home">Home</a></li>
-             <li><a href="/user/contact">Contact Us</a></li>
-             <li><a href="/user/liveseats">Live Seats</a></li>
-            <% if(user){ %>
-                <li><a href="/admin/dashboard">Dashboard</a></li>
+
+        <!-- Desktop nav -->
+        <ul class="nav-links" role="navigation" aria-label="Main navigation">
+            <li><a href="/">Home</a></li>
+            <li><a href="/user/liveseats">Live Seats</a></li>
+            <li><a href="/user/contact">Contact</a></li>
+            <% if (user) { %>
+            <li class="nav-dropdown">
+                <a href="/admin/dashboard" class="dropdown-trigger">
+                    Dashboard
+                    <svg class="dropdown-chevron" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </a>
+                <ul class="dropdown-menu" role="menu">
+                    <li><a href="/admin/dashboard" role="menuitem">🎛️ Overview</a></li>
+                    <li><a href="/admin/dashboard/library" role="menuitem">📚 Library</a></li>
+                    <li><a href="/admin/dashboard/coaching" role="menuitem">🎓 Coaching</a></li>
+                </ul>
+            </li>
             <% } %>
         </ul>
-    
-         <% if (user) { %>
-            <div class="buttons">
-                <a href="/user/logout">Logout</a>
-            </div>
-        <% } else { %>
-            <div class="buttons">
-                <a href="/user/login">Admin Login</a>
-            </div>
-        <% } %>
-    </nav>
+
+        <!-- Auth button -->
+        <div class="nav-auth">
+            <% if (user) { %>
+                <a href="/user/logout" class="btn btn-nav-logout">Logout</a>
+            <% } else { %>
+                <a href="/user/login" class="btn btn-nav-login">Admin Login</a>
+            <% } %>
+        </div>
+
+        <!-- Hamburger (mobile) -->
+        <button class="hamburger" id="hamburgerBtn" aria-label="Open menu" aria-expanded="false">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </div>
 </header>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu" role="dialog" aria-modal="true" aria-label="Navigation menu">
+    <div class="mobile-menu-panel">
+        <div class="mobile-menu-top">
+            <div class="site-title">
+                <a href="/"><h1>Sarvodaya</h1></a>
+            </div>
+            <button class="mobile-close" id="mobileClose" aria-label="Close menu">&times;</button>
+        </div>
+
+        <nav class="mobile-nav-links">
+            <a href="/">🏠 Home</a>
+            <a href="/user/liveseats">🪑 Live Seats</a>
+            <a href="/user/contact">✉️ Contact</a>
+
+            <% if (user) { %>
+                <div class="mobile-nav-section">Dashboard</div>
+                <a href="/admin/dashboard">🎛️ Overview</a>
+                <a href="/admin/dashboard/library">📚 Library Management</a>
+                <a href="/admin/dashboard/coaching">🎓 Coaching Management</a>
+            <% } %>
+        </nav>
+
+        <div class="mobile-menu-footer">
+            <% if (user) { %>
+                <a href="/user/logout" class="btn-mobile-logout">Logout</a>
+            <% } else { %>
+                <a href="/user/login" class="btn-mobile-login">Admin Login</a>
+            <% } %>
+        </div>
+    </div>
+</div>
+
+<script>
+(function() {
+    var btn = document.getElementById('hamburgerBtn');
+    var menu = document.getElementById('mobileMenu');
+    var close = document.getElementById('mobileClose');
+
+    function openMenu() {
+        menu.classList.add('open');
+        btn.classList.add('open');
+        btn.setAttribute('aria-expanded', 'true');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeMenu() {
+        menu.classList.remove('open');
+        btn.classList.remove('open');
+        btn.setAttribute('aria-expanded', 'false');
+        document.body.style.overflow = '';
+    }
+
+    if (btn) btn.addEventListener('click', openMenu);
+    if (close) close.addEventListener('click', closeMenu);
+    if (menu) menu.addEventListener('click', function(e) {
+        if (e.target === menu) closeMenu();
+    });
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeMenu();
+    });
+})();
+</script>
