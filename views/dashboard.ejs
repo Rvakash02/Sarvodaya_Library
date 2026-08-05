@@ -416,7 +416,12 @@
             // Store current student lists globally to look them up on click
             window.currentStudents = students;
 
-            let html = `<div class="student-grid">`;
+            let html = `
+                <div style="margin-bottom: 14px; font-size: 14px; font-weight: 600; color: var(--fg-muted);">
+                    Total results: <span style="color: var(--fg); font-weight: 700;">${students.length}</span> student${students.length === 1 ? '' : 's'}
+                </div>
+                <div class="student-grid">
+            `;
             students.forEach((student, index) => {
                 const isPaid = student.feePaid;
                 const expiryStr = student.feeExpireDate ? new Date(student.feeExpireDate).toLocaleDateString('en-IN', {
