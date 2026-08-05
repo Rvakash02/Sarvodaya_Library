@@ -157,8 +157,11 @@ function initWhatsApp(force = false) {
         authStrategy: new LocalAuth({ dataPath: AUTH_DATA_PATH }),
         puppeteer: buildPuppeteerOptions(),
         userAgent: USER_AGENT,
-        // Pin puppeteer cache inside the project to avoid EPERM traversals
         puppeteerOptions: { cacheDirectory: path.resolve(__dirname, '../.wwebjs_cache') },
+        webVersionCache: {
+            type: 'remote',
+            remotePath: 'https://raw.githubusercontent.com/wppconnect-team/wa-version/main/html/2.2412.54.html',
+        },
     });
 
     // ── Events ────────────────────────────────────────────────────────────────
