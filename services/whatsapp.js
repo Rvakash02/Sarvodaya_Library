@@ -1,76 +1,129 @@
 /**
- * whatsapp.js — Hardened WhatsApp Web client
+ * WhatsApp Web Service — Fresh rewrite
  *
- * Problems solved:
- *  1. SingletonLock / SingletonSocket left by crashed Chrome  → wiped on every init
- *  2. Client crashes with no recovery                         → auto-restart with backoff
- *  3. Infinite restart loop on permanent auth failure         → bail after MAX_RETRIES
- *  4. Double-initialisation on hot-reload                     → guarded by isInitialising flag
- *  5. Missing phone-number edge cases (11-digit 0XX)          → robust normalisation
- *  6. EPERM / cosmiconfig traversal errors                    → puppeteer cacheDir pinned here too
+ * Manages the WhatsApp Web client lifecycle:
+ *   - Initializes headless Chrome via Puppeteer
+ *   - Generates QR codes for phone linking
+ *   - Sends messages to WhatsApp numbers
+ *   - Auto-recovers from crashes with exponential backoff
+ *   - Uses LOCAL cached web versions (no remote URL dependency)
  */
 
 'use strict';
 
-const path  = require('path');
-const fs    = require('fs');
+const path = require('path');
+const fs = require('fs');
 const { Client, LocalAuth } = require('whatsapp-web.js');
 const qrcode = require('qrcode');
-
-// ── Config ────────────────────────────────────────────────────────────────────
-const AUTH_DATA_PATH    = path.resolve(__dirname, '../.wwebjs_auth');
-const SESSION_DIR       = path.join(AUTH_DATA_PATH, 'session');
-const LOCK_FILES        = ['SingletonLock', 'SingletonSocket', 'SingletonCookie'];
-
-const MAX_RETRIES       = 5;   // give up & require manual restart after this many consecutive fails
-const BASE_RETRY_MS     = 10_000;  // 10 s initial retry delay
-const MAX_RETRY_MS      = 300_000; // 5 min cap
-
-const USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36';
-
-// ── State ─────────────────────────────────────────────────────────────────────
-let client          = null;
-let qrCodeDataUrl   = null;
-let status          = 'DISCONNECTED'; // DISCONNECTED | CONNECTING | QR | READY | FAILED
-let retryCount      = 0;
-let retryTimer      = null;
-let isInitialising  = false;
-
-// ── Helpers ───────────────────────────────────────────────────────────────────
-
 const { execSync } = require('child_process');
 
-/** Remove Chrome singleton/lock files & kill orphaned session browsers so a fresh session can start */
-function clearLockFiles() {
+// ─── Paths ───────────────────────────────────────────────────────────────────
+const AUTH_DIR = path.resolve(__dirname, '../.wwebjs_auth');
+const SESSION_DIR = path.join(AUTH_DIR, 'session');
+const CACHE_DIR = path.resolve(__dirname, '../.wwebjs_cache');
+
+// ─── Retry config ────────────────────────────────────────────────────────────
+const MAX_RETRIES = 5;
+const INITIAL_DELAY = 10_000;   // 10s
+const MAX_DELAY = 300_000;      // 5min
+
+// ─── Runtime state ───────────────────────────────────────────────────────────
+let client = null;
+let qrDataUrl = null;
+let status = 'DISCONNECTED';    // DISCONNECTED | CONNECTING | QR | READY | FAILED
+let retryCount = 0;
+let retryTimer = null;
+let busy = false;               // prevents double-init
+
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════════════════════════════════
+
+/**
+ * Find the newest locally-cached WhatsApp Web version.
+ * Files in .wwebjs_cache/ are named like "2.3000.1044539926.html".
+ * Returns the version string (without .html), or null.
+ */
+function findLatestLocalVersion() {
     try {
-        if (process.platform !== 'win32') {
-            execSync("pkill -f '\\.wwebjs_auth/session' || true", { stdio: 'ignore' });
-        }
-    } catch (_) {}
+        if (!fs.existsSync(CACHE_DIR)) return null;
 
-    if (!fs.existsSync(SESSION_DIR)) return;
-    const dirsToClean = [SESSION_DIR, path.join(SESSION_DIR, 'Default')];
-    const extraLocks = [...LOCK_FILES, 'LOCK', 'DevToolsActivePort'];
+        const htmlFiles = fs.readdirSync(CACHE_DIR)
+            .filter(f => f.endsWith('.html') && /^\d+\.\d+\.\d+/.test(f));
 
-    for (const dir of dirsToClean) {
-        if (!fs.existsSync(dir)) continue;
-        for (const file of extraLocks) {
-            const p = path.join(dir, file);
-            try {
-                if (fs.existsSync(p)) {
-                    fs.unlinkSync(p);
-                    console.log(`[WhatsApp] Removed stale lock file: ${p}`);
-                }
-            } catch (e) {
-                console.warn(`[WhatsApp] Could not remove lock file ${p}:`, e.message);
+        if (htmlFiles.length === 0) return null;
+
+        // Sort by version segments (numeric compare)
+        htmlFiles.sort((a, b) => {
+            const pa = a.replace('.html', '').split('.').map(Number);
+            const pb = b.replace('.html', '').split('.').map(Number);
+            for (let i = 0; i < Math.max(pa.length, pb.length); i++) {
+                const diff = (pa[i] || 0) - (pb[i] || 0);
+                if (diff !== 0) return diff;
             }
+            return 0;
+        });
+
+        const latest = htmlFiles[htmlFiles.length - 1].replace('.html', '');
+        return latest;
+    } catch {
+        return null;
+    }
+}
+
+/**
+ * Kill any leftover Chrome processes from previous wwebjs sessions
+ * and remove stale Singleton/lock files so Chrome can start fresh.
+ */
+function cleanupStaleChrome() {
+    // Kill orphaned Chrome processes tied to wwebjs
+    if (process.platform !== 'win32') {
+        try { execSync("pkill -f '\\.wwebjs_auth/session' 2>/dev/null || true", { stdio: 'ignore' }); } catch {}
+    }
+
+    // Remove lock files that prevent Chrome from starting
+    const lockNames = ['SingletonLock', 'SingletonSocket', 'SingletonCookie', 'LOCK', 'DevToolsActivePort'];
+    const dirs = [SESSION_DIR, path.join(SESSION_DIR, 'Default')];
+
+    for (const dir of dirs) {
+        if (!fs.existsSync(dir)) continue;
+        for (const name of lockNames) {
+            const filePath = path.join(dir, name);
+            try {
+                if (fs.existsSync(filePath)) {
+                    fs.unlinkSync(filePath);
+                    console.log(`[WA] Cleaned lock: ${name}`);
+                }
+            } catch {}
         }
     }
 }
 
-/** Build puppeteer options depending on the OS */
-function buildPuppeteerOptions() {
-    const opts = {
+/**
+ * Wipe the entire auth session directory for a completely fresh start.
+ * Also kills any lingering Chrome processes.
+ */
+function wipeSession() {
+    if (process.platform !== 'win32') {
+        try { execSync("pkill -f '\\.wwebjs_auth' 2>/dev/null || true", { stdio: 'ignore' }); } catch {}
+    }
+    try {
+        if (fs.existsSync(AUTH_DIR)) {
+            fs.rmSync(AUTH_DIR, { recursive: true, force: true });
+            console.log('[WA] Auth session wiped for fresh QR.');
+        }
+    } catch (e) {
+        console.warn('[WA] Could not wipe session:', e.message);
+    }
+}
+
+/**
+ * Build Puppeteer launch options.
+ * On macOS, uses system Chrome if available (avoids bundled Chromium issues).
+ */
+function getPuppeteerArgs() {
+    const args = {
         headless: true,
         args: [
             '--no-sandbox',
@@ -84,42 +137,59 @@ function buildPuppeteerOptions() {
             '--no-first-run',
             '--no-zygote',
             '--disable-blink-features=AutomationControlled',
-            `--user-agent=${USER_AGENT}`,
         ],
     };
 
-    // Use system Chrome on macOS if available (avoids Puppeteer's bundled Chromium download issues)
     if (process.platform === 'darwin') {
-        const localChrome = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
-        if (fs.existsSync(localChrome)) {
-            console.log('[WhatsApp] Using system Google Chrome at:', localChrome);
-            opts.executablePath = localChrome;
+        const chromePath = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
+        if (fs.existsSync(chromePath)) {
+            args.executablePath = chromePath;
         }
     }
 
-    return opts;
+    return args;
 }
 
-/** Exponential back-off helper (doubles each retry, capped at MAX_RETRY_MS) */
-function getRetryDelay() {
-    const delay = Math.min(BASE_RETRY_MS * Math.pow(2, retryCount), MAX_RETRY_MS);
-    return delay;
+/** Calculate retry delay with exponential backoff */
+function retryDelay() {
+    return Math.min(INITIAL_DELAY * Math.pow(2, retryCount), MAX_DELAY);
 }
 
-// ── Core ──────────────────────────────────────────────────────────────────────
 
+// ═══════════════════════════════════════════════════════════════════════════════
+// CORE LIFECYCLE
+// ═══════════════════════════════════════════════════════════════════════════════
+
+/**
+ * Safely destroy the current client and null it out.
+ */
+async function killClient() {
+    if (!client) return;
+    const ref = client;
+    client = null;
+    try {
+        await ref.destroy();
+    } catch {
+        // ignore — we're cleaning up
+    }
+}
+
+/**
+ * Schedule a restart with exponential backoff.
+ * Gives up after MAX_RETRIES.
+ */
 function scheduleRestart() {
-    if (retryTimer) return; // already scheduled
+    if (retryTimer) return;
 
     if (retryCount >= MAX_RETRIES) {
-        console.error(`[WhatsApp] Reached max retries (${MAX_RETRIES}). Service is FAILED. Restart the Node process manually.`);
+        console.error(`[WA] Max retries (${MAX_RETRIES}) reached. Service FAILED. Restart Node process manually.`);
         status = 'FAILED';
         return;
     }
 
-    const delay = getRetryDelay();
+    const delay = retryDelay();
     retryCount++;
-    console.log(`[WhatsApp] Scheduling restart attempt ${retryCount}/${MAX_RETRIES} in ${delay / 1000}s...`);
+    console.log(`[WA] Retry ${retryCount}/${MAX_RETRIES} in ${(delay / 1000).toFixed(0)}s...`);
 
     retryTimer = setTimeout(() => {
         retryTimer = null;
@@ -127,190 +197,161 @@ function scheduleRestart() {
     }, delay);
 }
 
-async function destroyClient() {
-    if (!client) return;
-    const c = client;
-    client = null;
-    try {
-        await c.destroy();
-    } catch (_) {
-        // ignore – we're cleaning up
-    }
-}
-
+/**
+ * Initialize the WhatsApp client.
+ * This is the main entry point — called on app start and on retries.
+ */
 function initWhatsApp(force = false) {
-    if (isInitialising && !force) {
-        console.log('[WhatsApp] Already initialising — skipped duplicate call.');
+    if (busy && !force) {
+        console.log('[WA] Already initializing — skipping duplicate call.');
         return;
     }
 
-    isInitialising  = true;
-    status          = 'CONNECTING';
-    qrCodeDataUrl   = null;
+    busy = true;
+    status = 'CONNECTING';
+    qrDataUrl = null;
 
-    // Always clear stale Chrome locks before starting
-    clearLockFiles();
+    // Clean up before starting
+    cleanupStaleChrome();
 
-    console.log('[WhatsApp] Initialising client...');
+    console.log('[WA] Starting client...');
 
-    client = new Client({
-        authStrategy: new LocalAuth({ dataPath: AUTH_DATA_PATH }),
-        puppeteer: buildPuppeteerOptions(),
-        userAgent: USER_AGENT,
-        puppeteerOptions: { cacheDirectory: path.resolve(__dirname, '../.wwebjs_cache') },
-        webVersionCache: {
-            type: 'remote',
-            remotePath: 'https://raw.githubusercontent.com/wppconnect-team/wa-version/main/html/2.2412.54.html',
-        },
-    });
+    // Build client options
+    const opts = {
+        authStrategy: new LocalAuth({ dataPath: AUTH_DIR }),
+        puppeteer: getPuppeteerArgs(),
+        puppeteerOptions: { cacheDirectory: CACHE_DIR },
+    };
 
-    // ── Events ────────────────────────────────────────────────────────────────
+    // Use local web version cache (no remote URL that can 404)
+    const version = findLatestLocalVersion();
+    if (version) {
+        console.log(`[WA] Using local web version: ${version}`);
+        opts.webVersion = version;
+        opts.webVersionCache = { type: 'local', path: CACHE_DIR };
+    } else {
+        console.log('[WA] No local cache — using library default.');
+    }
+
+    client = new Client(opts);
+
+    // ── Event handlers ─────────────────────────────────────────────────────
 
     client.on('qr', async (qr) => {
-        console.log('[WhatsApp] QR received — waiting for scan.');
+        console.log('[WA] QR code received.');
         status = 'QR';
+        busy = false;
         try {
-            qrCodeDataUrl = await qrcode.toDataURL(qr);
-            console.log('[WhatsApp] QR code Data URL generated successfully.');
+            qrDataUrl = await qrcode.toDataURL(qr);
+            console.log('[WA] QR data URL ready (' + qrDataUrl.length + ' chars).');
         } catch (err) {
-            console.error('[WhatsApp] QR generation failed:', err.message);
+            console.error('[WA] QR image generation error:', err.message);
+            qrDataUrl = null;
         }
-        isInitialising = false;
     });
 
     client.on('authenticated', () => {
-        console.log('[WhatsApp] Authenticated successfully.');
-        retryCount  = 0; // reset backoff on success
-        isInitialising = false;
+        console.log('[WA] Authenticated.');
+        retryCount = 0;
+        busy = false;
     });
 
     client.on('ready', () => {
-        console.log('[WhatsApp] Client READY — messaging is live.');
-        status        = 'READY';
-        qrCodeDataUrl = null;
-        retryCount    = 0;
-        isInitialising = false;
+        console.log('[WA] READY — messaging is live.');
+        status = 'READY';
+        qrDataUrl = null;
+        retryCount = 0;
+        busy = false;
     });
 
     client.on('auth_failure', async (msg) => {
-        console.error('[WhatsApp] Auth failure:', msg);
-        status        = 'DISCONNECTED';
-        qrCodeDataUrl = null;
-        isInitialising = false;
-        await destroyClient();
-        wipeAuthSession();
+        console.error('[WA] Auth failure:', msg);
+        status = 'DISCONNECTED';
+        qrDataUrl = null;
+        busy = false;
+        await killClient();
+        wipeSession();
         scheduleRestart();
     });
 
     client.on('disconnected', async (reason) => {
-        console.warn('[WhatsApp] Disconnected:', reason);
-        status        = 'DISCONNECTED';
-        qrCodeDataUrl = null;
-        isInitialising = false;
-        await destroyClient();
+        console.warn('[WA] Disconnected:', reason);
+        status = 'DISCONNECTED';
+        qrDataUrl = null;
+        busy = false;
+        await killClient();
 
-        // If logged out or disconnected, wipe session for clean reconnect
         if (reason === 'LOGOUT' || reason === 'NAVIGATION') {
-            console.log('[WhatsApp] Session unlinked/disconnected. Wiping auth session for fresh QR scan...');
-            wipeAuthSession();
+            wipeSession();
             retryCount = 0;
         }
         scheduleRestart();
     });
 
-    // ── Initialize ────────────────────────────────────────────────────────────
+    // ── Kick off initialization ────────────────────────────────────────────
+
     client.initialize().catch(async (err) => {
-        console.error('[WhatsApp] initialization error:', err.message);
-        status        = 'DISCONNECTED';
-        qrCodeDataUrl = null;
-        isInitialising = false;
-        await destroyClient();
-        wipeAuthSession();
+        console.error('[WA] Init error:', err.message);
+        status = 'DISCONNECTED';
+        qrDataUrl = null;
+        busy = false;
+        await killClient();
+        wipeSession();
         scheduleRestart();
     });
 }
 
-function wipeAuthSession() {
-    try {
-        if (process.platform !== 'win32') {
-            execSync("pkill -f 'chrome' || true", { stdio: 'ignore' });
-            execSync("pkill -f '\\.wwebjs_auth' || true", { stdio: 'ignore' });
-        }
-    } catch (_) {}
 
-    try {
-        if (fs.existsSync(AUTH_DATA_PATH)) {
-            fs.rmSync(AUTH_DATA_PATH, { recursive: true, force: true });
-            console.log('[WhatsApp] Auth session wiped & unlinked for fresh QR generation.');
-        }
-    } catch (err) {
-        console.warn('[WhatsApp] Could not wipe auth session:', err.message);
-    }
-}
+// ═══════════════════════════════════════════════════════════════════════════════
+// PUBLIC API  (consumed by routes & scheduler)
+// ═══════════════════════════════════════════════════════════════════════════════
 
-async function reconnectWhatsApp(forceFresh = true) {
-    console.log(`[WhatsApp] Manual reconnect/unlink triggered (forceFresh=${forceFresh})...`);
-
-    if (retryTimer) {
-        clearTimeout(retryTimer);
-        retryTimer = null;
-    }
-
-    isInitialising = false;
-    status = 'CONNECTING';
-    retryCount = 0;
-
-    await destroyClient();
-
-    if (forceFresh) {
-        wipeAuthSession();
-    } else {
-        clearLockFiles();
-    }
-
-    initWhatsApp(true);
-    return true;
-}
-
-// ── Public API ────────────────────────────────────────────────────────────────
-
+/**
+ * Get current service status + QR data URL.
+ */
 function getWhatsAppStatus() {
-    return { status, qr: qrCodeDataUrl, retryCount };
+    return {
+        status,
+        qr: qrDataUrl,
+        retryCount,
+    };
 }
 
 /**
- * Normalise a phone number to WhatsApp's expected format (digits only, with country code).
- * Handles:
- *   10-digit Indian numbers    → prepend 91
- *   11-digit numbers starting 0 → strip leading 0, prepend 91
- *   Already has country code   → use as-is
+ * Normalize an Indian phone number to WhatsApp chat ID format.
+ *   10 digits         → prepend 91
+ *   11 digits (0...)  → strip 0, prepend 91
+ *   anything else     → assume full international
  */
-function normalisePhone(raw) {
+function normalizePhone(raw) {
     const digits = raw.replace(/\D/g, '');
     if (digits.length === 10) return '91' + digits;
     if (digits.length === 11 && digits.startsWith('0')) return '91' + digits.slice(1);
-    return digits; // assume full international number
+    return digits;
 }
 
+/**
+ * Send a WhatsApp message. Returns true on success, false on failure.
+ */
 async function sendWhatsAppMessage(phone, message) {
     if (status !== 'READY' || !client) {
-        console.warn(`[WhatsApp] Cannot send to ${phone} — status is ${status}`);
+        console.warn(`[WA] Can't send — status is ${status}`);
         return false;
     }
 
     try {
-        const chatId = normalisePhone(phone) + '@c.us';
+        const chatId = normalizePhone(phone) + '@c.us';
         await client.sendMessage(chatId, message);
-        console.log(`[WhatsApp] Message sent to ${chatId}`);
+        console.log(`[WA] Sent to ${chatId}`);
         return true;
     } catch (err) {
-        console.error(`[WhatsApp] Send failed to ${phone}:`, err.message);
+        console.error(`[WA] Send failed (${phone}):`, err.message);
 
-        // If the client itself errored out, trigger a reconnect
-        if (err.message && (err.message.includes('Session closed') || err.message.includes('Target closed'))) {
-            console.warn('[WhatsApp] Browser session lost — scheduling reconnect.');
+        // If browser session is dead, trigger auto-recovery
+        if (err.message?.includes('Session closed') || err.message?.includes('Target closed')) {
+            console.warn('[WA] Browser session lost — reconnecting...');
             status = 'DISCONNECTED';
-            await destroyClient();
+            await killClient();
             scheduleRestart();
         }
 
@@ -318,4 +359,40 @@ async function sendWhatsAppMessage(phone, message) {
     }
 }
 
-module.exports = { initWhatsApp, getWhatsAppStatus, sendWhatsAppMessage, reconnectWhatsApp };
+/**
+ * Manual reconnect (called from dashboard).
+ * Destroys current client, wipes session if forceFresh, re-initializes.
+ */
+async function reconnectWhatsApp(forceFresh = true) {
+    console.log(`[WA] Manual reconnect (fresh=${forceFresh})...`);
+
+    // Cancel any pending retry
+    if (retryTimer) {
+        clearTimeout(retryTimer);
+        retryTimer = null;
+    }
+
+    busy = false;
+    status = 'CONNECTING';
+    retryCount = 0;
+    qrDataUrl = null;
+
+    await killClient();
+
+    if (forceFresh) {
+        wipeSession();
+    } else {
+        cleanupStaleChrome();
+    }
+
+    initWhatsApp(true);
+    return true;
+}
+
+
+module.exports = {
+    initWhatsApp,
+    getWhatsAppStatus,
+    sendWhatsAppMessage,
+    reconnectWhatsApp,
+};
