@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app.js",
+    "postinstall": "npx puppeteer install",
     "clean-locks": "node -e \"const fs=require('fs'),p='.wwebjs_auth/session';['SingletonLock','SingletonSocket','SingletonCookie'].forEach(f=>{try{fs.unlinkSync(p+'/'+f);console.log('removed',f)}catch(e){}});\""
   },
   "keywords": [],
@@ -22,6 +23,7 @@
     "mongoose": "^9.8.0",
     "node-cron": "^4.6.0",
     "nodemon": "^3.1.14",
+    "puppeteer": "^22.10.0",
     "qrcode": "^1.5.4",
     "whatsapp-web.js": "^1.34.7"
   }

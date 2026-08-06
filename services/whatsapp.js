@@ -119,8 +119,8 @@ function wipeSession() {
 }
 
 /**
- * Build Puppeteer launch options.
- * On macOS, uses system Chrome if available (avoids bundled Chromium issues).
+ * Build Puppeteer launch options with cross-platform Chrome/Chromium auto-detection
+ * (macOS, Render Linux, Docker, Ubuntu, Heroku).
  */
 function getPuppeteerArgs() {
     const args = {
@@ -136,14 +136,48 @@ function getPuppeteerArgs() {
             '--disable-sync',
             '--no-first-run',
             '--no-zygote',
+            '--disable-accelerated-2d-canvas',
             '--disable-blink-features=AutomationControlled',
         ],
     };
 
+    // 1. Check environment variables first (e.g. Render PUPPETEER_EXECUTABLE_PATH or CHROME_BIN)
+    if (process.env.PUPPETEER_EXECUTABLE_PATH && fs.existsSync(process.env.PUPPETEER_EXECUTABLE_PATH)) {
+        args.executablePath = process.env.PUPPETEER_EXECUTABLE_PATH;
+        console.log(`[WA] Using env PUPPETEER_EXECUTABLE_PATH: ${args.executablePath}`);
+        return args;
+    }
+
+    if (process.env.CHROME_BIN && fs.existsSync(process.env.CHROME_BIN)) {
+        args.executablePath = process.env.CHROME_BIN;
+        console.log(`[WA] Using env CHROME_BIN: ${args.executablePath}`);
+        return args;
+    }
+
+    // 2. macOS System Chrome check
     if (process.platform === 'darwin') {
-        const chromePath = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
-        if (fs.existsSync(chromePath)) {
-            args.executablePath = chromePath;
+        const macChrome = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
+        if (fs.existsSync(macChrome)) {
+            args.executablePath = macChrome;
+            console.log(`[WA] Using macOS system Chrome: ${macChrome}`);
+            return args;
+        }
+    }
+
+    // 3. Linux Cloud (Render / Ubuntu / Debian) system Chromium paths
+    if (process.platform === 'linux') {
+        const linuxPaths = [
+            '/usr/bin/google-chrome-stable',
+            '/usr/bin/google-chrome',
+            '/usr/bin/chromium-browser',
+            '/usr/bin/chromium',
+        ];
+        for (const p of linuxPaths) {
+            if (fs.existsSync(p)) {
+                args.executablePath = p;
+                console.log(`[WA] Using Linux binary: ${p}`);
+                return args;
+            }
         }
     }
 
