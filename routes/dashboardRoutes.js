@@ -339,6 +339,179 @@ router.get('/dashboard/coaching', (req, res) => {
     res.render('coachingDashboard');
 });
 
+// Dedicated Library Revenue Analytics Page
+router.get('/analytics/library', async (req, res) => {
+    try {
+        const libraryStudents = await Student.find();
+
+        let totalPaid = 0;
+        let totalPending = 0;
+        let paidCount = 0;
+        let unpaidCount = 0;
+
+        const shiftList = ['6am-10am', '10am-2pm', '2pm-6pm', '6pm-10pm', 'night'];
+        const shiftMap = {};
+        shiftList.forEach(st => {
+            shiftMap[st] = { total: 0, paidCount: 0, unpaidCount: 0, paidRev: 0, pendingRev: 0 };
+        });
+
+        libraryStudents.forEach(s => {
+            const fee = s.monthlyFee || ((s.shifts && s.shifts.length ? s.shifts.length : 1) * 500);
+
+            if (s.feePaid) {
+                totalPaid += fee;
+                paidCount++;
+            } else {
+                totalPending += fee;
+                unpaidCount++;
+            }
+
+            if (s.shifts && Array.isArray(s.shifts)) {
+                s.shifts.forEach(sh => {
+                    if (shiftMap[sh]) {
+                        shiftMap[sh].total++;
+                        if (s.feePaid) {
+                            shiftMap[sh].paidCount++;
+                            shiftMap[sh].paidRev += 500;
+                        } else {
+                            shiftMap[sh].unpaidCount++;
+                            shiftMap[sh].pendingRev += 500;
+                        }
+                    }
+                });
+            }
+        });
+
+        const totalProjected = totalPaid + totalPending;
+        const collectionRate = totalProjected > 0 ? Math.round((totalPaid / totalProjected) * 100) : 0;
+
+        // 6-Month Trend
+        const months = [];
+        const trend = [];
+        const now = new Date();
+
+        for (let i = 5; i >= 0; i--) {
+            const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+            months.push(d.toLocaleDateString('en-IN', { month: 'short' }));
+
+            const mEnd = new Date(d.getFullYear(), d.getMonth() + 1, 0, 23, 59, 59, 999);
+            let sum = 0;
+            libraryStudents.forEach(s => {
+                const adm = s.admissionDate ? new Date(s.admissionDate) : new Date();
+                const fee = s.monthlyFee || ((s.shifts && s.shifts.length ? s.shifts.length : 1) * 500);
+                if (adm <= mEnd && s.feePaid) {
+                    sum += fee;
+                }
+            });
+            trend.push(sum);
+        }
+
+        res.render('libraryAnalytics', {
+            analytics: {
+                totalStudents: libraryStudents.length,
+                paidCount,
+                unpaidCount,
+                totalPaid,
+                totalPending,
+                totalProjected,
+                collectionRate,
+                shiftBreakdown: shiftMap,
+                chartData: { months, trend }
+            }
+        });
+    } catch (err) {
+        console.error('Error rendering library analytics:', err);
+        res.render('libraryAnalytics', {
+            analytics: {
+                totalStudents: 0, paidCount: 0, unpaidCount: 0, totalPaid: 0, totalPending: 0, totalProjected: 0, collectionRate: 0,
+                shiftBreakdown: {}, chartData: { months: [], trend: [] }
+            }
+        });
+    }
+});
+
+// Dedicated Coaching Revenue Analytics Page
+router.get('/analytics/coaching', async (req, res) => {
+    try {
+        const coachingStudents = await CoachingStudent.find();
+
+        let totalPaid = 0;
+        let totalPending = 0;
+        let paidCount = 0;
+        let unpaidCount = 0;
+
+        const batchMap = {};
+
+        coachingStudents.forEach(s => {
+            const fee = Number(s.monthlyFee) || 0;
+            const batchName = s.batch || 'General';
+
+            if (!batchMap[batchName]) {
+                batchMap[batchName] = { total: 0, paidCount: 0, unpaidCount: 0, paidRev: 0, pendingRev: 0 };
+            }
+
+            batchMap[batchName].total++;
+
+            if (s.feePaid) {
+                totalPaid += fee;
+                paidCount++;
+                batchMap[batchName].paidCount++;
+                batchMap[batchName].paidRev += fee;
+            } else {
+                totalPending += fee;
+                unpaidCount++;
+                batchMap[batchName].unpaidCount++;
+                batchMap[batchName].pendingRev += fee;
+            }
+        });
+
+        const totalProjected = totalPaid + totalPending;
+        const collectionRate = totalProjected > 0 ? Math.round((totalPaid / totalProjected) * 100) : 0;
+
+        // 6-Month Trend
+        const months = [];
+        const trend = [];
+        const now = new Date();
+
+        for (let i = 5; i >= 0; i--) {
+            const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+            months.push(d.toLocaleDateString('en-IN', { month: 'short' }));
+
+            const mEnd = new Date(d.getFullYear(), d.getMonth() + 1, 0, 23, 59, 59, 999);
+            let sum = 0;
+            coachingStudents.forEach(s => {
+                const adm = s.admissionDate ? new Date(s.admissionDate) : new Date();
+                if (adm <= mEnd && s.feePaid) {
+                    sum += Number(s.monthlyFee) || 0;
+                }
+            });
+            trend.push(sum);
+        }
+
+        res.render('coachingAnalytics', {
+            analytics: {
+                totalStudents: coachingStudents.length,
+                paidCount,
+                unpaidCount,
+                totalPaid,
+                totalPending,
+                totalProjected,
+                collectionRate,
+                batchBreakdown: batchMap,
+                chartData: { months, trend }
+            }
+        });
+    } catch (err) {
+        console.error('Error rendering coaching analytics:', err);
+        res.render('coachingAnalytics', {
+            analytics: {
+                totalStudents: 0, paidCount: 0, unpaidCount: 0, totalPaid: 0, totalPending: 0, totalProjected: 0, collectionRate: 0,
+                batchBreakdown: {}, chartData: { months: [], trend: [] }
+            }
+        });
+    }
+});
+
 // --- LIBRARY STUDENT MANAGEMENT ROUTES ---
 router.get('/register', (req, res) => {
     res.render('addStudent');
