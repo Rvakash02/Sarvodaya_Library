@@ -121,12 +121,14 @@ const renewFees = async (req, res) => {
             return res.status(404).json({ error: "Student not found." });
         }
 
-        // Extend expiry date by 30 days from the previous expiry date
-        let newExpiry = new Date(student.feeExpireDate);
-        newExpiry.setDate(newExpiry.getDate() + 30);
+        // Extend expiry date by 30 days from previous expiry (or from today if already expired)
+        let baseDate = student.feeExpireDate && new Date(student.feeExpireDate) > new Date()
+            ? new Date(student.feeExpireDate)
+            : new Date();
+        baseDate.setDate(baseDate.getDate() + 30);
 
         student.feePaid = true;
-        student.feeExpireDate = newExpiry;
+        student.feeExpireDate = baseDate;
 
         await student.save();
         res.json({ message: "Fees renewed successfully", feeExpireDate: student.feeExpireDate });

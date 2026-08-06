@@ -119,6 +119,12 @@ function buildMessage(student, type, isCoaching = false) {
     );
 }
 
+/** Helper for anti-spam random delay between messages */
+function sleep(minMs = 2000, maxMs = 4000) {
+    const delay = Math.floor(minMs + Math.random() * (maxMs - minMs));
+    return new Promise(resolve => setTimeout(resolve, delay));
+}
+
 async function runDailyReminders() {
     try {
         // ── 1. Pre-expiry reminders (fee still paid, expires in exactly 3 days) ──
@@ -141,9 +147,11 @@ async function runDailyReminders() {
         console.log(`[Scheduler] Pre-expiry (3 days): ${preExpiryLibrary.length} library, ${preExpiryCoaching.length} coaching`);
 
         for (const s of preExpiryLibrary) {
+            await sleep(2000, 4000); // 2-4 second delay between messages
             await sendWhatsAppMessage(s.phone, buildMessage(s, 'PRE_EXPIRY', false));
         }
         for (const s of preExpiryCoaching) {
+            await sleep(2000, 4000); // 2-4 second delay between messages
             await sendWhatsAppMessage(s.phone, buildMessage(s, 'PRE_EXPIRY', true));
         }
 
@@ -171,6 +179,7 @@ async function runDailyReminders() {
             const type = shouldRemindToday(s.feeExpireDate);
             if (!type || type === 'PRE_EXPIRY') continue; // pre-expiry handled above
 
+            await sleep(2000, 4000); // 2-4 second delay between messages
             await sendWhatsAppMessage(s.phone, buildMessage(s, type, false));
             librarySent++;
         }
@@ -181,6 +190,7 @@ async function runDailyReminders() {
             const type = shouldRemindToday(s.feeExpireDate);
             if (!type || type === 'PRE_EXPIRY') continue;
 
+            await sleep(2000, 4000); // 2-4 second delay between messages
             await sendWhatsAppMessage(s.phone, buildMessage(s, type, true));
             coachingSent++;
         }
