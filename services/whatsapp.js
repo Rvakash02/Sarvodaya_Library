@@ -14,6 +14,7 @@
 const path = require('path');
 const fs = require('fs');
 const { Client, LocalAuth } = require('whatsapp-web.js');
+const puppeteer = require('puppeteer');
 const qrcode = require('qrcode');
 const { execSync } = require('child_process');
 
@@ -154,7 +155,7 @@ function getPuppeteerArgs() {
         return args;
     }
 
-    // 2. macOS System Chrome check
+    // 2. macOS System Chrome check (preferred on macOS)
     if (process.platform === 'darwin') {
         const macChrome = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
         if (fs.existsSync(macChrome)) {
@@ -164,7 +165,19 @@ function getPuppeteerArgs() {
         }
     }
 
-    // 3. Linux Cloud (Render / Ubuntu / Debian) system Chromium paths
+    // 3. Check Puppeteer downloaded Chromium binary (Render / Cloud Linux)
+    try {
+        const pPath = puppeteer.executablePath();
+        if (pPath && fs.existsSync(pPath)) {
+            args.executablePath = pPath;
+            console.log(`[WA] Using Puppeteer downloaded binary: ${pPath}`);
+            return args;
+        }
+    } catch (e) {
+        console.warn('[WA] Could not resolve puppeteer.executablePath():', e.message);
+    }
+
+    // 4. Linux Cloud (Render / Ubuntu / Debian) system Chromium paths
     if (process.platform === 'linux') {
         const linuxPaths = [
             '/usr/bin/google-chrome-stable',
