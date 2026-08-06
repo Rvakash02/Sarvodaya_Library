@@ -60,6 +60,15 @@
     </div>
 
     <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const seat = urlParams.get('seatNumber');
+            if (seat) {
+                const seatInput = document.getElementById('seatNumber');
+                if (seatInput) seatInput.value = seat;
+            }
+        });
+
         function selectAllAddShifts() {
             const checkboxes = document.querySelectorAll('input[name="shifts"]');
             const allChecked = Array.from(checkboxes).every(cb => cb.checked);
