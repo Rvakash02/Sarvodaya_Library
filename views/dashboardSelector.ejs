@@ -86,13 +86,171 @@
             </a>
 
         </div>
+
+        <!-- Financial & Collection Analytics Section -->
+        <div style="margin-top:44px;">
+            <div style="margin-bottom:20px;">
+                <h2 style="font-family:'DM Serif Display', Georgia, serif; font-size:26px; font-weight:400; color:var(--fg); margin:0 0 4px 0;">
+                    📊 Financial & Revenue Analytics
+                </h2>
+                <p style="color:var(--fg-muted); font-size:14px; margin:0;">Real-time revenue, pending dues, and monthly growth overview.</p>
+            </div>
+
+            <!-- Financial Summary Cards Grid -->
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(190px, 1fr)); gap:16px; margin-bottom:24px;">
+                
+                <!-- Total Revenue This Month -->
+                <div style="background:#ffffff; border:1.5px solid var(--border); border-radius:var(--r-lg); padding:20px; box-shadow:0 4px 14px rgba(0,0,0,0.03);">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                        <span style="font-size:12px; font-weight:700; color:var(--fg-muted); text-transform:uppercase; letter-spacing:0.5px;">Revenue Collected</span>
+                        <span style="font-size:11px; font-weight:700; background:#ecfdf5; color:#047857; padding:3px 8px; border-radius:12px;">🟢 Paid</span>
+                    </div>
+                    <div style="font-size:26px; font-weight:800; color:#059669; font-family:'Inter', sans-serif;">
+                        ₹<%= financials ? financials.totalRevenueThisMonth.toLocaleString('en-IN') : 0 %>
+                    </div>
+                    <div style="font-size:11.5px; color:var(--fg-muted); margin-top:6px;">
+                        Lib: ₹<%= financials ? financials.libraryPaidRevenue.toLocaleString('en-IN') : 0 %> | Coaching: ₹<%= financials ? financials.coachingPaidRevenue.toLocaleString('en-IN') : 0 %>
+                    </div>
+                </div>
+
+                <!-- Pending Dues -->
+                <div style="background:#ffffff; border:1.5px solid var(--border); border-radius:var(--r-lg); padding:20px; box-shadow:0 4px 14px rgba(0,0,0,0.03);">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                        <span style="font-size:12px; font-weight:700; color:var(--fg-muted); text-transform:uppercase; letter-spacing:0.5px;">Pending Dues</span>
+                        <span style="font-size:11px; font-weight:700; background:#fef2f2; color:#b91c1c; padding:3px 8px; border-radius:12px;">🔴 Overdue</span>
+                    </div>
+                    <div style="font-size:26px; font-weight:800; color:#dc2626; font-family:'Inter', sans-serif;">
+                        ₹<%= financials ? financials.totalPendingRevenue.toLocaleString('en-IN') : 0 %>
+                    </div>
+                    <div style="font-size:11.5px; color:var(--fg-muted); margin-top:6px;">
+                        Lib: ₹<%= financials ? financials.libraryPendingRevenue.toLocaleString('en-IN') : 0 %> | Coaching: ₹<%= financials ? financials.coachingPendingRevenue.toLocaleString('en-IN') : 0 %>
+                    </div>
+                </div>
+
+                <!-- Total Projected Income -->
+                <div style="background:#ffffff; border:1.5px solid var(--border); border-radius:var(--r-lg); padding:20px; box-shadow:0 4px 14px rgba(0,0,0,0.03);">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                        <span style="font-size:12px; font-weight:700; color:var(--fg-muted); text-transform:uppercase; letter-spacing:0.5px;">Projected Total</span>
+                        <span style="font-size:11px; font-weight:700; background:#eff6ff; color:#1d4ed8; padding:3px 8px; border-radius:12px;">🔵 100% Target</span>
+                    </div>
+                    <div style="font-size:26px; font-weight:800; color:#2563eb; font-family:'Inter', sans-serif;">
+                        ₹<%= financials ? financials.totalProjectedRevenue.toLocaleString('en-IN') : 0 %>
+                    </div>
+                    <div style="font-size:11.5px; color:var(--fg-muted); margin-top:6px;">
+                        Total potential monthly income
+                    </div>
+                </div>
+
+                <!-- Collection Success Rate -->
+                <div style="background:#ffffff; border:1.5px solid var(--border); border-radius:var(--r-lg); padding:20px; box-shadow:0 4px 14px rgba(0,0,0,0.03);">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                        <span style="font-size:12px; font-weight:700; color:var(--fg-muted); text-transform:uppercase; letter-spacing:0.5px;">Collection Rate</span>
+                        <span style="font-size:11px; font-weight:700; background:#fef3c7; color:#b45309; padding:3px 8px; border-radius:12px;">🎯 Ratio</span>
+                    </div>
+                    <div style="font-size:26px; font-weight:800; color:var(--fg); font-family:'Inter', sans-serif;">
+                        <%= financials ? financials.collectionRate : 0 %>%
+                    </div>
+                    <div style="width:100%; background:#e2e8f0; height:8px; border-radius:4px; margin-top:8px; overflow:hidden;">
+                        <div style="width:<%= financials ? financials.collectionRate : 0 %>%; background:linear-gradient(90deg, #10b981, #2563eb); height:100%; border-radius:4px; transition:width 0.6s ease;"></div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Monthly Growth Chart Card -->
+            <div style="background:#ffffff; border:1.5px solid var(--border); border-radius:var(--r-lg); padding:24px; box-shadow:0 4px 14px rgba(0,0,0,0.03);">
+                <div style="margin-bottom:18px;">
+                    <h3 style="font-size:17px; font-weight:700; color:var(--fg); margin:0 0 2px 0;">📈 Revenue Growth Trend (Past 6 Months)</h3>
+                    <p style="font-size:13px; color:var(--fg-muted); margin:0;">Monthly collected income comparison between Library and Coaching.</p>
+                </div>
+                <div style="position:relative; width:100%; height:260px;">
+                    <canvas id="growthChart"></canvas>
+                </div>
+            </div>
+        </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         // Make secondary buttons work independently
         document.querySelectorAll('.selector-card a').forEach(function(link) {
             link.addEventListener('click', function(e) {
                 e.stopPropagation();
+            });
+        });
+
+        // Initialize Monthly Growth Chart
+        document.addEventListener('DOMContentLoaded', function() {
+            const ctx = document.getElementById('growthChart');
+            if (!ctx) return;
+
+            const months = <%- JSON.stringify(financials && financials.chartData ? financials.chartData.months : []) %>;
+            const libraryTrend = <%- JSON.stringify(financials && financials.chartData ? financials.chartData.libraryTrend : []) %>;
+            const coachingTrend = <%- JSON.stringify(financials && financials.chartData ? financials.chartData.coachingTrend : []) %>;
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: months,
+                    datasets: [
+                        {
+                            label: 'Library Revenue (₹)',
+                            data: libraryTrend,
+                            backgroundColor: 'rgba(91, 79, 207, 0.85)',
+                            borderColor: '#5b4fcf',
+                            borderWidth: 1.5,
+                            borderRadius: 6,
+                        },
+                        {
+                            label: 'Coaching Revenue (₹)',
+                            data: coachingTrend,
+                            backgroundColor: 'rgba(217, 119, 6, 0.85)',
+                            borderColor: '#d97706',
+                            borderWidth: 1.5,
+                            borderRadius: 6,
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                            labels: {
+                                font: { family: 'Inter', size: 12, weight: '600' },
+                                usePointStyle: true,
+                                padding: 16
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: '#0f172a',
+                            titleFont: { family: 'Inter', size: 13, weight: '700' },
+                            bodyFont: { family: 'Inter', size: 12 },
+                            padding: 10,
+                            cornerRadius: 8,
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': ₹' + context.raw.toLocaleString('en-IN');
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { display: false },
+                            ticks: { font: { family: 'Inter', size: 12, weight: '600' } }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: '#f1f5f9' },
+                            ticks: {
+                                font: { family: 'Inter', size: 11 },
+                                callback: function(value) { return '₹' + value; }
+                            }
+                        }
+                    }
+                }
             });
         });
     </script>

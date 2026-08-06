@@ -55,10 +55,77 @@ router.get('/dashboard', async (req, res) => {
         await Student.updateMany({ feeExpireDate: { $lt: new Date() }, feePaid: true }, { $set: { feePaid: false } });
         await CoachingStudent.updateMany({ feeExpireDate: { $lt: new Date() }, feePaid: true }, { $set: { feePaid: false } });
 
-        const libraryTotal = await Student.countDocuments();
-        const libraryPaid = await Student.countDocuments({ feePaid: true });
-        const coachingTotal = await CoachingStudent.countDocuments();
-        const coachingPaid = await CoachingStudent.countDocuments({ feePaid: true });
+        const libraryStudents = await Student.find();
+        const coachingStudents = await CoachingStudent.find();
+
+        const libraryTotal = libraryStudents.length;
+        const libraryPaid = libraryStudents.filter(s => s.feePaid).length;
+
+        const coachingTotal = coachingStudents.length;
+        const coachingPaid = coachingStudents.filter(s => s.feePaid).length;
+
+        // Calculate Revenue Metrics
+        let libraryPaidRevenue = 0;
+        let libraryPendingRevenue = 0;
+        libraryStudents.forEach(s => {
+            const fee = s.monthlyFee || ((s.shifts && s.shifts.length ? s.shifts.length : 1) * 500);
+            if (s.feePaid) {
+                libraryPaidRevenue += fee;
+            } else {
+                libraryPendingRevenue += fee;
+            }
+        });
+
+        let coachingPaidRevenue = 0;
+        let coachingPendingRevenue = 0;
+        coachingStudents.forEach(s => {
+            const fee = Number(s.monthlyFee) || 0;
+            if (s.feePaid) {
+                coachingPaidRevenue += fee;
+            } else {
+                coachingPendingRevenue += fee;
+            }
+        });
+
+        const totalRevenueThisMonth = libraryPaidRevenue + coachingPaidRevenue;
+        const totalPendingRevenue = libraryPendingRevenue + coachingPendingRevenue;
+        const totalProjectedRevenue = totalRevenueThisMonth + totalPendingRevenue;
+        const collectionRate = totalProjectedRevenue > 0 ? Math.round((totalRevenueThisMonth / totalProjectedRevenue) * 100) : 0;
+
+        // Generate 6-month historical trend data for monthly growth chart
+        const months = [];
+        const libraryTrend = [];
+        const coachingTrend = [];
+        const now = new Date();
+
+        for (let i = 5; i >= 0; i--) {
+            const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+            const monthLabel = d.toLocaleDateString('en-IN', { month: 'short' });
+            months.push(monthLabel);
+
+            const mEnd = new Date(d.getFullYear(), d.getMonth() + 1, 0, 23, 59, 59, 999);
+
+            let libMonthSum = 0;
+            libraryStudents.forEach(s => {
+                const adm = s.admissionDate ? new Date(s.admissionDate) : new Date();
+                const fee = s.monthlyFee || ((s.shifts && s.shifts.length ? s.shifts.length : 1) * 500);
+                if (adm <= mEnd && s.feePaid) {
+                    libMonthSum += fee;
+                }
+            });
+
+            let coachMonthSum = 0;
+            coachingStudents.forEach(s => {
+                const adm = s.admissionDate ? new Date(s.admissionDate) : new Date();
+                const fee = Number(s.monthlyFee) || 0;
+                if (adm <= mEnd && s.feePaid) {
+                    coachMonthSum += fee;
+                }
+            });
+
+            libraryTrend.push(libMonthSum);
+            coachingTrend.push(coachMonthSum);
+        }
 
         res.render('dashboardSelector', {
             stats: {
@@ -68,11 +135,38 @@ router.get('/dashboard', async (req, res) => {
                 coachingTotal,
                 coachingPaid,
                 coachingUnpaid: coachingTotal - coachingPaid
+            },
+            financials: {
+                totalRevenueThisMonth,
+                totalPendingRevenue,
+                totalProjectedRevenue,
+                collectionRate,
+                libraryPaidRevenue,
+                libraryPendingRevenue,
+                coachingPaidRevenue,
+                coachingPendingRevenue,
+                chartData: {
+                    months,
+                    libraryTrend,
+                    coachingTrend
+                }
             }
         });
     } catch (err) {
+        console.error('Error loading dashboard selector stats:', err);
         res.render('dashboardSelector', {
-            stats: { libraryTotal: 0, libraryPaid: 0, libraryUnpaid: 0, coachingTotal: 0, coachingPaid: 0, coachingUnpaid: 0 }
+            stats: { libraryTotal: 0, libraryPaid: 0, libraryUnpaid: 0, coachingTotal: 0, coachingPaid: 0, coachingUnpaid: 0 },
+            financials: {
+                totalRevenueThisMonth: 0,
+                totalPendingRevenue: 0,
+                totalProjectedRevenue: 0,
+                collectionRate: 0,
+                libraryPaidRevenue: 0,
+                libraryPendingRevenue: 0,
+                coachingPaidRevenue: 0,
+                coachingPendingRevenue: 0,
+                chartData: { months: [], libraryTrend: [], coachingTrend: [] }
+            }
         });
     }
 });
