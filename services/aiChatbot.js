@@ -393,7 +393,12 @@ const functionImplementations = {
 // Main Exports
 // ------------------------------------------------------------------
 
-const FALLBACK_MODELS = ['gemini-flash-latest', 'gemini-2.5-flash-lite', 'gemini-1.5-flash'];
+const FALLBACK_MODELS = [
+  'gemini-3.6-flash',
+  'gemini-3.5-flash',
+  'gemini-flash-lite-latest',
+  'gemini-3.1-flash-lite'
+];
 
 async function generateWithModelFallback(ai, contents, config) {
   let lastError = null;
@@ -407,11 +412,8 @@ async function generateWithModelFallback(ai, contents, config) {
       return response;
     } catch (err) {
       lastError = err;
-      if (err.status === 429 || (err.message && (err.message.includes('429') || err.message.includes('RESOURCE_EXHAUSTED')))) {
-        console.warn(`Quota exceeded for ${modelName}, trying fallback model...`);
-        continue;
-      }
-      throw err;
+      console.warn(`Model ${modelName} encountered error (${err.status || err.message}), trying fallback model...`);
+      continue;
     }
   }
   throw lastError;
