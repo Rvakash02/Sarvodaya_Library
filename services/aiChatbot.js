@@ -428,7 +428,7 @@ async function handleChatMessage(message, sessionId) {
     // Function calling loop
     while (true) {
       const response = await ai.models.generateContent({
-        model: 'gemini-2.0-flash',
+        model: 'gemini-flash-latest',
         contents: session.history,
         config: {
           tools,
@@ -438,11 +438,15 @@ async function handleChatMessage(message, sessionId) {
 
       // Handle function calls
       if (response.functionCalls && response.functionCalls.length > 0) {
-        // Record model's function call in history
-        session.history.push({
-          role: 'model',
-          parts: response.functionCalls.map(fc => ({ functionCall: { name: fc.name, args: fc.args } }))
-        });
+        // Record exact model content (including thought signatures) in history
+        if (response.candidates && response.candidates[0] && response.candidates[0].content) {
+          session.history.push(response.candidates[0].content);
+        } else {
+          session.history.push({
+            role: 'model',
+            parts: response.functionCalls.map(fc => ({ functionCall: { name: fc.name, args: fc.args } }))
+          });
+        }
 
         // Execute functions and collect responses
         const functionResponsesParts = [];
@@ -501,9 +505,9 @@ async function handleChatMessage(message, sessionId) {
   } catch (error) {
     console.error('Gemini AI Error:', error);
     return {
-      reply: 'Sorry, I encountered an error while processing your request.',
+      reply: `Sorry, an error occurred: ${error.message || 'Unknown error'}`,
       actions: [],
-      canUndo: session.undoStack.length > 0
+      canUndo: session ? session.undoStack.length > 0 : false
     };
   }
 }
