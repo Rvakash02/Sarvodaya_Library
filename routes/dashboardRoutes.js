@@ -12,6 +12,7 @@ const { basicAuth, roleAuth } = require('../middleware/auth');
 const { getWhatsAppStatus, sendWhatsAppMessage, reconnectWhatsApp } = require('../services/whatsapp');
 const Student = require('../models/studentSchema');
 const CoachingStudent = require('../models/coachingStudentSchema');
+const { handleChatMessage, undoLastAction } = require('../services/aiChatbot');
 
 // Protect all endpoints in this router to be accessed ONLY by authenticated admin users
 router.use(basicAuth);
@@ -533,5 +534,34 @@ router.get('/coaching/dashboard-data', getCoachingDashboardData);
 router.post('/coaching/renew-fee', renewCoachingFees);
 router.post('/coaching/update-student', updateCoachingStudent);
 router.post('/coaching/delete-student', deleteCoachingStudent);
+
+// --- AI CHATBOT ROUTES ---
+router.post('/ai-chat', async (req, res) => {
+    try {
+        const { message, sessionId } = req.body;
+        if (!message || !sessionId) {
+            return res.status(400).json({ error: 'Message and sessionId are required.' });
+        }
+        const result = await handleChatMessage(message, sessionId);
+        res.json(result);
+    } catch (err) {
+        console.error('AI Chat Error:', err);
+        res.status(500).json({ error: 'Failed to process AI chat request.' });
+    }
+});
+
+router.post('/ai-chat/undo', async (req, res) => {
+    try {
+        const { sessionId } = req.body;
+        if (!sessionId) {
+            return res.status(400).json({ error: 'sessionId is required.' });
+        }
+        const result = await undoLastAction(sessionId);
+        res.json(result);
+    } catch (err) {
+        console.error('AI Chat Undo Error:', err);
+        res.status(500).json({ error: 'Failed to undo action.' });
+    }
+});
 
 module.exports = router;

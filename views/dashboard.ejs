@@ -1321,5 +1321,202 @@
             if (modal) modal.style.display = 'none';
         }
     </script>
+
+    <!-- ============================================================
+         AI CHATBOT WIDGET
+         ============================================================ -->
+
+    <!-- Floating Action Button -->
+    <button class="chat-fab" id="chatFab" onclick="toggleChatPanel()" title="AI Seat Assistant">
+        <span id="chatFabIcon">🤖</span>
+        <span class="chat-fab-badge" id="chatFabBadge"></span>
+    </button>
+
+    <!-- Chat Panel -->
+    <div class="chat-panel" id="chatPanel">
+        <!-- Header -->
+        <div class="chat-header">
+            <div class="chat-header-icon">🤖</div>
+            <div class="chat-header-info">
+                <h3>Sarvodaya AI Assistant</h3>
+                <p>Seat management &amp; insights</p>
+            </div>
+        </div>
+
+        <!-- Messages Area -->
+        <div class="chat-messages" id="chatMessages">
+            <div class="chat-msg chat-msg-bot">
+                👋 Hi! I'm your AI assistant. I can help you find vacant seats, suggest rearrangements, check fee status, and more. Try asking me something!
+            </div>
+        </div>
+
+        <!-- Quick Action Chips -->
+        <div class="chat-chips" id="chatChips">
+            <button class="chat-chip" onclick="sendChatChip('Find vacant seats for 10am-2pm shift')">🪑 Vacant seats</button>
+            <button class="chat-chip" onclick="sendChatChip('List all unpaid students')">💰 Unpaid students</button>
+            <button class="chat-chip" onclick="sendChatChip('Show occupancy and revenue stats')">📊 Stats</button>
+            <button class="chat-chip" onclick="sendChatChip('Which shift has the most vacant seats?')">📋 Shift demand</button>
+        </div>
+
+        <!-- Undo Bar -->
+        <div class="chat-undo-bar" id="chatUndoBar">
+            <span>⚠️ Action performed</span>
+            <button class="chat-undo-btn" onclick="undoChatAction()">↩ Undo</button>
+        </div>
+
+        <!-- Input Area -->
+        <div class="chat-input-area">
+            <input type="text" class="chat-input" id="chatInput" placeholder="Ask about seats, fees, students..." onkeydown="if(event.key==='Enter') sendChatMessage()">
+            <button class="chat-send-btn" id="chatSendBtn" onclick="sendChatMessage()">➤</button>
+        </div>
+    </div>
+
+    <script>
+        // --- AI CHATBOT LOGIC ---
+        const chatSessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        let chatOpen = false;
+        let chatSending = false;
+
+        function toggleChatPanel() {
+            chatOpen = !chatOpen;
+            const panel = document.getElementById('chatPanel');
+            const fab = document.getElementById('chatFab');
+            const fabIcon = document.getElementById('chatFabIcon');
+            const badge = document.getElementById('chatFabBadge');
+
+            if (chatOpen) {
+                panel.classList.add('visible');
+                fab.classList.add('open');
+                fabIcon.textContent = '✕';
+                badge.style.display = 'none';
+                // Focus input
+                setTimeout(() => document.getElementById('chatInput').focus(), 350);
+            } else {
+                panel.classList.remove('visible');
+                fab.classList.remove('open');
+                fabIcon.textContent = '🤖';
+            }
+        }
+
+        function addChatMessage(text, sender) {
+            const messagesEl = document.getElementById('chatMessages');
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `chat-msg chat-msg-${sender}`;
+
+            // Basic markdown-like formatting for bot messages
+            if (sender === 'bot') {
+                let formatted = text
+                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                    .replace(/\n/g, '<br>');
+                msgDiv.innerHTML = formatted;
+            } else {
+                msgDiv.textContent = text;
+            }
+
+            messagesEl.appendChild(msgDiv);
+            messagesEl.scrollTop = messagesEl.scrollHeight;
+        }
+
+        function showTypingIndicator() {
+            const messagesEl = document.getElementById('chatMessages');
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'chat-typing';
+            typingDiv.id = 'chatTypingIndicator';
+            typingDiv.innerHTML = '<span class="chat-typing-dot"></span><span class="chat-typing-dot"></span><span class="chat-typing-dot"></span>';
+            messagesEl.appendChild(typingDiv);
+            messagesEl.scrollTop = messagesEl.scrollHeight;
+        }
+
+        function removeTypingIndicator() {
+            const el = document.getElementById('chatTypingIndicator');
+            if (el) el.remove();
+        }
+
+        function sendChatChip(message) {
+            document.getElementById('chatInput').value = message;
+            sendChatMessage();
+        }
+
+        async function sendChatMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            if (!message || chatSending) return;
+
+            chatSending = true;
+            const sendBtn = document.getElementById('chatSendBtn');
+            sendBtn.disabled = true;
+
+            // Show user message
+            addChatMessage(message, 'user');
+            input.value = '';
+
+            // Hide chips after first message
+            const chips = document.getElementById('chatChips');
+            if (chips) chips.style.display = 'none';
+
+            // Show typing
+            showTypingIndicator();
+
+            try {
+                const response = await fetch('/admin/ai-chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message, sessionId: chatSessionId })
+                });
+
+                const data = await response.json();
+                removeTypingIndicator();
+
+                if (response.ok) {
+                    addChatMessage(data.reply || 'No response received.', 'bot');
+
+                    // Show/hide undo bar
+                    const undoBar = document.getElementById('chatUndoBar');
+                    if (data.canUndo) {
+                        undoBar.classList.add('visible');
+                    } else {
+                        undoBar.classList.remove('visible');
+                    }
+
+                    // Refresh dashboard data if bot performed an action
+                    if (data.canUndo) {
+                        fetchDashboard();
+                    }
+                } else {
+                    addChatMessage('❌ ' + (data.error || 'Something went wrong. Please try again.'), 'bot');
+                }
+            } catch (err) {
+                removeTypingIndicator();
+                addChatMessage('❌ Network error. Could not reach the server.', 'bot');
+            } finally {
+                chatSending = false;
+                sendBtn.disabled = false;
+                input.focus();
+            }
+        }
+
+        async function undoChatAction() {
+            const undoBar = document.getElementById('chatUndoBar');
+            try {
+                const response = await fetch('/admin/ai-chat/undo', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ sessionId: chatSessionId })
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    addChatMessage('↩ ' + data.reply, 'bot');
+                    undoBar.classList.remove('visible');
+                    fetchDashboard(); // Refresh dashboard
+                } else {
+                    addChatMessage('⚠️ ' + (data.reply || 'Could not undo.'), 'bot');
+                }
+            } catch (err) {
+                addChatMessage('❌ Failed to undo. Network error.', 'bot');
+            }
+        }
+    </script>
 </body>
 </html>
