@@ -3,7 +3,7 @@ const { sendWhatsAppMessage } = require('../services/whatsapp');
 
 const addStudent = async (req, res) => {
     try {
-        const { name, phone, shifts, seatNumber, feePaid } = req.body;
+        const { name, phone, shifts, seatNumber, feePaid, monthlyFee } = req.body;
 
         const shiftsArray = Array.isArray(shifts) ? shifts : [shifts];
 
@@ -28,6 +28,7 @@ const addStudent = async (req, res) => {
          const newStudent = new Student({
             ...req.body,
             shifts: shiftsArray,
+            monthlyFee: Number(monthlyFee) || 0,
             feePaid: isPaid,
             admissionDate: admissionDate,
             feeExpireDate: feeExpireDate
@@ -147,7 +148,7 @@ const renewFees = async (req, res) => {
 
 const updateStudent = async (req, res) => {
     try {
-        const { studentId, name, phone, shifts, seatNumber, feePaid, feeExpireDate } = req.body;
+        const { studentId, name, phone, shifts, seatNumber, feePaid, feeExpireDate, monthlyFee } = req.body;
         const shiftsArray = Array.isArray(shifts) ? shifts : [shifts];
 
         // 1. Conflict validation check: make sure the new seat/shifts don't overlap with another student
@@ -173,6 +174,9 @@ const updateStudent = async (req, res) => {
         student.phone = phone;
         student.shifts = shiftsArray;
         student.seatNumber = seatNumber;
+        if (monthlyFee !== undefined) {
+            student.monthlyFee = Number(monthlyFee) || 0;
+        }
         
         const isPaid = feePaid === 'true' || feePaid === true;
         const wasPaid = student.feePaid;

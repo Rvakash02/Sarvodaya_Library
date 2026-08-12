@@ -256,6 +256,10 @@
                     <span class="detail-value" id="modalShifts">-</span>
                 </div>
                 <div class="detail-row">
+                    <span class="detail-label">Monthly Fee</span>
+                    <span class="detail-value" id="modalMonthlyFee">₹0</span>
+                </div>
+                <div class="detail-row">
                     <span class="detail-label">Admission Date</span>
                     <span class="detail-value" id="modalAdmission">-</span>
                 </div>
@@ -317,6 +321,11 @@
                             <label class="shift-pill"><input type="checkbox" name="editShifts" value="6pm-10pm"> 6 PM – 10 PM</label>
                             <label class="shift-pill" style="grid-column: span 2;"><input type="checkbox" name="editShifts" value="night"> Night shift (10 PM onwards)</label>
                         </div>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 12px;">
+                        <label style="font-size: 13px; font-weight: 600; margin-bottom: 4px;">Monthly Fee / Amount (₹)</label>
+                        <input type="number" id="editMonthlyFee" min="0" required placeholder="e.g. 500">
                     </div>
 
                     <div class="form-group" style="margin-bottom: 14px;">
@@ -673,6 +682,7 @@
                         <span class="seat-badge">Seat ${student.seatNumber}</span>
                         <div class="student-name">${student.name}</div>
                         <div class="expiry-info">
+                            <strong>Fee:</strong> ₹${(student.monthlyFee || 0).toLocaleString('en-IN')}<br>
                             <strong>Expires:</strong> ${expiryStr}
                         </div>
                         <span class="status-badge ${isPaid ? 'status-paid' : 'status-unpaid'}">
@@ -863,6 +873,7 @@
 
             // Format Shifts
             document.getElementById('modalShifts').textContent = student.shifts.join(', ');
+            document.getElementById('modalMonthlyFee').textContent = `₹${(student.monthlyFee || 0).toLocaleString('en-IN')}`;
             
             // Format Dates
             const admissionDate = student.admissionDate ? new Date(student.admissionDate).toLocaleDateString('en-IN') : 'N/A';
@@ -933,6 +944,7 @@
                 document.getElementById('editName').value = student.name;
                 document.getElementById('editPhone').value = student.phone;
                 document.getElementById('editSeat').value = student.seatNumber;
+                document.getElementById('editMonthlyFee').value = student.monthlyFee !== undefined ? student.monthlyFee : 0;
 
                 document.getElementById('editFeePaid').checked = Boolean(student.feePaid);
 
@@ -1024,6 +1036,7 @@
             const name = document.getElementById('editName').value;
             const phone = document.getElementById('editPhone').value;
             const seatNumber = parseInt(document.getElementById('editSeat').value, 10);
+            const monthlyFee = parseFloat(document.getElementById('editMonthlyFee').value) || 0;
             const feeExpireDate = document.getElementById('editExpiry').value;
 
             const shifts = Array.from(document.querySelectorAll('input[name="editShifts"]:checked'))
@@ -1051,6 +1064,7 @@
                         phone,
                         seatNumber,
                         shifts,
+                        monthlyFee,
                         feeExpireDate,
                         feePaid
                     })

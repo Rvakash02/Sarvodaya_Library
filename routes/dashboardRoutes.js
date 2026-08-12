@@ -149,15 +149,16 @@ router.get('/analytics-data', async (req, res) => {
             }
 
             if (s.shifts && Array.isArray(s.shifts)) {
+                const perShiftFee = fee / (s.shifts.length || 1);
                 s.shifts.forEach(sh => {
                     if (shiftMap[sh]) {
                         shiftMap[sh].total++;
                         if (s.feePaid) {
                             shiftMap[sh].paidCount++;
-                            shiftMap[sh].paidRev += 500;
+                            shiftMap[sh].paidRev += perShiftFee;
                         } else {
                             shiftMap[sh].unpaidCount++;
-                            shiftMap[sh].pendingRev += 500;
+                            shiftMap[sh].pendingRev += perShiftFee;
                         }
                     }
                 });
@@ -367,15 +368,16 @@ router.get('/analytics/library', async (req, res) => {
             }
 
             if (s.shifts && Array.isArray(s.shifts)) {
+                const perShiftFee = fee / (s.shifts.length || 1);
                 s.shifts.forEach(sh => {
                     if (shiftMap[sh]) {
                         shiftMap[sh].total++;
                         if (s.feePaid) {
                             shiftMap[sh].paidCount++;
-                            shiftMap[sh].paidRev += 500;
+                            shiftMap[sh].paidRev += perShiftFee;
                         } else {
                             shiftMap[sh].unpaidCount++;
-                            shiftMap[sh].pendingRev += 500;
+                            shiftMap[sh].pendingRev += perShiftFee;
                         }
                     }
                 });

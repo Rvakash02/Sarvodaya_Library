@@ -24,6 +24,10 @@ const studentSchema = new mongoose.Schema({
         min: 1,
         max: 43
     },
+    monthlyFee: {
+        type: Number,
+        default: 0
+    },
     feePaid: {
         type: Boolean,
         default: false
