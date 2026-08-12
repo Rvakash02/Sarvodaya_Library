@@ -393,6 +393,30 @@ const functionImplementations = {
 // Main Exports
 // ------------------------------------------------------------------
 
+const FALLBACK_MODELS = ['gemini-flash-latest', 'gemini-2.5-flash-lite', 'gemini-1.5-flash'];
+
+async function generateWithModelFallback(ai, contents, config) {
+  let lastError = null;
+  for (const modelName of FALLBACK_MODELS) {
+    try {
+      const response = await ai.models.generateContent({
+        model: modelName,
+        contents,
+        config
+      });
+      return response;
+    } catch (err) {
+      lastError = err;
+      if (err.status === 429 || (err.message && (err.message.includes('429') || err.message.includes('RESOURCE_EXHAUSTED')))) {
+        console.warn(`Quota exceeded for ${modelName}, trying fallback model...`);
+        continue;
+      }
+      throw err;
+    }
+  }
+  throw lastError;
+}
+
 /**
  * Handle a chat message from the user
  * @param {string} message - User's message
@@ -427,13 +451,9 @@ async function handleChatMessage(message, sessionId) {
     
     // Function calling loop
     while (true) {
-      const response = await ai.models.generateContent({
-        model: 'gemini-flash-latest',
-        contents: session.history,
-        config: {
-          tools,
-          systemInstruction: SYSTEM_PROMPT,
-        }
+      const response = await generateWithModelFallback(ai, session.history, {
+        tools,
+        systemInstruction: SYSTEM_PROMPT,
       });
 
       // Handle function calls
@@ -504,8 +524,14 @@ async function handleChatMessage(message, sessionId) {
     };
   } catch (error) {
     console.error('Gemini AI Error:', error);
+    let userMsg = 'Sorry, an error occurred while processing your request.';
+    if (error.status === 429 || (error.message && (error.message.includes('429') || error.message.includes('RESOURCE_EXHAUSTED')))) {
+      userMsg = '⏳ **Google Free Tier Quota Limit Reached**: The free Google AI Studio quota limit has been reached for this minute. Please wait ~45 seconds and try again!';
+    } else {
+      userMsg = `Sorry, an error occurred: ${error.message || 'Unknown error'}`;
+    }
     return {
-      reply: `Sorry, an error occurred: ${error.message || 'Unknown error'}`,
+      reply: userMsg,
       actions: [],
       canUndo: session ? session.undoStack.length > 0 : false
     };
