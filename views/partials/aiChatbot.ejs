@@ -311,10 +311,11 @@
     <!-- Header -->
     <div class="chat-header">
         <div class="chat-header-icon">🤖</div>
-        <div class="chat-header-info">
+        <div class="chat-header-info" style="flex:1;">
             <h3>Sarvodaya AI Assistant</h3>
             <p>Seat management &amp; insights</p>
         </div>
+        <button class="chat-clear-btn" onclick="clearChatHistory()" title="Clear chat history" style="background:none; border:none; color:#ffffff; cursor:pointer; font-size:16px; opacity:0.8; padding:4px 8px; transition:opacity 0.2s;" onmouseenter="this.style.opacity='1'" onmouseleave="this.style.opacity='0.8'">🗑️</button>
     </div>
 
     <!-- Messages Area -->
@@ -346,12 +347,96 @@
 </div>
 
 <script>
-    // --- AI CHATBOT LOGIC ---
-    if (!window.chatSessionId) {
-        window.chatSessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    // --- AI CHATBOT PERSISTENCE LOGIC ---
+    const STORAGE_KEY_SESSION = 'sarvodaya_ai_session_id';
+    const STORAGE_KEY_HISTORY = 'sarvodaya_ai_chat_history';
+
+    function getChatSessionId() {
+        let sid = localStorage.getItem(STORAGE_KEY_SESSION);
+        if (!sid) {
+            sid = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            localStorage.setItem(STORAGE_KEY_SESSION, sid);
+        }
+        return sid;
     }
+
+    window.chatSessionId = getChatSessionId();
     let chatOpen = false;
     let chatSending = false;
+
+    function getStoredHistory() {
+        try {
+            const data = localStorage.getItem(STORAGE_KEY_HISTORY);
+            return data ? JSON.parse(data) : [];
+        } catch (e) {
+            return [];
+        }
+    }
+
+    function saveHistoryMessage(text, sender) {
+        const history = getStoredHistory();
+        history.push({ text, sender, timestamp: Date.now() });
+        // Keep max 50 recent messages
+        if (history.length > 50) history.shift();
+        localStorage.setItem(STORAGE_KEY_HISTORY, JSON.stringify(history));
+    }
+
+    function restoreChatHistory() {
+        const history = getStoredHistory();
+        if (!history || history.length === 0) return;
+
+        const messagesEl = document.getElementById('chatMessages');
+        if (!messagesEl) return;
+
+        // Clear default greeting
+        messagesEl.innerHTML = '';
+
+        history.forEach(item => {
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `chat-msg chat-msg-${item.sender}`;
+
+            if (item.sender === 'bot') {
+                let formatted = item.text
+                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                    .replace(/\n/g, '<br>');
+                msgDiv.innerHTML = formatted;
+            } else {
+                msgDiv.textContent = item.text;
+            }
+            messagesEl.appendChild(msgDiv);
+        });
+
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+
+        // Hide chips if previous conversation exists
+        const chips = document.getElementById('chatChips');
+        if (chips && history.length > 0) {
+            chips.style.display = 'none';
+        }
+    }
+
+    function clearChatHistory() {
+        if (confirm('Are you sure you want to clear chat history?')) {
+            localStorage.removeItem(STORAGE_KEY_HISTORY);
+            localStorage.removeItem(STORAGE_KEY_SESSION);
+            window.chatSessionId = getChatSessionId();
+
+            const messagesEl = document.getElementById('chatMessages');
+            if (messagesEl) {
+                messagesEl.innerHTML = `
+                    <div class="chat-msg chat-msg-bot">
+                        👋 Hi! I'm your AI assistant. I can help you find vacant seats, suggest seat rearrangements, check fee status, and more. Try asking me something!
+                    </div>`;
+            }
+
+            const chips = document.getElementById('chatChips');
+            if (chips) chips.style.display = 'flex';
+
+            const undoBar = document.getElementById('chatUndoBar');
+            if (undoBar) undoBar.classList.remove('visible');
+        }
+    }
 
     function toggleChatPanel() {
         chatOpen = !chatOpen;
@@ -376,9 +461,10 @@
         }
     }
 
-    function addChatMessage(text, sender) {
+    function addChatMessage(text, sender, save = true) {
         const messagesEl = document.getElementById('chatMessages');
         if (!messagesEl) return;
+
         const msgDiv = document.createElement('div');
         msgDiv.className = `chat-msg chat-msg-${sender}`;
 
@@ -394,6 +480,10 @@
 
         messagesEl.appendChild(msgDiv);
         messagesEl.scrollTop = messagesEl.scrollHeight;
+
+        if (save) {
+            saveHistoryMessage(text, sender);
+        }
     }
 
     function showTypingIndicator() {
@@ -493,5 +583,12 @@
         } catch (err) {
             addChatMessage('❌ Failed to undo. Network error.', 'bot');
         }
+    }
+
+    // Restore chat history when page loads
+    document.addEventListener('DOMContentLoaded', restoreChatHistory);
+    // Fallback if DOMContentLoaded already fired
+    if (document.readyState === 'interactive' || document.readyState === 'complete') {
+        restoreChatHistory();
     }
 </script>
